@@ -10,7 +10,7 @@
   },
   "llmModels": [
     {
-      "model": "ERNIE-Bot", // 这里的模型需要对应 One API 的模型
+      "model": "ERNIE-4.0-8K", // 这里的模型需要对应 One API 的模型
       "name": "文心一言", // 对外展示的名称
       "avatar": "/imgs/model/openai.svg", // 模型的logo
       "maxContext": 16000, // 最大上下文
