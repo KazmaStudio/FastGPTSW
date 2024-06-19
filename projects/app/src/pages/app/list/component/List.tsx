@@ -30,6 +30,8 @@ import {
 import MyTooltip from '@fastgpt/web/components/common/MyTooltip';
 import AppTypeTag from '@/components/core/app/TypeTag';
 
+import { useUserStore } from '@/web/support/user/useUserStore';
+
 const EditResourceModal = dynamic(() => import('@/components/common/Modal/EditResourceModal'));
 const ConfigPerModal = dynamic(() => import('@/components/support/permission/ConfigPerModal'));
 
@@ -41,7 +43,12 @@ const ListItem = () => {
     AppListContext,
     (v) => v
   );
+  myApps.map((app, index) => {
+    console.log('app permission: ', app.permission);
+  });
   const [loadingAppId, setLoadingAppId] = useState<string>();
+  const { userInfo } = useUserStore();
+  console.log('team permission: ', userInfo?.team.permission);
 
   const [editedApp, setEditedApp] = useState<EditResourceInfoFormType>();
   const [editPerAppIndex, setEditPerAppIndex] = useState<number>();
@@ -100,7 +107,7 @@ const ListItem = () => {
             label={
               app.type === AppTypeEnum.folder
                 ? t('common.folder.Open folder')
-                : app.permission.hasWritePer
+                : app.permission.hasWritePer //userInfo?.team.permission.hasWritePer//app.permission.hasWritePer
                   ? appT('Edit app')
                   : appT('Go to chat')
             }
@@ -138,6 +145,7 @@ const ListItem = () => {
                     }
                   });
                 } else if (app.permission.hasWritePer) {
+                  // userInfo?.team.permission.hasWritePer) {
                   router.push(`/app/detail?appId=${app._id}`);
                 } else {
                   router.push(`/chat?appId=${app._id}`);
@@ -151,7 +159,7 @@ const ListItem = () => {
               <Flex alignItems={'center'} h={'38px'}>
                 <Avatar src={app.avatar} borderRadius={'md'} w={'28px'} />
                 <Box ml={3}>{app.name}</Box>
-                {app.permission.hasManagePer && (
+                {app.permission.hasManagePer && ( //userInfo?.team.permission.hasManagePer && (
                   <Box
                     className="more"
                     position={'absolute'}
