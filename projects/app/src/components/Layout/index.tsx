@@ -26,7 +26,7 @@ const pcUnShowLayoutRoute: Record<string, boolean> = {
   '/chat/share': true,
   '/chat/team': true,
   '/app/edit': true,
-  '/chat': true,
+  '/chat': false,
   '/tools/price': true,
   '/price': true
 };
@@ -81,8 +81,7 @@ const Layout = ({ children }: { children: JSX.Element }) => {
       <Box h={'100%'} bg={'myGray.100'}>
         {isPc === true && (
           <>
-            {/* {isHideNavbar ? ( */}
-            {false ? (
+            {isHideNavbar ? (
               <Auth>{children}</Auth>
             ) : (
               <>
