@@ -1,5 +1,16 @@
-import React, { useMemo } from 'react';
-import { Box, BoxProps, Flex, Link, LinkProps } from '@chakra-ui/react';
+import React, { useEffect, useMemo, useState } from 'react';
+import {
+  Box,
+  BoxProps,
+  Flex,
+  Link,
+  LinkProps,
+  Accordion,
+  AccordionItem,
+  AccordionButton,
+  AccordionPanel,
+  AccordionIcon
+} from '@chakra-ui/react';
 import { useRouter } from 'next/router';
 import { useUserStore } from '@/web/support/user/useUserStore';
 import { useChatStore } from '@/web/core/chat/storeChat';
@@ -12,6 +23,9 @@ import { useTranslation } from 'next-i18next';
 import { useSystemStore } from '@/web/common/system/useSystemStore';
 import MyTooltip from '@fastgpt/web/components/common/MyTooltip';
 import { getDocPath } from '@/web/common/system/doc';
+import { getMyApps } from '@/web/core/app/api';
+import { AppDetailType, AppListItemType } from '@fastgpt/global/core/app/type';
+import { AppTypeEnum } from '@fastgpt/global/core/app/constants';
 
 export enum NavbarTypeEnum {
   normal = 'normal',
@@ -21,6 +35,16 @@ export enum NavbarTypeEnum {
 const Navbar = ({ unread }: { unread: number }) => {
   const { t } = useTranslation();
   const router = useRouter();
+  const { parentId = null } = router.query as { parentId?: string | null };
+
+  const [myApps, setMyApps] = useState<AppListItemType[]>([]);
+
+  useEffect(() => {
+    getMyApps({ parentId }).then((result) => {
+      setMyApps(result);
+    });
+  }, []);
+
   const { userInfo } = useUserStore();
   const { gitStar, feConfigs } = useSystemStore();
   const { lastChatAppId, lastChatId } = useChatStore();
@@ -59,9 +83,9 @@ const Navbar = ({ unread }: { unread: number }) => {
     link: '/account',
     activeLink: ['/account']
   };
-  let navItemList = [appNavItem, accountNavItem];
+  let navItemList = [accountNavItem];
   if (userInfo?.team.permission.isOwner) {
-    navItemList.splice(1, 0, dataSetNavItem);
+    navItemList.splice(0, 0, dataSetNavItem);
   }
   const navbarList = useMemo(() => navItemList, [lastChatAppId, lastChatId, t]);
 
@@ -93,7 +117,7 @@ const Navbar = ({ unread }: { unread: number }) => {
       userSelect={'none'}
     >
       {/* logo */}
-      <Box
+      {/* <Box
         flex={'0 0 auto'}
         mb={5}
         border={'2px solid #fff'}
@@ -109,7 +133,42 @@ const Navbar = ({ unread }: { unread: number }) => {
           fallbackSrc={HUMAN_ICON}
           borderRadius={'50%'}
         />
-      </Box>
+      </Box> */}
+      <Accordion defaultIndex={[0]} allowMultiple>
+        <AccordionItem>
+          <AccordionButton>
+            <Box as="span" flex="1" textAlign="left">
+              我的应用
+            </Box>
+            <AccordionIcon />
+          </AccordionButton>
+          <AccordionPanel pb={4}>
+            {myApps.map((app) => (
+              <Box
+                as="span"
+                flex="1"
+                textAlign="left"
+                key={app._id}
+                onClick={() => {
+                  if (app.type === AppTypeEnum.folder) {
+                    router.push({
+                      query: {
+                        parentId: app._id
+                      }
+                    });
+                  } else if (app.permission.hasWritePer) {
+                    router.push(`/app/detail?appId=${app._id}`);
+                  } else {
+                    router.push(`/chat?appId=${app._id}`);
+                  }
+                }}
+              >
+                {app.name}
+              </Box>
+            ))}
+          </AccordionPanel>
+        </AccordionItem>
+      </Accordion>
       {/* 导航列表 */}
       <Box flex={1}>
         {navbarList.map((item) => (
