@@ -24,46 +24,46 @@ const Navbar = ({ unread }: { unread: number }) => {
   const { userInfo } = useUserStore();
   const { gitStar, feConfigs } = useSystemStore();
   const { lastChatAppId, lastChatId } = useChatStore();
-  const navbarList = useMemo(
-    () => [
-      {
-        label: t('navbar.Chat'),
-        icon: 'core/chat/chatLight',
-        activeIcon: 'core/chat/chatFill',
-        link: `/chat?appId=${lastChatAppId}&chatId=${lastChatId}`,
-        activeLink: ['/chat']
-      },
-      {
-        label: t('navbar.Apps'),
-        icon: 'core/app/aiLight',
-        activeIcon: 'core/app/aiFill',
-        link: `/app/list`,
-        activeLink: ['/app/list', '/app/detail']
-      },
-      {
-        label: t('navbar.Plugin'),
-        icon: 'common/navbar/pluginLight',
-        activeIcon: 'common/navbar/pluginFill',
-        link: `/plugin/list`,
-        activeLink: ['/plugin/list', '/plugin/edit']
-      },
-      {
-        label: t('navbar.Datasets'),
-        icon: 'core/dataset/datasetLight',
-        activeIcon: 'core/dataset/datasetFill',
-        link: `/dataset/list`,
-        activeLink: ['/dataset/list', '/dataset/detail']
-      },
-      {
-        label: t('navbar.Account'),
-        icon: 'support/user/userLight',
-        activeIcon: 'support/user/userFill',
-        link: '/account',
-        activeLink: ['/account']
-      }
-    ],
-    [lastChatAppId, lastChatId, t]
-  );
+  const chatNavItem = {
+    label: t('navbar.Chat'),
+    icon: 'core/chat/chatLight',
+    activeIcon: 'core/chat/chatFill',
+    link: `/chat?appId=${lastChatAppId}&chatId=${lastChatId}`,
+    activeLink: ['/chat']
+  };
+  const appNavItem = {
+    label: t('navbar.Apps'),
+    icon: 'core/app/aiLight',
+    activeIcon: 'core/app/aiFill',
+    link: `/app/list`,
+    activeLink: ['/app/list', '/app/detail']
+  };
+  const pluginNavItem = {
+    label: t('navbar.Plugin'),
+    icon: 'common/navbar/pluginLight',
+    activeIcon: 'common/navbar/pluginFill',
+    link: `/plugin/list`,
+    activeLink: ['/plugin/list', '/plugin/edit']
+  };
+  const dataSetNavItem = {
+    label: t('navbar.Datasets'),
+    icon: 'core/dataset/datasetLight',
+    activeIcon: 'core/dataset/datasetFill',
+    link: `/dataset/list`,
+    activeLink: ['/dataset/list', '/dataset/detail']
+  };
+  const accountNavItem = {
+    label: t('navbar.Account'),
+    icon: 'support/user/userLight',
+    activeIcon: 'support/user/userFill',
+    link: '/account',
+    activeLink: ['/account']
+  };
+  let navItemList = [appNavItem, accountNavItem];
+  if (userInfo?.team.permission.isOwner) {
+    navItemList.splice(1, 0, dataSetNavItem);
+  }
+  const navbarList = useMemo(() => navItemList, [lastChatAppId, lastChatId, t]);
 
   const itemStyles: BoxProps & LinkProps = {
     my: 3,

@@ -38,10 +38,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
 const defaultFeConfigs: FastGPTFeConfigsType = {
   show_emptyChat: true,
-  show_git: true,
-  docUrl: 'https://doc.fastgpt.in',
+  show_git: false,
+  //docUrl: 'https://doc.fastgpt.in',
   openAPIDocUrl: 'https://doc.fastgpt.in/docs/development/openapi',
-  systemTitle: 'FastGPT',
+  systemTitle: '办公助手',
   concatMd:
     '项目开源地址: [FastGPT GitHub](https://github.com/labring/FastGPT)\n交流群: ![](https://oss.laf.run/htr4n1-images/fastgpt-qr-code.jpg)',
   limit: {

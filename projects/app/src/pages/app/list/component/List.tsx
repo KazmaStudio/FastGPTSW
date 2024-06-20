@@ -44,11 +44,11 @@ const ListItem = () => {
     (v) => v
   );
   myApps.map((app, index) => {
-    console.log('app permission: ', app.permission);
+    // console.log('app permission: ', app.permission);
   });
   const [loadingAppId, setLoadingAppId] = useState<string>();
   const { userInfo } = useUserStore();
-  console.log('team permission: ', userInfo?.team.permission);
+  // console.log('team permission: ', userInfo?.team.permission);
 
   const [editedApp, setEditedApp] = useState<EditResourceInfoFormType>();
   const [editPerAppIndex, setEditPerAppIndex] = useState<number>();
