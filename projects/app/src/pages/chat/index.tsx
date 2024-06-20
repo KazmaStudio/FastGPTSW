@@ -9,6 +9,10 @@ import {
   Drawer,
   DrawerOverlay,
   DrawerContent,
+  DrawerBody,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerCloseButton,
   useTheme
 } from '@chakra-ui/react';
 import { useSystemStore } from '@/web/common/system/useSystemStore';
@@ -256,13 +260,28 @@ const Chat = ({ appId, chatId }: { appId: string; chatId: string }) => {
         <title>{chatData.app.name}</title>
       </Head>
       {/* pc show myself apps */}
-      {isPc && (
+      {/* {isPc && (
         <Box borderRight={theme.borders.base} w={'220px'} flexShrink={0}>
           <SliderApps apps={myApps} activeAppId={appId} />
         </Box>
-      )}
+      )} */}
 
-      <PageContainer flex={'1 0 0'} w={0} p={[0, '16px']} position={'relative'}>
+      <Box flex={1}>
+        <ChatBox
+          ref={ChatBoxRef}
+          showEmptyIntro
+          appAvatar={chatData.app.avatar}
+          userAvatar={userInfo?.avatar}
+          chatConfig={chatData.app?.chatConfig}
+          showFileSelector={checkChatSupportSelectFileByChatModels(chatData.app.chatModels)}
+          feedbackType={'user'}
+          onStartChat={startChat}
+          onDelMessage={(e) => delOneHistoryItem({ ...e, appId, chatId })}
+          appId={appId}
+          chatId={chatId}
+        />
+      </Box>
+      <PageContainer flex={'1 0 0'} w={0} p={[0, '16px']} position={'relative'} display={'none'}>
         <Flex h={'100%'} flexDirection={['column', 'row']} bg={'white'}>
           {/* pc always show history. */}
           {((children: React.ReactNode) => {

@@ -145,7 +145,6 @@ const Navbar = ({ unread }: { unread: number }) => {
           <AccordionPanel pb={4}>
             {myApps.map((app) => (
               <Box
-                as="span"
                 flex="1"
                 textAlign="left"
                 key={app._id}
