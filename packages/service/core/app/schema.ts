@@ -8,6 +8,7 @@ import {
   TeamMemberCollectionName
 } from '@fastgpt/global/support/user/team/constant';
 import { AppDefaultPermissionVal } from '@fastgpt/global/support/permission/app/constant';
+import { UserType } from '@fastgpt/global/support/user/type';
 
 export const AppCollectionName = 'apps';
 
@@ -62,6 +63,9 @@ const AppSchema = new Schema({
     type: Date,
     default: () => new Date()
   },
+  createTime: {
+    type: Date
+  },
 
   // role and auth
   permission: {
@@ -110,6 +114,14 @@ const AppSchema = new Schema({
   defaultPermission: {
     type: Number,
     default: AppDefaultPermissionVal
+  },
+
+  creator: {
+    type: String
+  },
+
+  creatorAvatar: {
+    type: String
   }
 });
 

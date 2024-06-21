@@ -12,6 +12,7 @@ import type { AppSchema } from '@fastgpt/global/core/app/type';
 import { ApiRequestProps } from '@fastgpt/service/type/next';
 import type { ParentIdType } from '@fastgpt/global/common/parentFolder/type';
 import { parseParentIdInMongo } from '@fastgpt/global/common/parentFolder/utils';
+import { getUserDetail } from '@fastgpt/service/support/user/controller';
 
 export type CreateAppBody = {
   parentId?: ParentIdType;
@@ -35,6 +36,10 @@ async function handler(req: ApiRequestProps<CreateAppBody>, res: NextApiResponse
   // 上限校验
   await checkTeamAppLimit(teamId);
 
+  const creator = await getUserDetail({
+    tmbId: tmbId
+  });
+
   // 创建模型
   const appId = await mongoSessionRun(async (session) => {
     const [{ _id: appId }] = await MongoApp.create(
@@ -48,6 +53,9 @@ async function handler(req: ApiRequestProps<CreateAppBody>, res: NextApiResponse
           modules,
           edges,
           type,
+          creator: creator.username,
+          creatorAvatar: creator.avatar,
+          createTime: new Date(),
           version: 'v2'
         }
       ],

@@ -44,7 +44,7 @@ const ListItem = () => {
     (v) => v
   );
   myApps.map((app, index) => {
-    // console.log(app);
+    console.log(app);
     // console.log('app permission: ', app.permission);
   });
   const [loadingAppId, setLoadingAppId] = useState<string>();

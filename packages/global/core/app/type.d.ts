@@ -34,6 +34,9 @@ export type AppSchema = {
   inited?: boolean;
   teamTags: string[];
   defaultPermission: PermissionValueType;
+
+  creator: String;
+  creatorAvatar: String;
 };
 
 export type AppListItemType = {

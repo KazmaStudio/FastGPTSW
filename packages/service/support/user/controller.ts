@@ -21,6 +21,7 @@ export async function getUserDetail({
   userId?: string;
 }): Promise<UserType> {
   const tmb = await (async () => {
+    console.log(tmbId);
     if (tmbId) {
       try {
         const result = await getTmbInfoByTmbId({ tmbId });
@@ -30,6 +31,7 @@ export async function getUserDetail({
     if (userId) {
       return getUserDefaultTeam({ userId });
     }
+
     return Promise.reject(ERROR_ENUM.unAuthorization);
   })();
   const user = await MongoUser.findById(tmb.userId);
