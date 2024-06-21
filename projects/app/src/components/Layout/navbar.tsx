@@ -39,12 +39,6 @@ const Navbar = ({ unread }: { unread: number }) => {
 
   const [myApps, setMyApps] = useState<AppListItemType[]>([]);
 
-  useEffect(() => {
-    getMyApps({ parentId }).then((result) => {
-      setMyApps(result);
-    });
-  }, []);
-
   const { userInfo } = useUserStore();
   const { gitStar, feConfigs } = useSystemStore();
   const { lastChatAppId, lastChatId } = useChatStore();
@@ -83,11 +77,20 @@ const Navbar = ({ unread }: { unread: number }) => {
     link: '/account',
     activeLink: ['/account']
   };
+
   let navItemList = [accountNavItem];
+
+  let navbarList = [];
   if (userInfo?.team.permission.isOwner) {
     navItemList.splice(0, 0, dataSetNavItem);
   }
-  const navbarList = useMemo(() => navItemList, [lastChatAppId, lastChatId, t]);
+  navbarList = useMemo(() => navItemList, [lastChatAppId, lastChatId, t, navItemList]);
+
+  useEffect(() => {
+    getMyApps({ parentId }).then((result) => {
+      setMyApps(result);
+    });
+  }, []);
 
   const itemStyles: BoxProps & LinkProps = {
     my: 3,

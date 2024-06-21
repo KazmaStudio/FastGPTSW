@@ -44,10 +44,11 @@ const ListItem = () => {
     (v) => v
   );
   myApps.map((app, index) => {
+    // console.log(app);
     // console.log('app permission: ', app.permission);
   });
   const [loadingAppId, setLoadingAppId] = useState<string>();
-  const { userInfo } = useUserStore();
+  // const { userInfo } = useUserStore();
   // console.log('team permission: ', userInfo?.team.permission);
 
   const [editedApp, setEditedApp] = useState<EditResourceInfoFormType>();
@@ -94,167 +95,338 @@ const ListItem = () => {
 
   return (
     <>
-      <Grid
-        py={[4, 6]}
-        gridTemplateColumns={['1fr', 'repeat(2,1fr)', 'repeat(3,1fr)', 'repeat(4,1fr)']}
-        gridGap={5}
-        alignItems={'stretch'}
-      >
-        {myApps.map((app, index) => (
-          <MyTooltip
-            key={app._id}
-            h="100%"
-            label={
-              app.type === AppTypeEnum.folder
-                ? t('common.folder.Open folder')
-                : app.permission.hasWritePer //userInfo?.team.permission.hasWritePer//app.permission.hasWritePer
-                  ? appT('Edit app')
-                  : appT('Go to chat')
-            }
-          >
-            <MyBox
-              isLoading={loadingAppId === app._id}
-              lineHeight={1.5}
-              h="100%"
-              py={3}
-              px={5}
-              cursor={'pointer'}
-              borderWidth={'1.5px'}
-              borderColor={'borderColor.low'}
-              bg={'white'}
-              borderRadius={'md'}
-              userSelect={'none'}
-              position={'relative'}
-              display={'flex'}
-              flexDirection={'column'}
-              _hover={{
-                borderColor: 'primary.300',
-                boxShadow: '1.5',
-                '& .more': {
-                  display: 'flex'
-                },
-                '& .chat': {
-                  display: 'flex'
-                }
-              }}
-              onClick={() => {
-                if (app.type === AppTypeEnum.folder) {
-                  router.push({
-                    query: {
-                      parentId: app._id
-                    }
-                  });
-                } else if (app.permission.hasWritePer) {
-                  // userInfo?.team.permission.hasWritePer) {
-                  router.push(`/app/detail?appId=${app._id}`);
-                } else {
-                  router.push(`/chat?appId=${app._id}`);
-                }
-              }}
-              {...getBoxProps({
-                dataId: app._id,
-                isFolder: app.type === AppTypeEnum.folder
-              })}
-            >
-              <Flex alignItems={'center'} h={'38px'}>
-                <Avatar src={app.avatar} borderRadius={'md'} w={'28px'} />
-                <Box ml={3}>{app.name}</Box>
-                {app.permission.hasManagePer && ( //userInfo?.team.permission.hasManagePer && (
-                  <Box
-                    className="more"
-                    position={'absolute'}
-                    top={3.5}
-                    right={4}
-                    display={['', 'none']}
-                  >
-                    <MyMenu
-                      Button={
-                        <IconButton
-                          size={'xsSquare'}
-                          variant={'transparentBase'}
-                          icon={<MyIcon name={'more'} w={'1rem'} />}
-                          aria-label={''}
-                        />
+      <Box as="div">
+        <>共享应用</>
+        <Grid
+          py={[4, 6]}
+          gridTemplateColumns={['1fr', 'repeat(2,1fr)', 'repeat(3,1fr)', 'repeat(4,1fr)']}
+          gridGap={5}
+          alignItems={'stretch'}
+        >
+          {myApps.map(
+            (app, index) =>
+              app.defaultPermission > 0 && (
+                <MyTooltip
+                  key={app._id}
+                  h="100%"
+                  label={
+                    app.type === AppTypeEnum.folder
+                      ? t('common.folder.Open folder')
+                      : app.permission.hasWritePer //userInfo?.team.permission.hasWritePer//app.permission.hasWritePer
+                        ? appT('Edit app')
+                        : appT('Go to chat')
+                  }
+                >
+                  <MyBox
+                    isLoading={loadingAppId === app._id}
+                    lineHeight={1.5}
+                    h="100%"
+                    py={3}
+                    px={5}
+                    cursor={'pointer'}
+                    borderWidth={'1.5px'}
+                    borderColor={'borderColor.low'}
+                    bg={'white'}
+                    borderRadius={'md'}
+                    userSelect={'none'}
+                    position={'relative'}
+                    display={'flex'}
+                    flexDirection={'column'}
+                    _hover={{
+                      borderColor: 'primary.300',
+                      boxShadow: '1.5',
+                      '& .more': {
+                        display: 'flex'
+                      },
+                      '& .chat': {
+                        display: 'flex'
                       }
-                      menuList={[
-                        {
-                          children: [
-                            {
-                              icon: 'edit',
-                              label: '编辑信息',
-                              onClick: () =>
-                                setEditedApp({
-                                  id: app._id,
-                                  avatar: app.avatar,
-                                  name: app.name,
-                                  intro: app.intro
-                                })
-                            },
-                            {
-                              icon: 'common/file/move',
-                              label: t('common.folder.Move to'),
-                              onClick: () => setMoveAppId(app._id)
-                            },
-                            ...(app.permission.hasManagePer
-                              ? [
-                                  {
-                                    icon: 'support/team/key',
-                                    label: t('permission.Permission'),
-                                    onClick: () => setEditPerAppIndex(index)
-                                  }
-                                ]
-                              : [])
-                          ]
-                        },
-                        ...(app.permission.isOwner
-                          ? [
+                    }}
+                    onClick={() => {
+                      if (app.type === AppTypeEnum.folder) {
+                        router.push({
+                          query: {
+                            parentId: app._id
+                          }
+                        });
+                      } else if (app.permission.hasWritePer) {
+                        // userInfo?.team.permission.hasWritePer) {
+                        router.push(`/app/detail?appId=${app._id}`);
+                      } else {
+                        router.push(`/chat?appId=${app._id}`);
+                      }
+                    }}
+                    {...getBoxProps({
+                      dataId: app._id,
+                      isFolder: app.type === AppTypeEnum.folder
+                    })}
+                  >
+                    <Flex alignItems={'center'} h={'38px'}>
+                      <Avatar src={app.avatar} borderRadius={'md'} w={'28px'} />
+                      <Box ml={3}>{app.name}</Box>
+                      {app.permission.hasManagePer && ( //userInfo?.team.permission.hasManagePer && (
+                        <Box
+                          className="more"
+                          position={'absolute'}
+                          top={3.5}
+                          right={4}
+                          display={['', 'none']}
+                        >
+                          <MyMenu
+                            Button={
+                              <IconButton
+                                size={'xsSquare'}
+                                variant={'transparentBase'}
+                                icon={<MyIcon name={'more'} w={'1rem'} />}
+                                aria-label={''}
+                              />
+                            }
+                            menuList={[
                               {
                                 children: [
                                   {
-                                    type: 'danger' as 'danger',
-                                    icon: 'delete',
-                                    label: t('common.Delete'),
+                                    icon: 'edit',
+                                    label: '编辑信息',
                                     onClick: () =>
-                                      openConfirm(
-                                        () => onclickDelApp(app._id),
-                                        undefined,
-                                        app.type === AppTypeEnum.folder
-                                          ? appT('Confirm delete folder tip')
-                                          : appT('Confirm Del App Tip')
-                                      )()
-                                  }
+                                      setEditedApp({
+                                        id: app._id,
+                                        avatar: app.avatar,
+                                        name: app.name,
+                                        intro: app.intro
+                                      })
+                                  },
+                                  {
+                                    icon: 'common/file/move',
+                                    label: t('common.folder.Move to'),
+                                    onClick: () => setMoveAppId(app._id)
+                                  },
+                                  ...(app.permission.hasManagePer
+                                    ? [
+                                        {
+                                          icon: 'support/team/key',
+                                          label: t('permission.Permission'),
+                                          onClick: () => setEditPerAppIndex(index)
+                                        }
+                                      ]
+                                    : [])
                                 ]
-                              }
+                              },
+                              ...(app.permission.isOwner
+                                ? [
+                                    {
+                                      children: [
+                                        {
+                                          type: 'danger' as 'danger',
+                                          icon: 'delete',
+                                          label: t('common.Delete'),
+                                          onClick: () =>
+                                            openConfirm(
+                                              () => onclickDelApp(app._id),
+                                              undefined,
+                                              app.type === AppTypeEnum.folder
+                                                ? appT('Confirm delete folder tip')
+                                                : appT('Confirm Del App Tip')
+                                            )()
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                : [])
+                            ]}
+                          />
+                        </Box>
+                      )}
+                    </Flex>
+                    <Box
+                      flex={1}
+                      className={'textEllipsis3'}
+                      py={2}
+                      wordBreak={'break-all'}
+                      fontSize={'mini'}
+                      color={'myGray.600'}
+                    >
+                      {app.intro || '还没写介绍~'}
+                    </Box>
+                    <Flex h={'34px'} alignItems={'flex-end'}>
+                      <Box flex={1}>
+                        <PermissionIconText
+                          defaultPermission={app.defaultPermission}
+                          color={'myGray.600'}
+                        />
+                      </Box>
+                      <AppTypeTag type={app.type} />
+                    </Flex>
+                  </MyBox>
+                </MyTooltip>
+              )
+          )}
+        </Grid>
+      </Box>
+
+      <Box as="div">
+        <>我的创建</>
+        <Grid
+          py={[4, 6]}
+          gridTemplateColumns={['1fr', 'repeat(2,1fr)', 'repeat(3,1fr)', 'repeat(4,1fr)']}
+          gridGap={5}
+          alignItems={'stretch'}
+        >
+          {myApps.map((app, index) => (
+            <MyTooltip
+              key={app._id}
+              h="100%"
+              label={
+                app.type === AppTypeEnum.folder
+                  ? t('common.folder.Open folder')
+                  : app.permission.hasWritePer //userInfo?.team.permission.hasWritePer//app.permission.hasWritePer
+                    ? appT('Edit app')
+                    : appT('Go to chat')
+              }
+            >
+              <MyBox
+                isLoading={loadingAppId === app._id}
+                lineHeight={1.5}
+                h="100%"
+                py={3}
+                px={5}
+                cursor={'pointer'}
+                borderWidth={'1.5px'}
+                borderColor={'borderColor.low'}
+                bg={'white'}
+                borderRadius={'md'}
+                userSelect={'none'}
+                position={'relative'}
+                display={'flex'}
+                flexDirection={'column'}
+                _hover={{
+                  borderColor: 'primary.300',
+                  boxShadow: '1.5',
+                  '& .more': {
+                    display: 'flex'
+                  },
+                  '& .chat': {
+                    display: 'flex'
+                  }
+                }}
+                onClick={() => {
+                  if (app.type === AppTypeEnum.folder) {
+                    router.push({
+                      query: {
+                        parentId: app._id
+                      }
+                    });
+                  } else if (app.permission.hasWritePer) {
+                    // userInfo?.team.permission.hasWritePer) {
+                    router.push(`/app/detail?appId=${app._id}`);
+                  } else {
+                    router.push(`/chat?appId=${app._id}`);
+                  }
+                }}
+                {...getBoxProps({
+                  dataId: app._id,
+                  isFolder: app.type === AppTypeEnum.folder
+                })}
+              >
+                <Flex alignItems={'center'} h={'38px'}>
+                  <Avatar src={app.avatar} borderRadius={'md'} w={'28px'} />
+                  <Box ml={3}>{app.name}</Box>
+                  {app.permission.hasManagePer && ( //userInfo?.team.permission.hasManagePer && (
+                    <Box
+                      className="more"
+                      position={'absolute'}
+                      top={3.5}
+                      right={4}
+                      display={['', 'none']}
+                    >
+                      <MyMenu
+                        Button={
+                          <IconButton
+                            size={'xsSquare'}
+                            variant={'transparentBase'}
+                            icon={<MyIcon name={'more'} w={'1rem'} />}
+                            aria-label={''}
+                          />
+                        }
+                        menuList={[
+                          {
+                            children: [
+                              {
+                                icon: 'edit',
+                                label: '编辑信息',
+                                onClick: () =>
+                                  setEditedApp({
+                                    id: app._id,
+                                    avatar: app.avatar,
+                                    name: app.name,
+                                    intro: app.intro
+                                  })
+                              },
+                              {
+                                icon: 'common/file/move',
+                                label: t('common.folder.Move to'),
+                                onClick: () => setMoveAppId(app._id)
+                              },
+                              ...(app.permission.hasManagePer
+                                ? [
+                                    {
+                                      icon: 'support/team/key',
+                                      label: t('permission.Permission'),
+                                      onClick: () => setEditPerAppIndex(index)
+                                    }
+                                  ]
+                                : [])
                             ]
-                          : [])
-                      ]}
+                          },
+                          ...(app.permission.isOwner
+                            ? [
+                                {
+                                  children: [
+                                    {
+                                      type: 'danger' as 'danger',
+                                      icon: 'delete',
+                                      label: t('common.Delete'),
+                                      onClick: () =>
+                                        openConfirm(
+                                          () => onclickDelApp(app._id),
+                                          undefined,
+                                          app.type === AppTypeEnum.folder
+                                            ? appT('Confirm delete folder tip')
+                                            : appT('Confirm Del App Tip')
+                                        )()
+                                    }
+                                  ]
+                                }
+                              ]
+                            : [])
+                        ]}
+                      />
+                    </Box>
+                  )}
+                </Flex>
+                <Box
+                  flex={1}
+                  className={'textEllipsis3'}
+                  py={2}
+                  wordBreak={'break-all'}
+                  fontSize={'mini'}
+                  color={'myGray.600'}
+                >
+                  {app.intro || '还没写介绍~'}
+                </Box>
+                <Flex h={'34px'} alignItems={'flex-end'}>
+                  <Box flex={1}>
+                    <PermissionIconText
+                      defaultPermission={app.defaultPermission}
+                      color={'myGray.600'}
                     />
                   </Box>
-                )}
-              </Flex>
-              <Box
-                flex={1}
-                className={'textEllipsis3'}
-                py={2}
-                wordBreak={'break-all'}
-                fontSize={'mini'}
-                color={'myGray.600'}
-              >
-                {app.intro || '还没写介绍~'}
-              </Box>
-              <Flex h={'34px'} alignItems={'flex-end'}>
-                <Box flex={1}>
-                  <PermissionIconText
-                    defaultPermission={app.defaultPermission}
-                    color={'myGray.600'}
-                  />
-                </Box>
-                <AppTypeTag type={app.type} />
-              </Flex>
-            </MyBox>
-          </MyTooltip>
-        ))}
-      </Grid>
+                  <AppTypeTag type={app.type} />
+                </Flex>
+              </MyBox>
+            </MyTooltip>
+          ))}
+        </Grid>
+      </Box>
 
       {myApps.length === 0 && <EmptyTip text={'还没有应用，快去创建一个吧！'} pt={'30vh'} />}
       <ConfirmModal />
