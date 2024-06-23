@@ -31,10 +31,20 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       throw new Error('账号已停用，无法登录');
     }
 
+    console.log(password, '------------');
+
     const user = await MongoUser.findOne({
       username,
       password
     });
+
+    console.log(user);
+
+    const passw = await MongoUser.findOne({
+      username
+    });
+
+    console.log(passw);
 
     if (!user) {
       throw new Error('密码错误');

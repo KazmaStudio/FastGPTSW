@@ -61,7 +61,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 
   async function registgerUser(
     username: string,
-    psw: string,
+    password: string,
     phone: string,
     department: string
   ): Promise<any> {
@@ -72,7 +72,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
           [
             {
               username: username,
-              password: hashStr(psw),
+              password: password,
               phone: phone,
               department: department
             }
