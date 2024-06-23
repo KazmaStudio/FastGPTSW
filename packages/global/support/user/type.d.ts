@@ -9,6 +9,7 @@ export type UserModelSchema = {
   phone?: string;
   password: string;
   avatar: string;
+  department: string;
   promotionRate: number;
   inviterId?: string;
   openaiKey: string;

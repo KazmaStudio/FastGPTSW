@@ -32,7 +32,6 @@ const Login = () => {
       // init store
       setLastChatId('');
       setLastChatAppId('');
-
       setUserInfo(res.user);
       setToken(res.token);
       setTimeout(() => {
@@ -45,9 +44,9 @@ const Login = () => {
   function DynamicComponent({ type }: { type: `${LoginPageTypeEnum}` }) {
     const TypeMap = {
       [LoginPageTypeEnum.passwordLogin]: LoginForm,
-      [LoginPageTypeEnum.register]: RegisterForm,
       [LoginPageTypeEnum.forgetPassword]: ForgetPasswordForm,
-      [LoginPageTypeEnum.wechat]: WechatForm
+      [LoginPageTypeEnum.wechat]: WechatForm,
+      [LoginPageTypeEnum.register]: RegisterForm
     };
 
     const Component = TypeMap[type];
@@ -105,7 +104,18 @@ const Login = () => {
               </Center>
             )}
           </Box>
-          {feConfigs?.concatMd && (
+
+          {/* <Box
+            mt={8}
+            color={'primary.700'}
+            cursor={'pointer'}
+            textAlign={'center'}
+            onClick={() => setPageType(LoginPageTypeEnum.register)}
+          >
+            没有账号，前往注册
+          </Box> */}
+
+          {/* {feConfigs?.concatMd && (
             <Box
               mt={8}
               color={'primary.700'}
@@ -115,7 +125,7 @@ const Login = () => {
             >
               无法登录，点击联系
             </Box>
-          )}
+          )} */}
         </Flex>
 
         {isOpen && <CommunityModal onClose={onClose} />}

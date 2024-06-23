@@ -12,18 +12,19 @@ import { useSystemStore } from '@/web/common/system/useSystemStore';
 import { useTranslation } from 'next-i18next';
 
 interface Props {
-  loginSuccess: (e: ResLogin) => void;
   setPageType: Dispatch<`${LoginPageTypeEnum}`>;
 }
 
 interface RegisterType {
   username: string;
   password: string;
+  phone: string;
   password2: string;
+  department: string;
   code: string;
 }
 
-const RegisterForm = ({ setPageType, loginSuccess }: Props) => {
+const RegisterForm = ({ setPageType }: Props) => {
   const { toast } = useToast();
   const { t } = useTranslation();
   const { feConfigs } = useSystemStore();
@@ -51,32 +52,34 @@ const RegisterForm = ({ setPageType, loginSuccess }: Props) => {
   const [requesting, setRequesting] = useState(false);
 
   const onclickRegister = useCallback(
-    async ({ username, password, code }: RegisterType) => {
+    async ({ username, password, code, phone, department }: RegisterType) => {
       setRequesting(true);
       try {
-        loginSuccess(
-          await postRegister({
-            username,
-            code,
-            password,
-            inviterId: localStorage.getItem('inviterId') || undefined
-          })
-        );
+        await postRegister({
+          username,
+          code,
+          password,
+          phone,
+          department,
+          inviterId: localStorage.getItem('inviterId') || undefined
+        });
+
         toast({
           title: `注册成功`,
           status: 'success'
         });
+        setPageType(LoginPageTypeEnum.passwordLogin);
         // auto register template app
-        setTimeout(() => {
-          appTemplates.forEach((template) => {
-            postCreateApp({
-              avatar: template.avatar,
-              name: t(template.name),
-              modules: template.modules,
-              type: template.type
-            });
-          });
-        }, 100);
+        // setTimeout(() => {
+        //   appTemplates.forEach((template) => {
+        //     postCreateApp({
+        //       avatar: template.avatar,
+        //       name: t(template.name),
+        //       modules: template.modules,
+        //       type: template.type
+        //     });
+        //   });
+        // }, 100);
       } catch (error: any) {
         toast({
           title: error.message || '注册异常',
@@ -85,7 +88,7 @@ const RegisterForm = ({ setPageType, loginSuccess }: Props) => {
       }
       setRequesting(false);
     },
-    [loginSuccess, t, toast]
+    [t, toast]
   );
 
   return (
@@ -104,13 +107,37 @@ const RegisterForm = ({ setPageType, loginSuccess }: Props) => {
         <FormControl isInvalid={!!errors.username}>
           <Input
             bg={'myGray.50'}
-            placeholder="邮箱/手机号"
+            placeholder="用户名"
             {...register('username', {
-              required: '邮箱/手机号不能为空',
+              required: '用户名不能为空',
               pattern: {
-                value:
-                  /(^1[3456789]\d{9}$)|(^[A-Za-z0-9]+([_\.][A-Za-z0-9]+)*@([A-Za-z0-9\-]+\.)+[A-Za-z]{2,6}$)/,
-                message: '邮箱/手机号格式错误'
+                value: /(^[A-Za-z0-9])/,
+                message: '用户名格式错误'
+              }
+            })}
+          ></Input>
+        </FormControl>
+        <FormControl mt={6} isInvalid={!!errors.department}>
+          <Input
+            bg={'myGray.50'}
+            placeholder="部门"
+            {...register('department', {
+              pattern: {
+                value: /(^[A-Za-z0-9])/,
+                message: '部门'
+              }
+            })}
+          ></Input>
+        </FormControl>
+        <FormControl mt={6} isInvalid={!!errors.phone}>
+          <Input
+            bg={'myGray.50'}
+            placeholder="手机号"
+            {...register('phone', {
+              required: '手机号不能为空',
+              pattern: {
+                value: /(^1[3456789]\d{9}$)/,
+                message: '手机号格式错误'
               }
             })}
           ></Input>

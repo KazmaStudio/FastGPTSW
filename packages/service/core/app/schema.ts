@@ -118,10 +118,6 @@ const AppSchema = new Schema({
 
   creator: {
     type: String
-  },
-
-  creatorAvatar: {
-    type: String
   }
 });
 

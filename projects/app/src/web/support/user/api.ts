@@ -14,8 +14,9 @@ import { GetWXLoginQRResponse } from '@fastgpt/global/support/user/login/api.d';
 export const sendAuthCode = (data: {
   username: string;
   type: `${UserAuthTypeEnum}`;
-  googleToken: string;
-}) => POST(`/proApi/support/user/inform/sendAuthCode`, data);
+  // googleToken: string;
+}) => POST(`/support/user/account/sendAuthCode`, data);
+//POST(`/proApi/support/user/inform/sendAuthCode`, data);
 
 export const getTokenLogin = () =>
   GET<UserType>('/support/user/account/tokenLogin', {}, { maxQuantity: 1 });
@@ -28,17 +29,24 @@ export const postRegister = ({
   username,
   password,
   code,
-  inviterId
+  phone,
+  inviterId,
+  department
 }: {
   username: string;
   code: string;
   password: string;
+  phone: string;
   inviterId?: string;
+  department?: string;
 }) =>
-  POST<ResLogin>(`/proApi/support/user/account/register/emailAndPhone`, {
+  POST(`/support/user/account/register`, {
+    // POST<ResLogin>(`/proApi/support/user/account/register/emailAndPhone`, {
     username,
     code,
+    phone,
     inviterId,
+    department,
     password: hashStr(password)
   });
 

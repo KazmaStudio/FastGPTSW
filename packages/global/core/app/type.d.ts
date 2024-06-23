@@ -22,7 +22,7 @@ export type AppSchema = {
   avatar: string;
   intro: string;
   updateTime: number;
-
+  createTime: number;
   modules: StoreNodeItemType[];
   edges: StoreEdgeItemType[];
 
@@ -36,7 +36,6 @@ export type AppSchema = {
   defaultPermission: PermissionValueType;
 
   creator: String;
-  creatorAvatar: String;
 };
 
 export type AppListItemType = {

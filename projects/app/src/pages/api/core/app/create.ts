@@ -53,8 +53,7 @@ async function handler(req: ApiRequestProps<CreateAppBody>, res: NextApiResponse
           modules,
           edges,
           type,
-          creator: creator.username,
-          creatorAvatar: creator.avatar,
+          creator: creator._id,
           createTime: new Date(),
           version: 'v2'
         }
