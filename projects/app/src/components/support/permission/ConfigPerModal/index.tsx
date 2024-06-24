@@ -43,15 +43,16 @@ const ConfigPerModal = ({
           <Box fontSize={'lg'}>{name}</Box>
         </HStack>
         <Box mt={6}>
-          <Box fontSize={'sm'}>{t('permission.Default permission')}</Box>
+          <Box fontSize={'sm'}>编辑权限</Box>
           <DefaultPermissionList
             mt="1"
+            type="custom"
             per={defaultPer.value}
             defaultPer={defaultPer.defaultValue}
             onChange={defaultPer.onChange}
           />
         </Box>
-        <Box mt={4}>
+        {/* <Box mt={4}>
           <CollaboratorContextProvider {...managePer}>
             {({ MemberListCard, onOpenManageModal, onOpenAddMember }) => {
               return (
@@ -87,7 +88,7 @@ const ConfigPerModal = ({
               );
             }}
           </CollaboratorContextProvider>
-        </Box>
+        </Box> */}
       </ModalBody>
     </MyModal>
   );

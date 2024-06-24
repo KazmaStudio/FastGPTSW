@@ -28,6 +28,8 @@ export type UserType = {
   username: string;
   avatar: string;
   timezone: string;
+  department?: string;
+  phone?: string;
   promotionRate: UserModelSchema['promotionRate'];
   openaiAccount: UserModelSchema['openaiAccount'];
   team: TeamTmbItemType;

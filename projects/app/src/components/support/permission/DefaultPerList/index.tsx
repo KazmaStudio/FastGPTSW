@@ -17,6 +17,7 @@ type Props = Omit<BoxProps, 'onChange'> & {
   defaultPer: PermissionValueType;
   readPer?: PermissionValueType;
   writePer?: PermissionValueType;
+  type?: string;
   onChange: (v: PermissionValueType) => Promise<any> | any;
 };
 
@@ -26,15 +27,22 @@ const DefaultPermissionList = ({
   readPer = ReadPermissionVal,
   writePer = WritePermissionVal,
   onChange,
+  type,
   ...styles
 }: Props) => {
   const { t } = useTranslation();
-  const defaultPermissionSelectList = [
+  let defaultPermissionSelectList = [
     { label: '仅协作者访问', value: defaultPer },
     { label: '团队可访问', value: readPer },
     { label: '团队可编辑', value: writePer }
   ];
 
+  if (type === 'custom') {
+    defaultPermissionSelectList = [
+      { label: '私有', value: defaultPer },
+      { label: '共享', value: readPer }
+    ];
+  }
   const { runAsync: onRequestChange, loading } = useRequest2(async (v: PermissionValueType) =>
     onChange(v)
   );

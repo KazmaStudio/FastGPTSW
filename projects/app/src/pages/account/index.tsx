@@ -42,57 +42,57 @@ const Account = ({ currentTab }: { currentTab: `${TabEnum}` }) => {
       label: t('user.Personal Information'),
       id: TabEnum.info
     },
-    ...(feConfigs?.isPlus
-      ? [
-          {
-            icon: 'support/usage/usageRecordLight',
-            label: t('user.Usage Record'),
-            id: TabEnum.usage
-          }
-        ]
-      : []),
-    ...(feConfigs?.show_pay && userInfo?.team?.permission.hasWritePer
-      ? [
-          {
-            icon: 'support/bill/payRecordLight',
-            label: t('support.wallet.Bills'),
-            id: TabEnum.bill
-          }
-        ]
-      : []),
+    // ...(feConfigs?.isPlus
+    //   ? [
+    //       {
+    //         icon: 'support/usage/usageRecordLight',
+    //         label: t('user.Usage Record'),
+    //         id: TabEnum.usage
+    //       }
+    //     ]
+    //   : []),
+    // ...(feConfigs?.show_pay && userInfo?.team?.permission.hasWritePer
+    //   ? [
+    //       {
+    //         icon: 'support/bill/payRecordLight',
+    //         label: t('support.wallet.Bills'),
+    //         id: TabEnum.bill
+    //       }
+    //     ]
+    //   : []),
 
-    ...(feConfigs?.show_promotion
-      ? [
-          {
-            icon: 'support/account/promotionLight',
-            label: t('user.Promotion Record'),
-            id: TabEnum.promotion
-          }
-        ]
-      : []),
-    ...(userInfo?.team?.permission.hasWritePer
-      ? [
-          {
-            icon: 'support/outlink/apikeyLight',
-            label: t('user.apikey.key'),
-            id: TabEnum.apikey
-          }
-        ]
-      : []),
-    {
-      icon: 'support/user/individuation',
-      label: t('support.account.Individuation'),
-      id: TabEnum.individuation
-    },
-    ...(feConfigs.isPlus
-      ? [
-          {
-            icon: 'support/user/informLight',
-            label: t('user.Notice'),
-            id: TabEnum.inform
-          }
-        ]
-      : []),
+    // ...(feConfigs?.show_promotion
+    //   ? [
+    //       {
+    //         icon: 'support/account/promotionLight',
+    //         label: t('user.Promotion Record'),
+    //         id: TabEnum.promotion
+    //       }
+    //     ]
+    //   : []),
+    // ...(userInfo?.team?.permission.hasWritePer
+    //   ? [
+    //       {
+    //         icon: 'support/outlink/apikeyLight',
+    //         label: t('user.apikey.key'),
+    //         id: TabEnum.apikey
+    //       }
+    //     ]
+    //   : []),
+    // {
+    //   icon: 'support/user/individuation',
+    //   label: t('support.account.Individuation'),
+    //   id: TabEnum.individuation
+    // },
+    // ...(feConfigs.isPlus
+    //   ? [
+    //     {
+    //       icon: 'support/user/informLight',
+    //       label: t('user.Notice'),
+    //       id: TabEnum.inform
+    //     }
+    //   ]
+    //   : []),
 
     {
       icon: 'support/account/loginoutLight',
@@ -149,9 +149,9 @@ const Account = ({ currentTab }: { currentTab: `${TabEnum}` }) => {
                 onChange={setCurrentTab}
               />
               <Flex alignItems={'center'}>
-                <Box w={'8px'} h={'8px'} borderRadius={'50%'} bg={'#67c13b'} />
+                {/* <Box w={'8px'} h={'8px'} borderRadius={'50%'} bg={'#67c13b'} /> */}
                 <Box fontSize={'md'} ml={2}>
-                  V{systemVersion}
+                  {/* V{systemVersion} */}
                 </Box>
               </Flex>
             </Flex>

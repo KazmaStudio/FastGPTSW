@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo } from 'react';
-import { Box, Flex } from '@chakra-ui/react';
+import { Box, Flex, Text, Image } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
 import { useLoading } from '@fastgpt/web/hooks/useLoading';
 import { useSystemStore } from '@/web/common/system/useSystemStore';
@@ -7,6 +7,7 @@ import { throttle } from 'lodash';
 import { useQuery } from '@tanstack/react-query';
 import { useUserStore } from '@/web/support/user/useUserStore';
 import { getUnreadCount } from '@/web/support/user/inform/api';
+import Avatar from '@/components/Avatar';
 import dynamic from 'next/dynamic';
 
 import Auth from './auth';
@@ -84,14 +85,50 @@ const Layout = ({ children }: { children: JSX.Element }) => {
             {isHideNavbar ? (
               <Auth>{children}</Auth>
             ) : (
-              <>
-                <Box h={'100%'} position={'fixed'} left={0} top={0} w={'200px'}>
-                  <Navbar unread={unread} />
+              <Box h={'100%'} display="flex" flexDirection="column">
+                <Box
+                  h="56px"
+                  display="flex"
+                  px="37px"
+                  py="12px"
+                  bgColor="white"
+                  justifyContent="space-between"
+                  borderBottom="1px solid #F0F2F5"
+                >
+                  <Box
+                    display="flex"
+                    lineHeight="33px"
+                    fontSize="22px"
+                    fontWeight="bold"
+                    fontFamily="Alimama ShuHeiTi, Alimama ShuHeiTi;"
+                    cursor="pointer"
+                    onClick={() => {
+                      router.push('/app/list');
+                    }}
+                  >
+                    <Image src="/imgs/logoLabel.png" h={'33px'} />
+                    {/* <Text>
+                      {feConfigs?.systemTitle}
+                    </Text> */}
+                  </Box>
+                  <Box
+                    cursor="pointer"
+                    onClick={() => {
+                      router.push('/account');
+                    }}
+                  >
+                    <Avatar src={userInfo?.avatar} w={'33px'} />
+                  </Box>
                 </Box>
-                <Box h={'100%'} ml={'208px'} overflow={'overlay'}>
-                  <Auth>{children}</Auth>
+                <Box flex={1} display="flex" overflow={'overlay'}>
+                  <Box h={'100%'} left={0} top={0} w={'200px'}>
+                    <Navbar unread={unread} />
+                  </Box>
+                  <Box h={'100%'} ml={'8px'} flex={1} overflow={'overlay'}>
+                    <Auth>{children}</Auth>
+                  </Box>
                 </Box>
-              </>
+              </Box>
             )}
           </>
         )}

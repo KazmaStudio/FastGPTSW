@@ -160,7 +160,7 @@ const MyInfo = () => {
   );
 
   const labelStyles: BoxProps = {
-    flex: '0 0 80px',
+    flex: '0 0 120px',
     fontSize: 'sm',
     color: 'myGray.900'
   };
@@ -168,17 +168,17 @@ const MyInfo = () => {
   return (
     <Box>
       {/* user info */}
-      {isPc && (
+      {/* {isPc && (
         <Flex alignItems={'center'} fontSize={'md'} h={'30px'}>
           <MyIcon mr={2} name={'support/user/userLight'} w={'1.25rem'} />
           {t('support.user.User self info')}
         </Flex>
-      )}
+      )} */}
 
       <Box mt={[0, 6]} fontSize={'sm'}>
         {isPc ? (
           <Flex alignItems={'center'} cursor={'pointer'}>
-            <Box {...labelStyles}>{t('support.user.Avatar')}:&nbsp;</Box>
+            {/* <Box {...labelStyles}>{t('support.user.Avatar')}:&nbsp;</Box> */}
 
             <MyTooltip label={t('common.avatar.Select Avatar')}>
               <Box
@@ -245,7 +245,7 @@ const MyInfo = () => {
           </Flex>
         )}
         <Flex alignItems={'center'} mt={6}>
-          <Box {...labelStyles}>{t('user.Account')}:&nbsp;</Box>
+          {/* <Box {...labelStyles}>{t('user.Account')}:&nbsp;</Box> */}
           <Box flex={1}>{userInfo?.username}</Box>
         </Flex>
         {feConfigs.isPlus && (
@@ -258,6 +258,14 @@ const MyInfo = () => {
           </Flex>
         )}
         <Flex mt={6} alignItems={'center'}>
+          <Box {...labelStyles}>所属部门：</Box>
+          <Box flex={1}>{userInfo?.department}</Box>
+        </Flex>
+        <Flex mt={6} alignItems={'center'}>
+          <Box {...labelStyles}>绑定手机号：</Box>
+          <Box flex={1}>{userInfo?.phone}</Box>
+        </Flex>
+        <Flex mt={6} alignItems={'center'} display="none">
           <Box {...labelStyles}>{t('user.Team')}:&nbsp;</Box>
           <Box flex={1}>
             <TeamMenu />
@@ -599,7 +607,7 @@ const Other = () => {
           </Link>
         )}
 
-        {feConfigs?.lafEnv && userInfo?.team.role === TeamMemberRoleEnum.owner && (
+        {false && feConfigs?.lafEnv && userInfo?.team.role === TeamMemberRoleEnum.owner && (
           <Flex
             bg={'white'}
             py={3}

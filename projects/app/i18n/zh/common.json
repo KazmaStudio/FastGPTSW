@@ -594,8 +594,7 @@
             "success": "开始同步"
           }
         },
-        "training": {
-        }
+        "training": {}
       },
       "data": {
         "Auxiliary Data": "辅助数据",
@@ -1222,7 +1221,7 @@
     "Apps": "应用",
     "Apps Share": "应用分享",
     "Chat": "聊天",
-    "Datasets": "知识库",
+    "Datasets": "我的知识",
     "Module": "模块",
     "Plugin": "插件",
     "Store": "应用市场",

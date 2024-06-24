@@ -42,7 +42,7 @@ const Empty = ({
         </Card>
       )}
 
-      {showChatProblem && (
+      {false && showChatProblem && (
         <>
           {/* version intro */}
           <Card p={4} mb={10}>

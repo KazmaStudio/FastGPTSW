@@ -3,7 +3,7 @@ import { useRouter } from 'next/router';
 import { Box, Flex, IconButton, useTheme } from '@chakra-ui/react';
 import dynamic from 'next/dynamic';
 import { useSystemStore } from '@/web/common/system/useSystemStore';
-
+import { useChatStore } from '@/web/core/chat/storeChat';
 import Tabs from '@/components/Tabs';
 import SideTabs from '@/components/SideTabs';
 import Avatar from '@/components/Avatar';
@@ -39,7 +39,8 @@ const AppDetail = ({ appId, currentTab }: { appId: string; currentTab: TabEnum }
   const theme = useTheme();
   const { feConfigs } = useSystemStore();
   const { appDetail, loadingApp } = useContextSelector(AppContext, (e) => e);
-
+  const { setLastChatAppId } = useChatStore();
+  setLastChatAppId(appId);
   const setCurrentTab = useCallback(
     (tab: TabEnum) => {
       router.push({

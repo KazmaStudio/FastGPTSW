@@ -9,7 +9,9 @@ import {
   AccordionItem,
   AccordionButton,
   AccordionPanel,
-  AccordionIcon
+  AccordionIcon,
+  Image,
+  Text
 } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
 import { useUserStore } from '@/web/support/user/useUserStore';
@@ -94,14 +96,13 @@ const Navbar = ({ unread }: { unread: number }) => {
 
   const itemStyles: BoxProps & LinkProps = {
     my: 3,
+    mx: '8px',
     display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'center',
     cursor: 'pointer',
-    w: '48px',
-    h: '58px',
-    borderRadius: 'md'
+    h: '40px',
+    borderRadius: '8px',
+    paddingLeft: '16px',
+    paddingTop: '12px'
   };
   const hoverStyle: LinkProps = {
     _hover: {
@@ -114,6 +115,7 @@ const Navbar = ({ unread }: { unread: number }) => {
     <Flex
       flexDirection={'column'}
       alignItems={'center'}
+      bg={'white'}
       pt={6}
       h={'100%'}
       w={'100%'}
@@ -137,19 +139,34 @@ const Navbar = ({ unread }: { unread: number }) => {
           borderRadius={'50%'}
         />
       </Box> */}
-      <Accordion defaultIndex={[0]} allowMultiple>
-        <AccordionItem>
+      <Accordion defaultIndex={[0]} allowMultiple border="none" w={'100%'} overflow="hidden">
+        <AccordionItem border="none" mx="8px" px="0px" bg="#F0F2F5" borderRadius="8px">
           <AccordionButton>
-            <Box as="span" flex="1" textAlign="left">
-              我的应用
+            <Box as="span" flex="1" textAlign="left" display="flex" borderRadius="8px">
+              <Image src="/imgs/app/grid.png" w={'18px'} h={'18px'} />
+              <Text ml="12px" lineHeight="18px">
+                我的应用
+              </Text>
             </Box>
             <AccordionIcon />
           </AccordionButton>
-          <AccordionPanel pb={4}>
+          <AccordionPanel pb={4} marginInline="none" mx="-16px">
             {myApps.map((app) => (
               <Box
+                _hover={{ bg: 'rgba(12,83,238,0.1)' }}
+                bg={
+                  app._id === lastChatAppId && ['/chat', '/app/detail'].includes(router.pathname)
+                    ? 'rgba(12,83,238,0.1)'
+                    : 'transparent'
+                }
+                borderRadius="8px"
                 flex="1"
+                display="flex"
                 textAlign="left"
+                cursor="pointer"
+                p="8px"
+                px="16px"
+                mb="14px"
                 key={app._id}
                 onClick={() => {
                   if (app.type === AppTypeEnum.folder) {
@@ -165,30 +182,43 @@ const Navbar = ({ unread }: { unread: number }) => {
                   }
                 }}
               >
-                {app.name}
+                <Image src={app.avatar} w="18px" h="18px" />
+                <Text
+                  ml="12px"
+                  lineHeight="18px"
+                  color={
+                    app._id === lastChatAppId && ['/chat', '/app/detail'].includes(router.pathname)
+                      ? '#0C53EE'
+                      : '#6E6E80'
+                  }
+                >
+                  {app.name}
+                </Text>
               </Box>
             ))}
           </AccordionPanel>
         </AccordionItem>
       </Accordion>
       {/* 导航列表 */}
-      <Box flex={1}>
+      <Box w="100%">
         {navbarList.map((item) => (
           <Box
             key={item.link}
             {...itemStyles}
             {...(item.activeLink.includes(router.pathname)
               ? {
-                  color: 'primary.600',
-                  bg: 'white',
-                  boxShadow:
-                    '0px 0px 1px 0px rgba(19, 51, 107, 0.08), 0px 4px 4px 0px rgba(19, 51, 107, 0.05)'
+                  color: '#0C53EE',
+                  bg: 'rgba(12,83,238,0.1)',
+                  _hover: {
+                    bg: '#F0F2F5'
+                  }
+                  // boxShadow:
+                  //   '0px 0px 1px 0px rgba(19, 51, 107, 0.08), 0px 4px 4px 0px rgba(19, 51, 107, 0.05)'
                 }
               : {
                   color: 'myGray.500',
-                  bg: 'transparent',
                   _hover: {
-                    bg: 'rgba(255,255,255,0.9)'
+                    bg: '#F0F2F5'
                   }
                 })}
             {...(item.link !== router.asPath
@@ -206,7 +236,7 @@ const Navbar = ({ unread }: { unread: number }) => {
               width={'20px'}
               height={'20px'}
             />
-            <Box fontSize={'12px'} transform={'scale(0.9)'} mt={'5px'} lineHeight={1}>
+            <Box ml="12px" flex="1" lineHeight="18px">
               {item.label}
             </Box>
           </Box>

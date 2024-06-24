@@ -45,7 +45,7 @@ const ListItem = () => {
     (v) => v
   );
   myApps.map((app, index) => {
-    console.log(app);
+    // console.log(app);
     // console.log('app permission: ', app.permission);
   });
   const [loadingAppId, setLoadingAppId] = useState<string>();
@@ -185,22 +185,22 @@ const ListItem = () => {
                             menuList={[
                               {
                                 children: [
-                                  {
-                                    icon: 'edit',
-                                    label: '编辑信息',
-                                    onClick: () =>
-                                      setEditedApp({
-                                        id: app._id,
-                                        avatar: app.avatar,
-                                        name: app.name,
-                                        intro: app.intro
-                                      })
-                                  },
-                                  {
-                                    icon: 'common/file/move',
-                                    label: t('common.folder.Move to'),
-                                    onClick: () => setMoveAppId(app._id)
-                                  },
+                                  // {
+                                  //   icon: 'edit',
+                                  //   label: '编辑信息',
+                                  //   onClick: () =>
+                                  //     setEditedApp({
+                                  //       id: app._id,
+                                  //       avatar: app.avatar,
+                                  //       name: app.name,
+                                  //       intro: app.intro
+                                  //     })
+                                  // },
+                                  // {
+                                  //   icon: 'common/file/move',
+                                  //   label: t('common.folder.Move to'),
+                                  //   onClick: () => setMoveAppId(app._id)
+                                  // },
                                   ...(app.permission.hasManagePer
                                     ? [
                                         {
@@ -352,22 +352,22 @@ const ListItem = () => {
                           menuList={[
                             {
                               children: [
-                                {
-                                  icon: 'edit',
-                                  label: '编辑信息',
-                                  onClick: () =>
-                                    setEditedApp({
-                                      id: app._id,
-                                      avatar: app.avatar,
-                                      name: app.name,
-                                      intro: app.intro
-                                    })
-                                },
-                                {
-                                  icon: 'common/file/move',
-                                  label: t('common.folder.Move to'),
-                                  onClick: () => setMoveAppId(app._id)
-                                },
+                                // {
+                                //   icon: 'edit',
+                                //   label: '编辑信息',
+                                //   onClick: () =>
+                                //     setEditedApp({
+                                //       id: app._id,
+                                //       avatar: app.avatar,
+                                //       name: app.name,
+                                //       intro: app.intro
+                                //     })
+                                // },
+                                // {
+                                //   icon: 'common/file/move',
+                                //   label: t('common.folder.Move to'),
+                                //   onClick: () => setMoveAppId(app._id)
+                                // },
                                 ...(app.permission.hasManagePer
                                   ? [
                                       {
