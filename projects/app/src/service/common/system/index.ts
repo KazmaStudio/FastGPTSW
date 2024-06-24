@@ -17,7 +17,8 @@ export const readConfigData = (name: string) => {
       return `data/${name}`;
     }
     // production path
-    return `/app/data/${name}`;
+    // return `/app/data/${name}`;
+    return `data/${name}`;
   })();
 
   const content = readFileSync(filename, 'utf-8');

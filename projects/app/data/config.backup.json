@@ -10,56 +10,79 @@
   },
   "llmModels": [
     {
-      "model": "ERNIE-4.0-8K", // 这里的模型需要对应 One API 的模型
-      "name": "ERNIE-4.0", // 对外展示的名称
-      "avatar": "/imgs/model/ernie.svg", // 模型的logo
+      "model": "gpt-3.5-turbo", // 模型名(对应OneAPI中渠道的模型名)
+      "name": "gpt-3.5-turbo", // 模型别名
+      "avatar": "/imgs/model/openai.svg", // 模型的logo
       "maxContext": 16000, // 最大上下文
       "maxResponse": 4000, // 最大回复
       "quoteMaxToken": 13000, // 最大引用内容
       "maxTemperature": 1.2, // 最大温度
-      "charsPointsPrice": 0,
-      "censor": false,
+      "charsPointsPrice": 0, // n积分/1k token（商业版）
+      "censor": false, // 是否开启敏感校验（商业版）
       "vision": false, // 是否支持图片输入
-      "datasetProcess": false, // 是否设置为知识库处理模型
-      "usedInClassify": true, // 是否用于问题分类
-      "usedInExtractFields": true, // 是否用于字段提取
-      "usedInToolCall": true, // 是否用于工具调用
-      "usedInQueryExtension": true, // 是否用于问题优化
-      "toolChoice": true, // 是否支持工具选择
-      "functionCall": false, // 是否支持函数调用
+      "datasetProcess": true, // 是否设置为知识库处理模型（QA），务必保证至少有一个为true，否则知识库会报错
+      "usedInClassify": true, // 是否用于问题分类（务必保证至少有一个为true）
+      "usedInExtractFields": true, // 是否用于内容提取（务必保证至少有一个为true）
+      "usedInToolCall": true, // 是否用于工具调用（务必保证至少有一个为true）
+      "usedInQueryExtension": true, // 是否用于问题优化（务必保证至少有一个为true）
+      "toolChoice": true, // 是否支持工具选择（分类，内容提取，工具调用会用到。目前只有gpt支持）
+      "functionCall": false, // 是否支持函数调用（分类，内容提取，工具调用会用到。会优先使用 toolChoice，如果为false，则使用 functionCall，如果仍为 false，则使用提示词模式）
       "customCQPrompt": "", // 自定义文本分类提示词（不支持工具和函数调用的模型
       "customExtractPrompt": "", // 自定义内容提取提示词
       "defaultSystemChatPrompt": "", // 对话默认携带的系统提示词
       "defaultConfig": {} // 请求API时，挟带一些默认配置（比如 GLM4 的 top_p）
     },
     {
-      "model": "ERNIE-3.5-8K", // 这里的模型需要对应 One API 的模型
-      "name": "ERNIE-3.5", // 对外展示的名称
-      "avatar": "/imgs/model/ernie.svg", // 模型的logo
-      "maxContext": 16000, // 最大上下文
-      "maxResponse": 4000, // 最大回复
-      "quoteMaxToken": 13000, // 最大引用内容
-      "maxTemperature": 1.2, // 最大温度
+      "model": "gpt-4-0125-preview",
+      "name": "gpt-4-turbo",
+      "avatar": "/imgs/model/openai.svg",
+      "maxContext": 125000,
+      "maxResponse": 4000,
+      "quoteMaxToken": 100000,
+      "maxTemperature": 1.2,
       "charsPointsPrice": 0,
       "censor": false,
-      "vision": false, // 是否支持图片输入
-      "datasetProcess": false, // 是否设置为知识库处理模型
-      "usedInClassify": true, // 是否用于问题分类
-      "usedInExtractFields": true, // 是否用于字段提取
-      "usedInToolCall": true, // 是否用于工具调用
-      "usedInQueryExtension": true, // 是否用于问题优化
-      "toolChoice": true, // 是否支持工具选择
-      "functionCall": false, // 是否支持函数调用
-      "customCQPrompt": "", // 自定义文本分类提示词（不支持工具和函数调用的模型
-      "customExtractPrompt": "", // 自定义内容提取提示词
-      "defaultSystemChatPrompt": "", // 对话默认携带的系统提示词
-      "defaultConfig": {} // 请求API时，挟带一些默认配置（比如 GLM4 的 top_p）
+      "vision": false,
+      "datasetProcess": false,
+      "usedInClassify": true,
+      "usedInExtractFields": true,
+      "usedInToolCall": true,
+      "usedInQueryExtension": true,
+      "toolChoice": true,
+      "functionCall": false,
+      "customCQPrompt": "",
+      "customExtractPrompt": "",
+      "defaultSystemChatPrompt": "",
+      "defaultConfig": {}
+    },
+    {
+      "model": "gpt-4-vision-preview",
+      "name": "gpt-4-vision",
+      "avatar": "/imgs/model/openai.svg",
+      "maxContext": 128000,
+      "maxResponse": 4000,
+      "quoteMaxToken": 100000,
+      "maxTemperature": 1.2,
+      "charsPointsPrice": 0,
+      "censor": false,
+      "vision": true,
+      "datasetProcess": false,
+      "usedInClassify": false,
+      "usedInExtractFields": false,
+      "usedInToolCall": false,
+      "usedInQueryExtension": false,
+      "toolChoice": true,
+      "functionCall": false,
+      "customCQPrompt": "",
+      "customExtractPrompt": "",
+      "defaultSystemChatPrompt": "",
+      "defaultConfig": {}
     }
   ],
   "vectorModels": [
     {
-      "model": "jfh-text-embedding-ada-002", // 模型名（与OneAPI对应）
-      "name": "JFH-Embedding-2", // 模型展示名
+      "model": "text-embedding-ada-002", // 模型名（与OneAPI对应）
+      "name": "Embedding-2", // 模型展示名
       "avatar": "/imgs/model/openai.svg", // logo
       "charsPointsPrice": 0, // n积分/1k token
       "defaultToken": 700, // 默认文本分割时候的 token

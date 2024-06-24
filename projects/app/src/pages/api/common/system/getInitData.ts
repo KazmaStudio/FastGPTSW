@@ -133,7 +133,8 @@ export function getSystemVersion() {
     if (process.env.NODE_ENV === 'development') {
       global.systemVersion = process.env.npm_package_version || '0.0.0';
     } else {
-      const packageJson = json5.parse(readFileSync('/app/package.json', 'utf-8'));
+      // const packageJson = json5.parse(readFileSync('/app/package.json', 'utf-8'));
+      const packageJson = json5.parse(readFileSync('package.json', 'utf-8'));
 
       global.systemVersion = packageJson?.version;
     }
@@ -149,7 +150,7 @@ function getSystemPlugin() {
   if (global.communityPlugins && global.communityPlugins.length > 0) return;
 
   const basePath =
-    process.env.NODE_ENV === 'development' ? 'data/pluginTemplates' : '/app/data/pluginTemplates';
+    process.env.NODE_ENV === 'development' ? 'data/pluginTemplates' : 'data/pluginTemplates'; //'/app/data/pluginTemplates';
   // read data/pluginTemplates directory, get all json file
   const files = readdirSync(basePath);
   // filter json file
@@ -173,9 +174,8 @@ function getSystemPluginV1() {
   if (global.communityPluginsV1 && global.communityPluginsV1.length > 0) return;
 
   const basePath =
-    process.env.NODE_ENV === 'development'
-      ? 'data/pluginTemplates/v1'
-      : '/app/data/pluginTemplates/v1';
+    process.env.NODE_ENV === 'development' ? 'data/pluginTemplates/v1' : 'data/pluginTemplates/v1';
+  // : '/app/data/pluginTemplates/v1';
   // read data/pluginTemplates directory, get all json file
   const files = readdirSync(basePath);
   // filter json file
