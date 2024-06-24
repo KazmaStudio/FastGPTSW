@@ -14,6 +14,8 @@ export const defaultApp: AppDetailType = {
   modules: [],
   chatConfig: {},
   teamId: '',
+  creator: '',
+  createTime: 0,
   tmbId: '',
   teamTags: [],
   edges: [],
