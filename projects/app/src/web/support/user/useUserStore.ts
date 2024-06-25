@@ -6,11 +6,14 @@ import type { UserType } from '@fastgpt/global/support/user/type.d';
 import { getTokenLogin, putUserInfo } from '@/web/support/user/api';
 import { FeTeamPlanStatusType } from '@fastgpt/global/support/wallet/sub/type';
 import { getTeamPlanStatus } from './team/api';
+import { AppListItemType } from '@fastgpt/global/core/app/type';
 
 type State = {
   systemMsgReadId: string;
   setSysMsgReadId: (id: string) => void;
 
+  appListInfo: AppListItemType[];
+  setAppListInfo: (appList: AppListItemType[]) => void;
   userInfo: UserType | null;
   initUserInfo: () => Promise<UserType>;
   setUserInfo: (user: UserType | null) => void;
@@ -29,7 +32,12 @@ export const useUserStore = create<State>()(
             state.systemMsgReadId = id;
           });
         },
-
+        appListInfo: [],
+        setAppListInfo(appList: AppListItemType[]) {
+          set((state) => {
+            state.appListInfo = appList;
+          });
+        },
         userInfo: null,
         async initUserInfo() {
           get().initTeamPlanStatus();

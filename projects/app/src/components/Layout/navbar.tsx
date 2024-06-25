@@ -39,9 +39,9 @@ const Navbar = ({ unread }: { unread: number }) => {
   const router = useRouter();
   const { parentId = null } = router.query as { parentId?: string | null };
 
-  const [myApps, setMyApps] = useState<AppListItemType[]>([]);
+  // const [myApps, setMyApps] = useState<AppListItemType[]>([]);
 
-  const { userInfo } = useUserStore();
+  const { userInfo, appListInfo } = useUserStore();
   const { gitStar, feConfigs } = useSystemStore();
   const { lastChatAppId, lastChatId } = useChatStore();
   const chatNavItem = {
@@ -88,11 +88,11 @@ const Navbar = ({ unread }: { unread: number }) => {
   }
   navbarList = useMemo(() => navItemList, [lastChatAppId, lastChatId, t, navItemList]);
 
-  useEffect(() => {
-    getMyApps({ parentId }).then((result) => {
-      setMyApps(result);
-    });
-  }, []);
+  // useEffect(() => {
+  //   getMyApps({ parentId }).then((result) => {
+  //     setMyApps(result);
+  //   });
+  // }, []);
 
   const itemStyles: BoxProps & LinkProps = {
     my: 3,
@@ -151,7 +151,7 @@ const Navbar = ({ unread }: { unread: number }) => {
             <AccordionIcon />
           </AccordionButton>
           <AccordionPanel pb={4} marginInline="none" mx="-16px">
-            {myApps.map((app) => (
+            {appListInfo.map((app) => (
               <Box
                 _hover={{ bg: 'rgba(12,83,238,0.1)' }}
                 bg={
@@ -166,7 +166,7 @@ const Navbar = ({ unread }: { unread: number }) => {
                 cursor="pointer"
                 p="8px"
                 px="16px"
-                mb="14px"
+                _notLast={{ mb: '14px' }}
                 key={app._id}
                 onClick={() => {
                   if (app.type === AppTypeEnum.folder) {

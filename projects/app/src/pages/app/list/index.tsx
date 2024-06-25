@@ -120,16 +120,16 @@ const MyApps = () => {
                         onClick: onOpenCreateModal
                       }
                     ]
-                  },
-                  {
-                    children: [
-                      {
-                        icon: FolderIcon,
-                        label: t('Folder'),
-                        onClick: () => setEditFolder({})
-                      }
-                    ]
                   }
+                  // {
+                  //   children: [
+                  //     {
+                  //       icon: FolderIcon,
+                  //       label: t('Folder'),
+                  //       onClick: () => setEditFolder({})
+                  //     }
+                  //   ]
+                  // }
                 ]}
               />
             )}

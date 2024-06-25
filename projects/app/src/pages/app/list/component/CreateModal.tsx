@@ -27,6 +27,7 @@ import { useTranslation } from 'next-i18next';
 import { MongoImageTypeEnum } from '@fastgpt/global/common/file/image/constants';
 import { useContextSelector } from 'use-context-selector';
 import { AppListContext } from './context';
+import { useUserStore } from '@/web/support/user/useUserStore';
 
 type FormType = {
   avatar: string;
@@ -38,7 +39,7 @@ const CreateModal = ({ onClose }: { onClose: () => void }) => {
   const { t } = useTranslation();
   const { toast } = useToast();
   const router = useRouter();
-  const { parentId, loadMyApps } = useContextSelector(AppListContext, (v) => v);
+  const { myApps, parentId, loadMyApps } = useContextSelector(AppListContext, (v) => v);
 
   const theme = useTheme();
   const { isPc } = useSystemStore();
@@ -57,6 +58,8 @@ const CreateModal = ({ onClose }: { onClose: () => void }) => {
     fileType: '.jpg,.png',
     multiple: false
   });
+
+  const { setAppListInfo } = useUserStore();
 
   const onSelectFile = useCallback(
     async (e: File[]) => {
@@ -98,6 +101,7 @@ const CreateModal = ({ onClose }: { onClose: () => void }) => {
     onSuccess(id: string) {
       router.push(`/app/detail?appId=${id}`);
       loadMyApps();
+      setAppListInfo(myApps);
       onClose();
     },
     successToast: t('common.Create Success'),
