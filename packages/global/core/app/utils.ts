@@ -8,11 +8,11 @@ import { DatasetSearchModeEnum } from '../dataset/constants';
 
 export const getDefaultAppForm = (): AppSimpleEditFormType => ({
   aiSettings: {
-    model: 'gpt-3.5-turbo',
+    model: 'ERNIE-3.5-8K',
     systemPrompt: '',
     temperature: 0,
     isResponseAnswerText: true,
-    maxHistories: 6,
+    maxHistories: 100,
     maxToken: 4000
   },
   dataset: {

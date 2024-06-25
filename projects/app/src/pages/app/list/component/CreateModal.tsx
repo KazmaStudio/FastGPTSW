@@ -91,6 +91,7 @@ const CreateModal = ({ onClose }: { onClose: () => void }) => {
       }
       return postCreateApp({
         parentId,
+        templeteType: template.id,
         avatar: data.avatar || template.avatar,
         name: data.name,
         type: template.type,
@@ -101,6 +102,8 @@ const CreateModal = ({ onClose }: { onClose: () => void }) => {
     onSuccess(id: string) {
       router.push(`/app/detail?appId=${id}`);
       loadMyApps();
+      console.log(myApps);
+
       setAppListInfo(myApps);
       onClose();
     },

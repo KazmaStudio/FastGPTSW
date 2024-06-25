@@ -154,7 +154,7 @@ export function form2AppWorkflow(data: AppSimpleEditFormType): WorkflowType {
               label: 'core.module.input.label.chat history',
               required: true,
               min: 0,
-              max: 30,
+              max: 300,
               value: formData.aiSettings.maxHistories
             },
             {
@@ -287,7 +287,7 @@ export function form2AppWorkflow(data: AppSimpleEditFormType): WorkflowType {
               label: 'core.module.input.label.chat history',
               required: true,
               min: 0,
-              max: 30,
+              max: 300,
               value: formData.aiSettings.maxHistories
             },
             {
@@ -651,7 +651,7 @@ export function form2AppWorkflow(data: AppSimpleEditFormType): WorkflowType {
               label: 'core.module.input.label.chat history',
               required: true,
               min: 0,
-              max: 30,
+              max: 300,
               value: formData.aiSettings.maxHistories
             },
             {

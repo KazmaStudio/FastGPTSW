@@ -97,6 +97,7 @@ const EditForm = ({
     () => allDatasets.filter((item) => datasets.find((dataset) => dataset.datasetId === item._id)),
     [allDatasets, datasets]
   );
+
   // useEffect(() => {
   //   if (selectDatasets.length !== datasets.length) {
   //     replaceDatasetList(
@@ -243,7 +244,7 @@ const EditForm = ({
                     setValue('aiSettings.model', model);
                     setValue('aiSettings.maxToken', maxToken);
                     setValue('aiSettings.temperature', temperature);
-                    setValue('aiSettings.maxHistories', maxHistories ?? 6);
+                    setValue('aiSettings.maxHistories', maxHistories ?? 100);
                   }}
                 />
               </Box>
@@ -251,19 +252,27 @@ const EditForm = ({
 
             <Box mt={3}>
               <HStack {...LabelStyles}>
-                <Box>{t('core.ai.Prompt')}</Box>
-                <QuestionTip label={t('core.app.tip.chatNodeSystemPromptTip')} />
+                <Box>{appDetail.templeteType === 'chatGuide' ? '模型设定' : '提示词设置'}</Box>
+                {/* <Box>{t('core.ai.Prompt')}</Box> */}
+                {/* <QuestionTip label={t('core.app.tip.chatNodeSystemPromptTip')} /> */}
               </HStack>
               <Box mt={1}>
                 <PromptEditor
-                  value={aiSystemPrompt}
+                  value={
+                    appDetail.templeteType === 'chatGuide'
+                      ? ''
+                      : '使用 <QA></QA> 标记中的问答对进行回答。\n{{ quote }}\n回答要求：\n-选择其中一个或多个问答对进行回答。\n-回答的内容应尽可能与 <答案></答案> 中的内容一致。\n-如果没有相关的问答对，你需要澄清。\n-避免提及你是从 QA 获取的知识，只需要回复答案。\n问题:"{{ question }}"'
+                  } //{aiSystemPrompt}
                   onChange={(text) => {
                     startTst(() => {
                       setValue('aiSettings.systemPrompt', text);
                     });
                   }}
                   variables={formatVariables}
-                  placeholder={t('core.app.tip.chatNodeSystemPromptTip')}
+                  placeholder={
+                    appDetail.templeteType === 'chatGuide' ? '请详细描述模型的设定' : '提示词设置'
+                  }
+                  // placeholder={t('core.app.tip.chatNodeSystemPromptTip')}
                   title={t('core.ai.Prompt')}
                 />
               </Box>
@@ -271,80 +280,84 @@ const EditForm = ({
           </Box>
 
           {/* dataset */}
-          <Box {...BoxStyles}>
-            <Flex alignItems={'center'}>
-              <Flex alignItems={'center'} flex={1}>
-                <MyIcon name={'core/app/simpleMode/dataset'} w={'20px'} />
-                <FormLabel ml={2}>{t('core.dataset.Choose Dataset')}</FormLabel>
+          {appDetail.templeteType === 'simpleChat' && (
+            <Box {...BoxStyles}>
+              <Flex alignItems={'center'}>
+                <Flex alignItems={'center'} flex={1}>
+                  <MyIcon name={'core/app/simpleMode/dataset'} w={'20px'} />
+                  <FormLabel ml={2}>{t('core.dataset.Choose Dataset')}</FormLabel>
+                </Flex>
+                <Button
+                  variant={'transparentBase'}
+                  leftIcon={<SmallAddIcon />}
+                  iconSpacing={1}
+                  size={'sm'}
+                  fontSize={'sm'}
+                  onClick={onOpenKbSelect}
+                >
+                  {t('common.Choose')}
+                </Button>
+                <Button
+                  variant={'transparentBase'}
+                  leftIcon={<MyIcon name={'edit'} w={'14px'} />}
+                  iconSpacing={1}
+                  size={'sm'}
+                  fontSize={'sm'}
+                  onClick={onOpenDatasetParams}
+                >
+                  {t('common.Params')}
+                </Button>
               </Flex>
-              <Button
-                variant={'transparentBase'}
-                leftIcon={<SmallAddIcon />}
-                iconSpacing={1}
-                size={'sm'}
-                fontSize={'sm'}
-                onClick={onOpenKbSelect}
+              {datasetSearchSetting.datasets?.length > 0 && (
+                <Box my={3}>
+                  <SearchParamsTip
+                    searchMode={searchMode}
+                    similarity={getValues('dataset.similarity')}
+                    limit={getValues('dataset.limit')}
+                    usingReRank={getValues('dataset.usingReRank')}
+                    queryExtensionModel={getValues('dataset.datasetSearchExtensionModel')}
+                  />
+                </Box>
+              )}
+              <Grid
+                gridTemplateColumns={['repeat(2, minmax(0, 1fr))', 'repeat(3, minmax(0, 1fr))']}
+                gridGap={[2, 4]}
               >
-                {t('common.Choose')}
-              </Button>
-              <Button
-                variant={'transparentBase'}
-                leftIcon={<MyIcon name={'edit'} w={'14px'} />}
-                iconSpacing={1}
-                size={'sm'}
-                fontSize={'sm'}
-                onClick={onOpenDatasetParams}
-              >
-                {t('common.Params')}
-              </Button>
-            </Flex>
-            {datasetSearchSetting.datasets?.length > 0 && (
-              <Box my={3}>
-                <SearchParamsTip
-                  searchMode={searchMode}
-                  similarity={getValues('dataset.similarity')}
-                  limit={getValues('dataset.limit')}
-                  usingReRank={getValues('dataset.usingReRank')}
-                  queryExtensionModel={getValues('dataset.datasetSearchExtensionModel')}
-                />
-              </Box>
-            )}
-            <Grid
-              gridTemplateColumns={['repeat(2, minmax(0, 1fr))', 'repeat(3, minmax(0, 1fr))']}
-              gridGap={[2, 4]}
-            >
-              {selectDatasets.map((item) => (
-                <MyTooltip key={item._id} label={t('core.dataset.Read Dataset')}>
-                  <Flex
-                    overflow={'hidden'}
-                    alignItems={'center'}
-                    p={2}
-                    bg={'white'}
-                    boxShadow={'0 4px 8px -2px rgba(16,24,40,.1),0 2px 4px -2px rgba(16,24,40,.06)'}
-                    borderRadius={'md'}
-                    border={theme.borders.base}
-                    cursor={'pointer'}
-                    onClick={() =>
-                      router.push({
-                        pathname: '/dataset/detail',
-                        query: {
-                          datasetId: item._id
-                        }
-                      })
-                    }
-                  >
-                    <Avatar src={item.avatar} w={'18px'} mr={1} />
-                    <Box flex={'1 0 0'} w={0} className={'textEllipsis'} fontSize={'sm'}>
-                      {item.name}
-                    </Box>
-                  </Flex>
-                </MyTooltip>
-              ))}
-            </Grid>
-          </Box>
+                {selectDatasets.map((item) => (
+                  <MyTooltip key={item._id} label={t('core.dataset.Read Dataset')}>
+                    <Flex
+                      overflow={'hidden'}
+                      alignItems={'center'}
+                      p={2}
+                      bg={'white'}
+                      boxShadow={
+                        '0 4px 8px -2px rgba(16,24,40,.1),0 2px 4px -2px rgba(16,24,40,.06)'
+                      }
+                      borderRadius={'md'}
+                      border={theme.borders.base}
+                      cursor={'pointer'}
+                      onClick={() =>
+                        router.push({
+                          pathname: '/dataset/detail',
+                          query: {
+                            datasetId: item._id
+                          }
+                        })
+                      }
+                    >
+                      <Avatar src={item.avatar} w={'18px'} mr={1} />
+                      <Box flex={'1 0 0'} w={0} className={'textEllipsis'} fontSize={'sm'}>
+                        {item.name}
+                      </Box>
+                    </Flex>
+                  </MyTooltip>
+                ))}
+              </Grid>
+            </Box>
+          )}
 
           {/* tool choice */}
-          <Box {...BoxStyles}>
+          {/* <Box {...BoxStyles}>
             <Flex alignItems={'center'}>
               <Flex alignItems={'center'} flex={1}>
                 <MyIcon name={'core/app/toolCall'} w={'20px'} />
@@ -398,17 +411,17 @@ const EditForm = ({
                 </Flex>
               ))}
             </Grid>
-          </Box>
+          </Box> */}
 
           {/* variable */}
-          <Box {...BoxStyles}>
+          {/* <Box {...BoxStyles}>
             <VariableEdit
               variables={variables}
               onChange={(e) => {
                 setValue('chatConfig.variables', e);
               }}
             />
-          </Box>
+          </Box> */}
 
           {/* welcome */}
           <Box {...BoxStyles}>
@@ -421,17 +434,17 @@ const EditForm = ({
           </Box>
 
           {/* tts */}
-          <Box {...BoxStyles}>
+          {/* <Box {...BoxStyles}>
             <TTSSelect
               value={tts}
               onChange={(e) => {
                 setValue('chatConfig.ttsConfig', e);
               }}
             />
-          </Box>
+          </Box> */}
 
           {/* whisper */}
-          <Box {...BoxStyles}>
+          {/* <Box {...BoxStyles}>
             <WhisperConfig
               isOpenAudio={tts?.type !== TTSTypeEnum.none}
               value={whisperConfig}
@@ -439,20 +452,20 @@ const EditForm = ({
                 setValue('chatConfig.whisperConfig', e);
               }}
             />
-          </Box>
+          </Box> */}
 
           {/* question guide */}
-          <Box {...BoxStyles}>
+          {/* <Box {...BoxStyles}>
             <QGSwitch
               isChecked={postQuestionGuide}
               onChange={(e) => {
                 setValue('chatConfig.questionGuide', e.target.checked);
               }}
             />
-          </Box>
+          </Box> */}
 
           {/* question tips */}
-          <Box {...BoxStyles}>
+          {/* <Box {...BoxStyles}>
             <InputGuideConfig
               appId={appDetail._id}
               value={inputGuideConfig}
@@ -460,17 +473,17 @@ const EditForm = ({
                 setValue('chatConfig.chatInputGuide', e);
               }}
             />
-          </Box>
+          </Box> */}
 
           {/* timer trigger */}
-          <Box {...BoxStyles} borderBottom={'none'}>
+          {/* <Box {...BoxStyles} borderBottom={'none'}>
             <ScheduledTriggerConfig
               value={scheduledTriggerConfig}
               onChange={(e) => {
                 setValue('chatConfig.scheduledTriggerConfig', e);
               }}
             />
-          </Box>
+          </Box> */}
         </Box>
       </Box>
 

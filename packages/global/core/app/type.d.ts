@@ -36,6 +36,7 @@ export type AppSchema = {
   defaultPermission: PermissionValueType;
 
   creator: String;
+  templeteType: String;
 };
 
 export type AppListItemType = {

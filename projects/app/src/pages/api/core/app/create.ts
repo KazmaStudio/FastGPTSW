@@ -19,14 +19,15 @@ export type CreateAppBody = {
   name?: string;
   avatar?: string;
   type?: AppTypeEnum;
+  templeteType: string;
   modules: AppSchema['modules'];
   edges?: AppSchema['edges'];
 };
 
 async function handler(req: ApiRequestProps<CreateAppBody>, res: NextApiResponse<any>) {
-  const { parentId, name, avatar, type, modules, edges } = req.body;
+  const { parentId, name, avatar, type, modules, edges, templeteType } = req.body;
 
-  if (!name || !type || !Array.isArray(modules)) {
+  if (!name || !type || !Array.isArray(modules) || !templeteType) {
     throw new Error('缺少参数');
   }
 
@@ -50,6 +51,7 @@ async function handler(req: ApiRequestProps<CreateAppBody>, res: NextApiResponse
           name,
           teamId,
           tmbId,
+          templeteType,
           modules,
           edges,
           type,

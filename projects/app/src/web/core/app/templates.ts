@@ -37,7 +37,8 @@ export const appTemplates: (AppItemType & {
             renderTypeList: [FlowNodeInputTypeEnum.hidden],
             valueType: WorkflowIOValueTypeEnum.string,
             label: 'core.app.Welcome Text',
-            value: ''
+            value:
+              '你好，我是你的专属知识管家，有问题可以随时问我~\n[商品的具体出口政策是什么]\n[深圳保税区的出口转内销策略如何执行]'
           },
           {
             key: 'variables',
@@ -135,7 +136,7 @@ export const appTemplates: (AppItemType & {
             ],
             label: 'core.module.input.label.aiModel',
             valueType: WorkflowIOValueTypeEnum.string,
-            value: 'gpt-3.5-turbo'
+            value: 'ERNIE-3.5-8K'
           },
           {
             key: 'temperature',
@@ -267,7 +268,8 @@ export const appTemplates: (AppItemType & {
             renderTypeList: [FlowNodeInputTypeEnum.hidden],
             valueType: WorkflowIOValueTypeEnum.string,
             label: 'core.app.Welcome Text',
-            value: '你好，我可以为你翻译各种语言，请告诉我你需要翻译成什么语言？'
+            value:
+              '你好，我是你的专属问答机器人，有问题可以随时问我~\n[介绍下中国的四大发明]\n[什么是模型的注意力机制]' //'你好，我可以为你翻译各种语言，请告诉我你需要翻译成什么语言？'
           },
           {
             key: 'variables',
@@ -382,7 +384,7 @@ export const appTemplates: (AppItemType & {
             ],
             label: 'core.module.input.label.aiModel',
             valueType: WorkflowIOValueTypeEnum.string,
-            value: 'gpt-3.5-turbo'
+            value: 'ERNIE-3.5-8K'
           },
           {
             key: 'temperature',
@@ -431,7 +433,7 @@ export const appTemplates: (AppItemType & {
             label: 'core.ai.Prompt',
             description: 'core.app.tip.chatNodeSystemPromptTip',
             placeholder: 'core.app.tip.chatNodeSystemPromptTip',
-            value: '请直接将我的问题翻译成{{language}}，不需要回答问题。'
+            value: '' //'请直接将我的问题翻译成{{language}}，不需要回答问题。'
           },
           {
             key: 'history',
