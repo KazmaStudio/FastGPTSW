@@ -42,6 +42,7 @@ const Navbar = ({ unread }: { unread: number }) => {
   const { parentId = null } = router.query as { parentId?: string | null };
 
   // const [myApps, setMyApps] = useState<AppListItemType[]>([]);
+  // const [myApps, setMyApps] = useState<AppListItemType[]>([]);
 
   const { userInfo, appListInfo } = useUserStore();
   const { gitStar, feConfigs } = useSystemStore();
@@ -168,7 +169,7 @@ const Navbar = ({ unread }: { unread: number }) => {
                 cursor="pointer"
                 p="8px"
                 px="16px"
-                mb="14px"
+                _notLast={{ mb: '14px' }}
                 key={app._id}
                 onClick={() => {
                   if (app.type === AppTypeEnum.folder) {

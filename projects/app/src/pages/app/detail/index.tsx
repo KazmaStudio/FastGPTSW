@@ -92,7 +92,7 @@ const AppDetail = ({ appId, currentTab }: { appId: string; currentTab: TabEnum }
         {!loadingApp && (
           <Flex flexDirection={['column', 'row']} h={'100%'}>
             {/* pc tab */}
-            <Box
+            {/* <Box
               display={['none', 'flex']}
               flexDirection={'column'}
               p={4}
@@ -140,9 +140,9 @@ const AppDetail = ({ appId, currentTab }: { appId: string; currentTab: TabEnum }
                 />
                 {appT('My Apps')}
               </Flex>
-            </Box>
+            </Box> */}
             {/* phone tab */}
-            <Box display={['block', 'none']} textAlign={'center'} py={3}>
+            {/* <Box display={['block', 'none']} textAlign={'center'} py={3}>
               <Box className="textlg" fontSize={'lg'} fontWeight={'bold'}>
                 {appDetail.name}
               </Box>
@@ -161,7 +161,7 @@ const AppDetail = ({ appId, currentTab }: { appId: string; currentTab: TabEnum }
                   }
                 }}
               />
-            </Box>
+            </Box> */}
             <Box flex={'1 0 0'} h={[0, '100%']} overflow={['overlay', '']}>
               {currentTab === TabEnum.simpleEdit && <SimpleEdit appId={appId} />}
               {currentTab === TabEnum.adEdit && appDetail && <FlowEdit onClose={onCloseFlowEdit} />}

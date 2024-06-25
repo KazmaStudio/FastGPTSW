@@ -41,6 +41,7 @@ const CreateModal = ({ onClose }: { onClose: () => void }) => {
   const router = useRouter();
   const { parentId, loadMyApps, myApps } = useContextSelector(AppListContext, (v) => v);
   const { setAppListInfo } = useUserStore();
+  const { myApps, parentId, loadMyApps } = useContextSelector(AppListContext, (v) => v);
 
   const theme = useTheme();
   const { isPc } = useSystemStore();
@@ -59,6 +60,8 @@ const CreateModal = ({ onClose }: { onClose: () => void }) => {
     fileType: '.jpg,.png',
     multiple: false
   });
+
+  const { setAppListInfo } = useUserStore();
 
   const onSelectFile = useCallback(
     async (e: File[]) => {
@@ -90,6 +93,7 @@ const CreateModal = ({ onClose }: { onClose: () => void }) => {
       }
       return postCreateApp({
         parentId,
+        templeteType: template.id,
         avatar: data.avatar || template.avatar,
         name: data.name,
         type: template.type,
@@ -98,6 +102,9 @@ const CreateModal = ({ onClose }: { onClose: () => void }) => {
       });
     },
     onSuccess(id: string) {
+      getMyApps({ parentId }).then((result) => {
+        setAppListInfo(result);
+      });
       router.push(`/app/detail?appId=${id}`);
       loadMyApps();
       setAppListInfo(myApps);

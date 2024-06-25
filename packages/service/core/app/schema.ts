@@ -66,6 +66,9 @@ const AppSchema = new Schema({
   createTime: {
     type: Date
   },
+  templeteType: {
+    type: String
+  },
 
   // role and auth
   permission: {

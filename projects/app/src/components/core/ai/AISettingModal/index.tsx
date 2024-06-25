@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useState, useEffect } from 'react';
 import MyModal from '@fastgpt/web/components/common/MyModal';
 import { useTranslation } from 'next-i18next';
 import { useForm } from 'react-hook-form';
@@ -39,6 +39,11 @@ const AIChatSettingsModal = ({
   const { handleSubmit, getValues, setValue, watch } = useForm({
     defaultValues: defaultData
   });
+
+  useEffect(() => {
+    setValue('maxHistories', 100);
+  }, []);
+
   const model = watch('model');
   const showResponseAnswerText = watch(NodeInputKeyEnum.aiChatIsResponseText) !== undefined;
   const showMaxHistoriesSlider = watch('maxHistories') !== undefined;
@@ -109,7 +114,7 @@ const AIChatSettingsModal = ({
             />
           </Box>
         </Flex>
-        {feConfigs && (
+        {/* {feConfigs && (
           <Flex mt={8}>
             <Box {...LabelStyles} mr={2}>
               {t('core.ai.Ai point price')}
@@ -120,16 +125,16 @@ const AIChatSettingsModal = ({
               })}
             </Box>
           </Flex>
-        )}
-        <Flex mt={8}>
+        )} */}
+        {/* <Flex mt={8}>
           <Box {...LabelStyles} mr={2}>
             {t('core.ai.Max context')}
           </Box>
           <Box flex={1} ml={'10px'}>
             {selectedModel?.maxContext || 4096}Tokens
           </Box>
-        </Flex>
-        <Flex mt={8}>
+        </Flex> */}
+        {/* <Flex mt={8}>
           <Box {...LabelStyles} mr={2}>
             {t('core.ai.Support tool')}
             <QuestionTip ml={1} label={t('core.module.template.AI support tool tip')} />
@@ -137,7 +142,7 @@ const AIChatSettingsModal = ({
           <Box flex={1} ml={'10px'}>
             {selectedModel?.toolChoice || selectedModel?.functionCall ? '支持' : '不支持'}
           </Box>
-        </Flex>
+        </Flex> */}
         <Flex mt={8}>
           <Box {...LabelStyles} mr={2}>
             {t('core.app.Temperature')}
@@ -159,7 +164,7 @@ const AIChatSettingsModal = ({
             />
           </Box>
         </Flex>
-        <Flex mt={8}>
+        {/* <Flex mt={8}>
           <Box {...LabelStyles} mr={2}>
             {t('core.app.Max tokens')}
           </Box>
@@ -180,8 +185,8 @@ const AIChatSettingsModal = ({
               }}
             />
           </Box>
-        </Flex>
-        {showMaxHistoriesSlider && (
+        </Flex> */}
+        {/* {showMaxHistoriesSlider && (
           <Flex mt={8}>
             <Box {...LabelStyles} mr={2}>
               {t('core.app.Max histories')}
@@ -190,12 +195,12 @@ const AIChatSettingsModal = ({
               <MySlider
                 markList={[
                   { label: 0, value: 0 },
-                  { label: 30, value: 30 }
+                  { label: 300, value: 300 }
                 ]}
                 width={'95%'}
                 min={0}
-                max={30}
-                value={getValues('maxHistories') ?? 6}
+                max={300}
+                value={getValues('maxHistories') ?? 100}
                 onChange={(e) => {
                   setValue('maxHistories', e);
                   setRefresh(!refresh);
@@ -203,7 +208,7 @@ const AIChatSettingsModal = ({
               />
             </Box>
           </Flex>
-        )}
+        )} */}
         {showResponseAnswerText && (
           <Flex mt={8} alignItems={'center'}>
             <Box {...LabelStyles}>

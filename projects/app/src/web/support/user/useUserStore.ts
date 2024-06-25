@@ -12,6 +12,8 @@ type State = {
   systemMsgReadId: string;
   setSysMsgReadId: (id: string) => void;
 
+  appListInfo: AppListItemType[];
+  setAppListInfo: (appList: AppListItemType[]) => void;
   userInfo: UserType | null;
   initUserInfo: () => Promise<UserType>;
   setUserInfo: (user: UserType | null) => void;

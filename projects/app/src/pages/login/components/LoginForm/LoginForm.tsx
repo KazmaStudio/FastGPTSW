@@ -143,7 +143,7 @@ const LoginForm = ({ setPageType, loginSuccess }: Props) => {
         {feConfigs?.show_register && (
           <>
             <Flex align={'center'} justifyContent={'flex-end'} color={'primary.700'}>
-              <Box
+              {/* <Box
                 cursor={'pointer'}
                 _hover={{ textDecoration: 'underline' }}
                 onClick={() => setPageType('forgetPassword')}
@@ -151,7 +151,7 @@ const LoginForm = ({ setPageType, loginSuccess }: Props) => {
               >
                 {t('support.user.login.Forget Password')}
               </Box>
-              <Box mx={3} h={'16px'} w={'1.5px'} bg={'myGray.250'}></Box>
+              <Box mx={3} h={'16px'} w={'1.5px'} bg={'myGray.250'}></Box> */}
               <Box
                 cursor={'pointer'}
                 _hover={{ textDecoration: 'underline' }}

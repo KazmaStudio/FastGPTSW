@@ -252,12 +252,12 @@ const ListItem = () => {
                     </Box>
                     <Flex h={'34px'} alignItems={'flex-end'}>
                       <Box flex={1}>
-                        <PermissionIconText
+                        {/* <PermissionIconText
                           defaultPermission={app.defaultPermission}
                           color={'myGray.600'}
-                        />
+                        /> */}
                       </Box>
-                      <AppTypeTag type={app.type} />
+                      {/* <AppTypeTag type={app.type} /> */}
                     </Flex>
                   </MyBox>
                 </MyTooltip>
@@ -419,12 +419,12 @@ const ListItem = () => {
                   </Box>
                   <Flex h={'34px'} alignItems={'flex-end'}>
                     <Box flex={1}>
-                      <PermissionIconText
+                      {/* <PermissionIconText
                         defaultPermission={app.defaultPermission}
                         color={'myGray.600'}
-                      />
+                      /> */}
                     </Box>
-                    <AppTypeTag type={app.type} />
+                    {/* <AppTypeTag type={app.type} /> */}
                   </Flex>
                 </MyBox>
               </MyTooltip>

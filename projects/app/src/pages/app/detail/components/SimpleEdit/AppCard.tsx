@@ -117,7 +117,7 @@ const AppCard = () => {
             {appDetail.intro || t('core.app.tip.Add a intro to app')}
           </Box>
           <Flex>
-            <Button
+            {/* <Button
               size={['sm', 'md']}
               variant={'whitePrimary'}
               leftIcon={<MyIcon name={'core/chat/chatLight'} w={'16px'} />}
@@ -140,7 +140,7 @@ const AppCard = () => {
               }}
             >
               {t('core.app.navbar.Publish')}
-            </Button>
+            </Button> */}
             {appDetail.permission.hasWritePer && feConfigs?.show_team_chat && (
               <Button
                 mr={3}
