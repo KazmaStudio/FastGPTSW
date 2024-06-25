@@ -28,6 +28,7 @@ import { MongoImageTypeEnum } from '@fastgpt/global/common/file/image/constants'
 import { useContextSelector } from 'use-context-selector';
 import { AppListContext } from './context';
 import { useUserStore } from '@/web/support/user/useUserStore';
+import { getMyApps } from '@/web/core/app/api';
 
 type FormType = {
   avatar: string;
@@ -39,8 +40,6 @@ const CreateModal = ({ onClose }: { onClose: () => void }) => {
   const { t } = useTranslation();
   const { toast } = useToast();
   const router = useRouter();
-  const { parentId, loadMyApps, myApps } = useContextSelector(AppListContext, (v) => v);
-  const { setAppListInfo } = useUserStore();
   const { myApps, parentId, loadMyApps } = useContextSelector(AppListContext, (v) => v);
 
   const theme = useTheme();

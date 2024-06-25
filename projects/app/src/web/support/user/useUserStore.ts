@@ -20,9 +20,6 @@ type State = {
   updateUserInfo: (user: UserUpdateParams) => Promise<void>;
   teamPlanStatus: FeTeamPlanStatusType | null;
   initTeamPlanStatus: () => Promise<any>;
-
-  appListInfo: AppListItemType[];
-  setAppListInfo: (appList: AppListItemType[]) => void;
 };
 
 export const useUserStore = create<State>()(

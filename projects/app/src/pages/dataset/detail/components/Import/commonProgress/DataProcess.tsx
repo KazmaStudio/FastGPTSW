@@ -56,7 +56,10 @@ function DataProcess({ showPreviewChunks = true }: { showPreviewChunks: boolean 
   } = useDisclosure();
 
   const trainingModeList = useMemo(() => {
-    const list = Object.entries(TrainingTypeMap);
+    let list = Object.entries(TrainingTypeMap);
+    list.splice(1, 1);
+
+    // list = [list[0], list[2]];
     return list;
   }, []);
 

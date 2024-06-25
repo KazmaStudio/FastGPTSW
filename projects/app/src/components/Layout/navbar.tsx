@@ -42,9 +42,8 @@ const Navbar = ({ unread }: { unread: number }) => {
   const { parentId = null } = router.query as { parentId?: string | null };
 
   // const [myApps, setMyApps] = useState<AppListItemType[]>([]);
-  // const [myApps, setMyApps] = useState<AppListItemType[]>([]);
 
-  const { userInfo, appListInfo } = useUserStore();
+  const { userInfo, appListInfo, setAppListInfo } = useUserStore();
   const { gitStar, feConfigs } = useSystemStore();
   const { lastChatAppId, lastChatId } = useChatStore();
   const chatNavItem = {
@@ -91,11 +90,11 @@ const Navbar = ({ unread }: { unread: number }) => {
   }
   navbarList = useMemo(() => navItemList, [lastChatAppId, lastChatId, t, navItemList]);
 
-  // useEffect(() => {
-  //   getMyApps({ parentId }).then((result) => {
-  //     setMyApps(result);
-  //   });
-  // }, []);
+  useEffect(() => {
+    getMyApps({ parentId }).then((result) => {
+      setAppListInfo(result);
+    });
+  }, []);
 
   const itemStyles: BoxProps & LinkProps = {
     my: 3,

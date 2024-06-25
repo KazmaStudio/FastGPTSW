@@ -37,8 +37,7 @@ export const appTemplates: (AppItemType & {
             renderTypeList: [FlowNodeInputTypeEnum.hidden],
             valueType: WorkflowIOValueTypeEnum.string,
             label: 'core.app.Welcome Text',
-            value:
-              '你好，我是你的专属知识管家，有问题可以随时问我~\n[商品的具体出口政策是什么]\n[深圳保税区的出口转内销策略如何执行]'
+            value: '你好，我是你的专属知识管家，有问题可以随时问我~' //\n[商品的具体出口政策是什么]\n[深圳保税区的出口转内销策略如何执行]'
           },
           {
             key: 'variables',

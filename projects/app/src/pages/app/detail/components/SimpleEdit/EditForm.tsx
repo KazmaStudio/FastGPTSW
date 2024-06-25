@@ -213,9 +213,9 @@ const EditForm = ({
             }
           }}
         >
-          {appDetail.type !== AppTypeEnum.simple
-            ? t('core.app.Change to simple mode')
-            : t('core.app.Publish')}
+          {
+            appDetail.type !== AppTypeEnum.simple ? t('core.app.Change to simple mode') : '保存' //t('core.app.Publish')
+          }
         </Button>
       </Flex>
 
@@ -259,9 +259,8 @@ const EditForm = ({
               <Box mt={1}>
                 <PromptEditor
                   value={
-                    appDetail.templeteType === 'chatGuide'
-                      ? ''
-                      : '使用 <QA></QA> 标记中的问答对进行回答。\n{{ quote }}\n回答要求：\n-选择其中一个或多个问答对进行回答。\n-回答的内容应尽可能与 <答案></答案> 中的内容一致。\n-如果没有相关的问答对，你需要澄清。\n-避免提及你是从 QA 获取的知识，只需要回复答案。\n问题:"{{ question }}"'
+                    appDetail.templeteType === 'chatGuide' ? '' : ''
+                    //: '使用 <QA></QA> 标记中的问答对进行回答。\n{{ quote }}\n回答要求：\n-选择其中一个或多个问答对进行回答。\n-回答的内容应尽可能与 <答案></答案> 中的内容一致。\n-如果没有相关的问答对，你需要澄清。\n-避免提及你是从 QA 获取的知识，只需要回复答案。\n问题:"{{ question }}"'
                   } //{aiSystemPrompt}
                   onChange={(text) => {
                     startTst(() => {
