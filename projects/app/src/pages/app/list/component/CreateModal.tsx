@@ -28,6 +28,7 @@ import { MongoImageTypeEnum } from '@fastgpt/global/common/file/image/constants'
 import { useContextSelector } from 'use-context-selector';
 import { AppListContext } from './context';
 import { useUserStore } from '@/web/support/user/useUserStore';
+import { getMyApps } from '@/web/core/app/api';
 
 type FormType = {
   avatar: string;
@@ -100,11 +101,11 @@ const CreateModal = ({ onClose }: { onClose: () => void }) => {
       });
     },
     onSuccess(id: string) {
+      getMyApps({ parentId }).then((result) => {
+        setAppListInfo(result);
+      });
       router.push(`/app/detail?appId=${id}`);
       loadMyApps();
-      console.log(myApps);
-
-      setAppListInfo(myApps);
       onClose();
     },
     successToast: t('common.Create Success'),
