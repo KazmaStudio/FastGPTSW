@@ -69,10 +69,10 @@ async function initRootUser(retry = 3): Promise<any> {
       await createDefaultTeam({ userId: rootId, balance: 9999 * PRICE_SCALE, session });
     });
 
-    console.log(`root user init:`, {
-      username: 'root',
-      password: psw
-    });
+    // console.log(`root user init:`, {
+    //   username: 'root',
+    //   password: psw
+    // });
   } catch (error) {
     if (retry > 0) {
       console.log('retry init root user');

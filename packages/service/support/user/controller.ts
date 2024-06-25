@@ -21,7 +21,6 @@ export async function getUserDetail({
   userId?: string;
 }): Promise<UserType> {
   const tmb = await (async () => {
-    console.log(tmbId);
     if (tmbId) {
       try {
         const result = await getTmbInfoByTmbId({ tmbId });

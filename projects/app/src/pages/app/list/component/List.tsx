@@ -31,7 +31,6 @@ import MyTooltip from '@fastgpt/web/components/common/MyTooltip';
 import AppTypeTag from '@/components/core/app/TypeTag';
 
 import { useUserStore } from '@/web/support/user/useUserStore';
-import { userInfo } from 'os';
 
 const EditResourceModal = dynamic(() => import('@/components/common/Modal/EditResourceModal'));
 const ConfigPerModal = dynamic(() => import('@/components/support/permission/ConfigPerModal'));
@@ -44,14 +43,15 @@ const ListItem = () => {
     AppListContext,
     (v) => v
   );
+
   myApps.map((app, index) => {
     // console.log(app);
     // console.log('app permission: ', app.permission);
   });
   const [loadingAppId, setLoadingAppId] = useState<string>();
-  const { userInfo } = useUserStore();
+  const { userInfo, setAppListInfo } = useUserStore();
   // console.log('team permission: ', userInfo?.team.permission);
-
+  setAppListInfo(myApps);
   const [editedApp, setEditedApp] = useState<EditResourceInfoFormType>();
   const [editPerAppIndex, setEditPerAppIndex] = useState<number>();
   const editPerApp = useMemo(
@@ -68,6 +68,7 @@ const ListItem = () => {
       try {
         await putAppById(dragId, { parentId: targetId });
         loadMyApps();
+        setAppListInfo(myApps);
       } catch (error) {}
       setLoadingAppId(undefined);
     }
@@ -85,6 +86,7 @@ const ListItem = () => {
     {
       onSuccess() {
         loadMyApps();
+        setAppListInfo(myApps);
       },
       onFinally() {
         setLoadingAppId(undefined);

@@ -25,6 +25,8 @@ import { useTranslation } from 'next-i18next';
 import { useSystemStore } from '@/web/common/system/useSystemStore';
 import MyTooltip from '@fastgpt/web/components/common/MyTooltip';
 import { getDocPath } from '@/web/common/system/doc';
+import { AppListContext } from '@/pages/app/list/component/context';
+
 import { getMyApps } from '@/web/core/app/api';
 import { AppDetailType, AppListItemType } from '@fastgpt/global/core/app/type';
 import { AppTypeEnum } from '@fastgpt/global/core/app/constants';
@@ -39,9 +41,9 @@ const Navbar = ({ unread }: { unread: number }) => {
   const router = useRouter();
   const { parentId = null } = router.query as { parentId?: string | null };
 
-  const [myApps, setMyApps] = useState<AppListItemType[]>([]);
+  // const [myApps, setMyApps] = useState<AppListItemType[]>([]);
 
-  const { userInfo } = useUserStore();
+  const { userInfo, appListInfo } = useUserStore();
   const { gitStar, feConfigs } = useSystemStore();
   const { lastChatAppId, lastChatId } = useChatStore();
   const chatNavItem = {
@@ -88,11 +90,11 @@ const Navbar = ({ unread }: { unread: number }) => {
   }
   navbarList = useMemo(() => navItemList, [lastChatAppId, lastChatId, t, navItemList]);
 
-  useEffect(() => {
-    getMyApps({ parentId }).then((result) => {
-      setMyApps(result);
-    });
-  }, []);
+  // useEffect(() => {
+  //   getMyApps({ parentId }).then((result) => {
+  //     setMyApps(result);
+  //   });
+  // }, []);
 
   const itemStyles: BoxProps & LinkProps = {
     my: 3,
@@ -151,7 +153,7 @@ const Navbar = ({ unread }: { unread: number }) => {
             <AccordionIcon />
           </AccordionButton>
           <AccordionPanel pb={4} marginInline="none" mx="-16px">
-            {myApps.map((app) => (
+            {appListInfo.map((app) => (
               <Box
                 _hover={{ bg: 'rgba(12,83,238,0.1)' }}
                 bg={

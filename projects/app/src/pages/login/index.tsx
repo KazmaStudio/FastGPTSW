@@ -30,7 +30,6 @@ const Login = () => {
   const loginSuccess = useCallback(
     (res: ResLogin) => {
       // init store
-      console.log(res.user, '1');
 
       setLastChatId('');
       setLastChatAppId('');

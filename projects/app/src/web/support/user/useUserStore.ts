@@ -6,6 +6,7 @@ import type { UserType } from '@fastgpt/global/support/user/type.d';
 import { getTokenLogin, putUserInfo } from '@/web/support/user/api';
 import { FeTeamPlanStatusType } from '@fastgpt/global/support/wallet/sub/type';
 import { getTeamPlanStatus } from './team/api';
+import { AppListItemType } from '@fastgpt/global/core/app/type';
 
 type State = {
   systemMsgReadId: string;
@@ -17,6 +18,9 @@ type State = {
   updateUserInfo: (user: UserUpdateParams) => Promise<void>;
   teamPlanStatus: FeTeamPlanStatusType | null;
   initTeamPlanStatus: () => Promise<any>;
+
+  appListInfo: AppListItemType[];
+  setAppListInfo: (appList: AppListItemType[]) => void;
 };
 
 export const useUserStore = create<State>()(
@@ -29,7 +33,12 @@ export const useUserStore = create<State>()(
             state.systemMsgReadId = id;
           });
         },
-
+        appListInfo: [],
+        setAppListInfo(appList: AppListItemType[]) {
+          set((state) => {
+            state.appListInfo = appList;
+          });
+        },
         userInfo: null,
         async initUserInfo() {
           get().initTeamPlanStatus();
