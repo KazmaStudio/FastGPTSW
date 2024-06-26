@@ -79,19 +79,21 @@ const Layout = ({ children }: { children: JSX.Element }) => {
 
   return (
     <>
-      <Box h={'100%'} bg={'myGray.100'}>
+      <Box h={'100%'} bg={'white'}>
         {isPc === true && (
           <>
             {isHideNavbar ? (
               <Auth>{children}</Auth>
             ) : (
               <Box h={'100%'} display="flex" flexDirection="column">
+                <Image src="/imgs/app/title.png" h={'56px'} />
                 <Box
                   h="56px"
                   display="flex"
                   px="37px"
+                  bgColor="transparent"
                   py="12px"
-                  bgColor="white"
+                  mt="-56px"
                   justifyContent="space-between"
                   borderBottom="1px solid #F0F2F5"
                 >

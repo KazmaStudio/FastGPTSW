@@ -250,32 +250,59 @@ const EditForm = ({
               </Box>
             </Flex>
 
-            <Box mt={3}>
-              <HStack {...LabelStyles}>
-                <Box>{appDetail.templeteType === 'chatGuide' ? '模型设定' : '提示词设置'}</Box>
-                {/* <Box>{t('core.ai.Prompt')}</Box> */}
-                {/* <QuestionTip label={t('core.app.tip.chatNodeSystemPromptTip')} /> */}
-              </HStack>
-              <Box mt={1}>
-                <PromptEditor
-                  value={
-                    appDetail.templeteType === 'chatGuide' ? '' : ''
-                    //: '使用 <QA></QA> 标记中的问答对进行回答。\n{{ quote }}\n回答要求：\n-选择其中一个或多个问答对进行回答。\n-回答的内容应尽可能与 <答案></答案> 中的内容一致。\n-如果没有相关的问答对，你需要澄清。\n-避免提及你是从 QA 获取的知识，只需要回复答案。\n问题:"{{ question }}"'
-                  } //{aiSystemPrompt}
-                  onChange={(text) => {
-                    startTst(() => {
-                      setValue('aiSettings.systemPrompt', text);
-                    });
-                  }}
-                  variables={formatVariables}
-                  placeholder={
-                    appDetail.templeteType === 'chatGuide' ? '请详细描述模型的设定' : '提示词设置'
-                  }
-                  // placeholder={t('core.app.tip.chatNodeSystemPromptTip')}
-                  title={t('core.ai.Prompt')}
-                />
+            {appDetail.templeteType === 'chatGuide' ? (
+              <Box mt={3}>
+                <HStack {...LabelStyles}>
+                  <Box>{'模型设定'}</Box>
+                  {/* <Box>{t('core.ai.Prompt')}</Box> */}
+                  {/* <QuestionTip label={t('core.app.tip.chatNodeSystemPromptTip')} /> */}
+                </HStack>
+                <Box mt={1}>
+                  <PromptEditor
+                    value={aiSystemPrompt}
+                    // {
+                    //   appDetail.templeteType === 'chatGuide' ? '' : ''
+                    //   //: '使用 <QA></QA> 标记中的问答对进行回答。\n{{ quote }}\n回答要求：\n-选择其中一个或多个问答对进行回答。\n-回答的内容应尽可能与 <答案></答案> 中的内容一致。\n-如果没有相关的问答对，你需要澄清。\n-避免提及你是从 QA 获取的知识，只需要回复答案。\n问题:"{{ question }}"'
+                    // } //
+                    onChange={(text) => {
+                      startTst(() => {
+                        setValue('aiSettings.systemPrompt', text);
+                      });
+                    }}
+                    variables={formatVariables}
+                    placeholder={'请详细描述模型的设定'}
+                    // placeholder={t('core.app.tip.chatNodeSystemPromptTip')}
+                    title={t('core.ai.Prompt')}
+                  />
+                </Box>
               </Box>
-            </Box>
+            ) : (
+              <Box mt={3}>
+                <HStack {...LabelStyles}>
+                  <Box>{'提示词设置'}</Box>
+                  {/* <Box>{t('core.ai.Prompt')}</Box> */}
+                  {/* <QuestionTip label={t('core.app.tip.chatNodeSystemPromptTip')} /> */}
+                </HStack>
+                <Box mt={1}>
+                  <PromptEditor
+                    value={aiSystemPrompt}
+                    // {
+                    //   appDetail.templeteType === 'chatGuide' ? '' : ''
+                    //   //: '使用 <QA></QA> 标记中的问答对进行回答。\n{{ quote }}\n回答要求：\n-选择其中一个或多个问答对进行回答。\n-回答的内容应尽可能与 <答案></答案> 中的内容一致。\n-如果没有相关的问答对，你需要澄清。\n-避免提及你是从 QA 获取的知识，只需要回复答案。\n问题:"{{ question }}"'
+                    // } //
+                    onChange={(text) => {
+                      startTst(() => {
+                        setValue('aiSettings.systemPrompt', text);
+                      });
+                    }}
+                    variables={formatVariables}
+                    placeholder={'提示词设置'}
+                    // placeholder={t('core.app.tip.chatNodeSystemPromptTip')}
+                    title={t('core.ai.Prompt')}
+                  />
+                </Box>
+              </Box>
+            )}
           </Box>
 
           {/* dataset */}
