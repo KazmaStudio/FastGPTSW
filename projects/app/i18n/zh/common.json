@@ -1225,7 +1225,8 @@
     "Module": "模块",
     "Plugin": "插件",
     "Store": "应用市场",
-    "Tools": "工具"
+    "Tools": "工具",
+    "Logs": "会话记录"
   },
   "permission": {
     "Collaborator": "协作者",

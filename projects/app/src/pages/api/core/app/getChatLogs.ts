@@ -7,8 +7,10 @@ import { addDays } from 'date-fns';
 import type { GetAppChatLogsParams } from '@/global/core/api/appReq.d';
 import { authApp } from '@fastgpt/service/support/permission/app/auth';
 import { ChatItemCollectionName } from '@fastgpt/service/core/chat/chatItemSchema';
+import { AppCollectionName } from '@fastgpt/service/core/app/schema';
 import { NextAPI } from '@/service/middleware/entry';
 import { WritePermissionVal } from '@fastgpt/global/support/permission/constant';
+import { authCert } from '@fastgpt/service/support/permission/auth/common';
 
 async function handler(
   req: NextApiRequest,
@@ -22,21 +24,25 @@ async function handler(
     dateEnd = new Date()
   } = req.body as GetAppChatLogsParams;
 
-  if (!appId) {
-    throw new Error('缺少参数');
-  }
-
   // 凭证校验
-  const { teamId } = await authApp({ req, authToken: true, appId, per: WritePermissionVal });
+  // const { teamId } = await authApp({ req, authToken: true, appId, per: WritePermissionVal });
+  const { teamId } = await authCert({ req, authToken: true });
 
-  const where = {
+  let where: any = {
     teamId: new Types.ObjectId(teamId),
-    appId: new Types.ObjectId(appId),
+    // appId: new Types.ObjectId(appId),
     updateTime: {
       $gte: new Date(dateStart),
       $lte: new Date(dateEnd)
     }
   };
+
+  let and = [{ $eq: ['$chatId' as any, '$$chatId' as any] }];
+
+  if (appId) {
+    where.appId = new Types.ObjectId(appId);
+    and.unshift({ $eq: ['$appId', new Types.ObjectId(appId)] });
+  }
 
   const [data, total] = await Promise.all([
     MongoChat.aggregate([
@@ -59,10 +65,7 @@ async function handler(
             {
               $match: {
                 $expr: {
-                  $and: [
-                    { $eq: ['$appId', new Types.ObjectId(appId)] },
-                    { $eq: ['$chatId', '$$chatId'] }
-                  ]
+                  $and: and
                 }
               }
             },
@@ -76,6 +79,20 @@ async function handler(
             }
           ],
           as: 'chatitems'
+        }
+      },
+      {
+        $lookup: {
+          from: AppCollectionName,
+          localField: 'appId',
+          foreignField: '_id',
+          as: 'app'
+        }
+      },
+      {
+        $unwind: {
+          path: '$app',
+          preserveNullAndEmptyArrays: true // 空数组记录保留
         }
       },
       {
@@ -124,7 +141,9 @@ async function handler(
           id: '$chatId',
           title: 1,
           source: 1,
+          appId: 1,
           time: '$updateTime',
+          appName: '$app.name',
           messageCount: { $size: '$chatitems' },
           userGoodFeedbackCount: 1,
           userBadFeedbackCount: 1,

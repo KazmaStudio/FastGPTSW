@@ -82,11 +82,19 @@ const Navbar = ({ unread }: { unread: number }) => {
     activeLink: ['/account']
   };
 
+  const chatHistoriesNavItem = {
+    label: t('navbar.Logs'),
+    icon: 'support/user/userLight',
+    activeIcon: 'support/user/userFill',
+    link: '/chatHistory',
+    activeLink: ['/chatHistory']
+  };
+
   let navItemList = [accountNavItem];
 
   let navbarList = [];
   if (userInfo?.team.permission.isOwner) {
-    navItemList.splice(0, 0, dataSetNavItem);
+    navItemList.splice(0, 0, dataSetNavItem, chatHistoriesNavItem);
   }
   navbarList = useMemo(() => navItemList, [lastChatAppId, lastChatId, t, navItemList]);
 

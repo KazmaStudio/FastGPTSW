@@ -312,7 +312,8 @@
         "Flow mode": "Advanced arrangement",
         "Publish": "Publish",
         "Publish app": "Publish app",
-        "Simple mode": "Simple configuration"
+        "Simple mode": "Simple configuration",
+        "Logs": "Chat logs"
       },
       "outLink": {
         "Can Drag": "Icon draggable",
@@ -592,8 +593,7 @@
             "success": "Start syncing"
           }
         },
-        "training": {
-        }
+        "training": {}
       },
       "data": {
         "Auxiliary Data": "Auxiliary data",
