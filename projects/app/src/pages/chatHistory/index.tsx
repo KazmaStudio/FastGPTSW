@@ -61,7 +61,7 @@ const Logs = () => {
     pageNum
   } = usePagination<AppLogsListItemType>({
     api: getAppChatLogs,
-    pageSize: 20,
+    pageSize: 5,
     params: {
       dateStart: dateRange.from || new Date(),
       dateEnd: addDays(dateRange.to || new Date(), 1)

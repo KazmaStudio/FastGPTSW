@@ -18,7 +18,7 @@ async function handler(
 ): Promise<PagingData<AppLogsListItemType>> {
   const {
     pageNum = 1,
-    pageSize = 20,
+    pageSize = 5,
     appId,
     dateStart = addDays(new Date(), -7),
     dateEnd = new Date()
