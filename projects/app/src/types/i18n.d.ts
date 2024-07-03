@@ -7,6 +7,7 @@ import publish from '../../i18n/zh/publish.json';
 import workflow from '../../i18n/zh/workflow.json';
 import user from '../../i18n/zh/user.json';
 import chat from '../../i18n/zh/chat.json';
+import chatHistory from '../../i18n/zh/chatHistory.json';
 
 export interface I18nNamespaces {
   common: typeof common;
@@ -17,6 +18,7 @@ export interface I18nNamespaces {
   workflow: typeof workflow;
   user: typeof user;
   chat: typeof chat;
+  chatHistory: typeof chatHistory;
 }
 
 export type I18nNsType = (keyof I18nNamespaces)[];

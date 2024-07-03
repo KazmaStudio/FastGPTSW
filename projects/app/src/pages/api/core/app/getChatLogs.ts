@@ -9,8 +9,10 @@ import { authApp } from '@fastgpt/service/support/permission/app/auth';
 import { ChatItemCollectionName } from '@fastgpt/service/core/chat/chatItemSchema';
 import { AppCollectionName } from '@fastgpt/service/core/app/schema';
 import { NextAPI } from '@/service/middleware/entry';
-import { WritePermissionVal } from '@fastgpt/global/support/permission/constant';
+import { WritePermissionVal, ReadPermissionVal } from '@fastgpt/global/support/permission/constant';
 import { authCert } from '@fastgpt/service/support/permission/auth/common';
+import { userCollectionName } from '@fastgpt/service/support/user/schema';
+import { authUserPer } from '@fastgpt/service/support/permission/user/auth';
 
 async function handler(
   req: NextApiRequest,
@@ -26,7 +28,10 @@ async function handler(
 
   // 凭证校验
   // const { teamId } = await authApp({ req, authToken: true, appId, per: WritePermissionVal });
-  const { teamId } = await authCert({ req, authToken: true });
+  // console.log(await authCert({ req, authToken: true }));
+  const { permission } = await authUserPer({ req, authToken: true, per: ReadPermissionVal });
+
+  const { teamId, tmbId } = await authCert({ req, authToken: true });
 
   let where: any = {
     teamId: new Types.ObjectId(teamId),
@@ -42,6 +47,10 @@ async function handler(
   if (appId) {
     where.appId = new Types.ObjectId(appId);
     and.unshift({ $eq: ['$appId', new Types.ObjectId(appId)] });
+  }
+
+  if (!permission.isOwner) {
+    where.tmbId = new Types.ObjectId(tmbId);
   }
 
   const [data, total] = await Promise.all([
@@ -96,6 +105,35 @@ async function handler(
         }
       },
       {
+        $lookup: {
+          from: 'team_members',
+          localField: 'tmbId',
+          foreignField: '_id',
+          as: 'tmb'
+        }
+      },
+      {
+        $unwind: {
+          path: '$tmb',
+          preserveNullAndEmptyArrays: true // 空数组记录保留
+        }
+      },
+      { $addFields: { userId: '$tmb.userId' } },
+      {
+        $lookup: {
+          from: userCollectionName,
+          localField: 'userId',
+          foreignField: '_id',
+          as: 'user'
+        }
+      },
+      {
+        $unwind: {
+          path: '$user',
+          preserveNullAndEmptyArrays: true // 空数组记录保留
+        }
+      },
+      {
         $addFields: {
           userGoodFeedbackCount: {
             $size: {
@@ -142,6 +180,8 @@ async function handler(
           title: 1,
           source: 1,
           appId: 1,
+          userId: 1,
+          username: '$user.username',
           time: '$updateTime',
           appName: '$app.name',
           messageCount: { $size: '$chatitems' },

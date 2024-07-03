@@ -37,13 +37,10 @@ import { useI18n } from '@/web/context/I18n';
 import EmptyTip from '@fastgpt/web/components/common/EmptyTip';
 
 const Logs = () => {
-  const { t } = useTranslation();
-  const { appT } = useI18n();
-
   const { isPc } = useSystemStore();
 
   const [dateRange, setDateRange] = useState<DateRangeType>({
-    from: addDays(new Date(), -7),
+    from: addDays(new Date(), -27),
     to: new Date()
   });
 
@@ -61,7 +58,7 @@ const Logs = () => {
     pageNum
   } = usePagination<AppLogsListItemType>({
     api: getAppChatLogs,
-    pageSize: 5,
+    pageSize: 50,
     params: {
       dateStart: dateRange.from || new Date(),
       dateEnd: addDays(dateRange.to || new Date(), 1)
@@ -77,10 +74,10 @@ const Logs = () => {
         {isPc && (
           <>
             <Box fontWeight={'bold'} fontSize={['md', 'lg']} mb={2}>
-              {appT('Chat logs')}
+              {'对话日志'}
             </Box>
             <Box color={'myGray.500'} fontSize={'sm'}>
-              {appT('Chat Logs Tips')},{' '}
+              {'日志会记录该应用的在线、分享和 API(需填写 chatId) 对话记录'},{' '}
               <Box
                 as={'span'}
                 mr={2}
@@ -88,7 +85,7 @@ const Logs = () => {
                 cursor={'pointer'}
                 onClick={onOpenMarkDesc}
               >
-                {t('core.chat.Read Mark Description')}
+                {'查看标注功能介绍'}
               </Box>
             </Box>
           </>
@@ -100,13 +97,11 @@ const Logs = () => {
         <Table variant={'simple'} fontSize={'sm'}>
           <Thead>
             <Tr>
-              <Th>{appT('App Name')}</Th>
-              <Th>{t('core.app.logs.Source And Time')}</Th>
-              <Th>{appT('Logs Title')}</Th>
-              <Th>{appT('Logs Message Total')}</Th>
-              <Th>{appT('Feedback Count')}</Th>
-              <Th>{t('core.app.feedback.Custom feedback')}</Th>
-              <Th>{appT('Mark Count')}</Th>
+              <Th>{'应用名称'}</Th>
+              <Th>{'用户名'}</Th>
+              <Th>{'会话ID'}</Th>
+              <Th>{'会话时间'}</Th>
+              <Th>{'对话次数'}</Th>
             </Tr>
           </Thead>
           <Tbody fontSize={'xs'}>
@@ -124,15 +119,17 @@ const Logs = () => {
                 <Td className="textEllipsis" maxW={'250px'}>
                   {item.appName}
                 </Td>
-                <Td>
-                  <Box>{t(ChatSourceMap[item.source]?.name || 'UnKnow')}</Box>
-                  <Box color={'myGray.500'}>{dayjs(item.time).format('YYYY/MM/DD HH:mm')}</Box>
+                <Td className="textEllipsis" maxW={'250px'}>
+                  {item.username}
                 </Td>
                 <Td className="textEllipsis" maxW={'250px'}>
-                  {item.title}
+                  {item._id}
+                </Td>
+                <Td>
+                  <Box color={'myGray.500'}>{dayjs(item.time).format('YYYY/MM/DD HH:mm')}</Box>
                 </Td>
                 <Td>{item.messageCount}</Td>
-                <Td w={'100px'}>
+                {/* <Td w={'100px'}>
                   {!!item?.userGoodFeedbackCount && (
                     <Flex
                       mb={item?.userGoodFeedbackCount ? 1 : 0}
@@ -177,13 +174,13 @@ const Logs = () => {
                   {!item?.userGoodFeedbackCount && !item?.userBadFeedbackCount && <>-</>}
                 </Td>
                 <Td>{item.customFeedbacksCount || '-'}</Td>
-                <Td>{item.markCount}</Td>
+                <Td>{item.markCount}</Td> */}
               </Tr>
             ))}
           </Tbody>
         </Table>
       </TableContainer>
-      {logs.length === 0 && !isLoading && <EmptyTip text={appT('Logs Empty')}></EmptyTip>}
+      {logs.length === 0 && !isLoading && <EmptyTip text={'还没有日志噢~'}></EmptyTip>}
       <Flex w={'100%'} p={4} alignItems={'center'} justifyContent={'flex-end'}>
         <DateRangePicker
           defaultDate={dateRange}
@@ -206,12 +203,12 @@ const Logs = () => {
           }}
         />
       )}
-      <MyModal
-        isOpen={isOpenMarkDesc}
-        onClose={onCloseMarkDesc}
-        title={t('core.chat.Mark Description Title')}
-      >
-        <ModalBody whiteSpace={'pre-wrap'}>{t('core.chat.Mark Description')}</ModalBody>
+      <MyModal isOpen={isOpenMarkDesc} onClose={onCloseMarkDesc} title={'标注功能介绍'}>
+        <ModalBody whiteSpace={'pre-wrap'}>
+          {
+            '当前标注功能为测试版。\n\n点击添加标注后，需要选择一个知识库，以便存储标注数据。你可以通过该功能快速的标注问题和预期回答，以便引导模型下次的回答。\n\n目前，标注功能同知识库其他数据一样，受模型的影响，不代表标注后 100% 符合预期。\n\n标注数据仅单向与知识库同步，如果知识库修改了该标注数据，日志展示的标注数据无法同步'
+          }
+        </ModalBody>
       </MyModal>
     </Flex>
   );

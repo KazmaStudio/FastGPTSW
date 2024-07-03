@@ -44,7 +44,7 @@ const RegisterForm = ({ setPageType }: Props) => {
     const check = await trigger('username');
     if (!check) return;
     sendCode({
-      username: getValues('username'),
+      phone: getValues('phone'),
       type: 'register'
     });
   }, [getValues, sendCode, trigger]);
@@ -163,7 +163,7 @@ const RegisterForm = ({ setPageType }: Props) => {
             right={3}
             zIndex={1}
             fontSize={'sm'}
-            {...(codeCountDown > 0
+            {...(codeCountDown > 0 || errors.phone
               ? {
                   color: 'myGray.500'
                 }

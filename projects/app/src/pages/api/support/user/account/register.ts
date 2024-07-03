@@ -10,6 +10,7 @@ import {
   TeamMemberRoleEnum,
   TeamMemberStatusEnum
 } from '@fastgpt/global/support/user/team/constant';
+import { codeList } from './sendAuthCode';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<any>) {
   try {
@@ -37,12 +38,23 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       },
       'status'
     );
+
+    console.log(codeList);
+
     if (inputPhone) {
       throw new Error('手机号已存在');
     }
 
-    if (code !== '000000') {
+    if (!codeList[phone]) {
+      throw new Error('请先获取验证码');
+    }
+
+    if (code !== codeList[phone].code) {
       throw new Error('验证码错误');
+    }
+
+    if (Date.now() - codeList[phone].time > 60 * 1000) {
+      throw new Error('请先获取验证码');
     }
 
     const userId = await registgerUser(username, password, phone, department);

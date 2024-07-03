@@ -26,12 +26,12 @@ export const useSendCode = () => {
   }, [codeCountDown, codeSending, t]);
 
   const sendCode = useCallback(
-    async ({ username, type }: { username: string; type: `${UserAuthTypeEnum}` }) => {
+    async ({ phone, type }: { phone: string; type: `${UserAuthTypeEnum}` }) => {
       if (codeCountDown > 0) return;
       setCodeSending(true);
       try {
         await sendAuthCode({
-          username,
+          phone,
           type
           // googleToken: await getClientToken(feConfigs.googleClientVerKey)
         });

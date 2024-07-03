@@ -39,7 +39,7 @@ const RegisterForm = ({ setPageType, loginSuccess }: Props) => {
     const check = await trigger('username');
     if (!check) return;
     sendCode({
-      username: getValues('username'),
+      phone: getValues('username'),
       type: 'findPassword'
     });
   }, [getValues, sendCode, trigger]);

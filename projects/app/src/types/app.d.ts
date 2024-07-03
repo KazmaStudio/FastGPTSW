@@ -37,6 +37,7 @@ export type AppItemType = {
 export type AppLogsListItemType = {
   _id: string;
   id: string;
+  username: string;
   appId: string;
   source: ChatSchema['source'];
   time: Date;

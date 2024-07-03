@@ -12,7 +12,7 @@ import type {
 import { GetWXLoginQRResponse } from '@fastgpt/global/support/user/login/api.d';
 
 export const sendAuthCode = (data: {
-  username: string;
+  phone: string;
   type: `${UserAuthTypeEnum}`;
   // googleToken: string;
 }) => POST(`/support/user/account/sendAuthCode`, data);

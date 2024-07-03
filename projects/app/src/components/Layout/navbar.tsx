@@ -68,14 +68,14 @@ const Navbar = ({ unread }: { unread: number }) => {
     activeLink: ['/plugin/list', '/plugin/edit']
   };
   const dataSetNavItem = {
-    label: t('navbar.Datasets'),
+    label: '我的知识',
     icon: 'core/dataset/datasetLight',
     activeIcon: 'core/dataset/datasetFill',
     link: `/dataset/list`,
     activeLink: ['/dataset/list', '/dataset/detail']
   };
   const accountNavItem = {
-    label: t('navbar.Account'),
+    label: '我的账号',
     icon: 'support/user/userLight',
     activeIcon: 'support/user/userFill',
     link: '/account',
@@ -83,18 +83,18 @@ const Navbar = ({ unread }: { unread: number }) => {
   };
 
   const chatHistoriesNavItem = {
-    label: t('navbar.Logs'),
+    label: '会话记录',
     icon: 'support/user/userLight',
     activeIcon: 'support/user/userFill',
     link: '/chatHistory',
     activeLink: ['/chatHistory']
   };
 
-  let navItemList = [accountNavItem];
+  let navItemList = [chatHistoriesNavItem, accountNavItem];
 
   let navbarList = [];
   if (userInfo?.team.permission.isOwner) {
-    navItemList.splice(0, 0, dataSetNavItem, chatHistoriesNavItem);
+    navItemList.splice(0, 0, dataSetNavItem);
   }
   navbarList = useMemo(() => navItemList, [lastChatAppId, lastChatId, t, navItemList]);
 

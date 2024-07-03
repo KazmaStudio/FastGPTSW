@@ -11,6 +11,7 @@ type I18nContextType = {
   workflowT: TFunction<['workflow'], undefined>;
   userT: TFunction<['user'], undefined>;
   chatT: TFunction<['chat'], undefined>;
+  chatH: TFunction<['chatHistory'], undefined>;
 };
 
 export const I18nContext = createContext<I18nContextType>({
@@ -27,6 +28,7 @@ const I18nContextProvider = ({ children }: { children: React.ReactNode }) => {
   const { t: workflowT } = useTranslation('workflow');
   const { t: userT } = useTranslation('user');
   const { t: chatT } = useTranslation('chat');
+  const { t: chatH } = useTranslation('chatHistory');
 
   return (
     <I18nContext.Provider
@@ -38,7 +40,8 @@ const I18nContextProvider = ({ children }: { children: React.ReactNode }) => {
         publishT,
         workflowT,
         userT,
-        chatT
+        chatT,
+        chatH
       }}
     >
       {children}
