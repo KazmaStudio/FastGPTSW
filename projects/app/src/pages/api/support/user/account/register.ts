@@ -11,11 +11,19 @@ import {
   TeamMemberStatusEnum
 } from '@fastgpt/global/support/user/team/constant';
 import { codeList } from './sendAuthCode';
+import { UserAuthTypeEnum } from '@fastgpt/global/support/user/auth/constants';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<any>) {
   try {
     await connectToDatabase();
-    const { username, password, code, phone, department } = req.body;
+    const {
+      username,
+      password,
+      code,
+      phone,
+      department
+    }: { username: string; password: string; code: string; phone: string; department: string } =
+      req.body;
 
     if (!username || !password || !code) {
       throw new Error('缺少参数');
@@ -46,6 +54,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     }
 
     if (!codeList[phone]) {
+      throw new Error('请先获取验证码');
+    }
+
+    if (codeList[phone].type !== UserAuthTypeEnum.register) {
       throw new Error('请先获取验证码');
     }
 

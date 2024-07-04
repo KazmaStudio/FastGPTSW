@@ -69,7 +69,7 @@ const FormLayout = ({ children, setPageType, pageType }: Props) => {
   ];
   return (
     <Flex flexDirection={'column'} h={'100%'}>
-      <Flex alignItems={'center'}>
+      {/* <Flex alignItems={'center'}>
         <Flex
           w={['48px', '56px']}
           h={['48px', '56px']}
@@ -85,7 +85,7 @@ const FormLayout = ({ children, setPageType, pageType }: Props) => {
         <Box ml={3} fontSize={['2xl', '3xl']} fontWeight={'bold'}>
           {feConfigs?.systemTitle}
         </Box>
-      </Flex>
+      </Flex> */}
       {children}
       <Box flex={1} />
       {feConfigs?.show_register && oAuthList.length > 0 && (

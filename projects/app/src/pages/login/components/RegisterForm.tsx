@@ -93,11 +93,11 @@ const RegisterForm = ({ setPageType }: Props) => {
 
   return (
     <>
-      <Box fontWeight={'bold'} fontSize={'2xl'} textAlign={'center'}>
+      <Box fontWeight={'bold'} fontSize={'l'} textAlign={'center'}>
         注册 {feConfigs?.systemTitle} 账号
       </Box>
       <Box
-        mt={'42px'}
+        mt={'12px'}
         onKeyDown={(e) => {
           if (e.keyCode === 13 && !e.shiftKey && !requesting) {
             handleSubmit(onclickRegister)();

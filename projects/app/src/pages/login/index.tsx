@@ -76,37 +76,39 @@ const Login = () => {
       <Flex
         alignItems={'center'}
         justifyContent={'center'}
-        bg={`url('/icon/login-bg.svg') no-repeat`}
+        bg={`url('/imgs/home/loginBG.png') no-repeat`}
         backgroundSize={'cover'}
         userSelect={'none'}
         h={'100%'}
-        px={[0, '10vw']}
       >
         <Flex
-          flexDirection={'column'}
-          w={['100%', 'auto']}
-          h={['100%', '700px']}
-          maxH={['100%', '90vh']}
-          bg={'white'}
-          px={['5vw', '88px']}
-          py={'5vh'}
-          borderRadius={[0, '24px']}
+          w={'1088px'}
+          h={'582px'}
+          borderRadius={'38px'}
+          overflow={'hidden'}
           boxShadow={[
             '',
             '0px 0px 1px 0px rgba(19, 51, 107, 0.20), 0px 32px 64px -12px rgba(19, 51, 107, 0.20)'
           ]}
         >
-          <Box w={['100%', '380px']} flex={'1 0 0'}>
-            {pageType ? (
-              <DynamicComponent type={pageType} />
-            ) : (
-              <Center w={'full'} h={'full'} position={'relative'}>
-                <Loading fixed={false} />
-              </Center>
-            )}
-          </Box>
+          <Flex
+            flexDirection={'column'}
+            flex={1}
+            bg={`url('/imgs/home/kanban.png') no-repeat`}
+            backgroundSize={'cover'}
+          ></Flex>
+          <Flex flexDirection={'column'} flex={1} bg={'white'} py={'90px'}>
+            <Box w={['100%', '312px']} flex={'1 0 0'} m={'0 auto'}>
+              {pageType ? (
+                <DynamicComponent type={pageType} />
+              ) : (
+                <Center w={'full'} h={'full'} position={'relative'}>
+                  <Loading fixed={false} />
+                </Center>
+              )}
+            </Box>
 
-          {/* <Box
+            {/* <Box
             mt={8}
             color={'primary.700'}
             cursor={'pointer'}
@@ -116,7 +118,7 @@ const Login = () => {
             没有账号，前往注册
           </Box> */}
 
-          {/* {feConfigs?.concatMd && (
+            {/* {feConfigs?.concatMd && (
             <Box
               mt={8}
               color={'primary.700'}
@@ -127,6 +129,7 @@ const Login = () => {
               无法登录，点击联系
             </Box>
           )} */}
+          </Flex>
         </Flex>
 
         {isOpen && <CommunityModal onClose={onClose} />}
