@@ -10,6 +10,7 @@ import { getDocPath } from '@/web/common/system/doc';
 import { useTranslation } from 'next-i18next';
 import FormLayout from './components/FormLayout';
 import { Tabs, TabList, TabPanels, Tab, TabPanel, TabIndicator } from '@chakra-ui/react';
+import { useSendCode } from '@/web/support/user/hooks/useSendCode';
 
 interface Props {
   setPageType: Dispatch<`${LoginPageTypeEnum}`>;
@@ -19,6 +20,8 @@ interface Props {
 interface LoginFormType {
   username: string;
   password: string;
+  phone: string;
+  code: string;
 }
 
 const LoginForm = ({ setPageType, loginSuccess }: Props) => {
@@ -28,20 +31,61 @@ const LoginForm = ({ setPageType, loginSuccess }: Props) => {
   const {
     register,
     handleSubmit,
+    trigger,
+    getValues,
     formState: { errors }
   } = useForm<LoginFormType>();
 
   const [requesting, setRequesting] = useState(false);
   const [tabIndex, setTabIndex] = useState(0);
+  const { sendCodeText, sendCode, codeCountDown } = useSendCode();
 
-  const onclickLogin = useCallback(
+  const onclickSendCode = useCallback(async () => {
+    const check = await trigger('phone');
+    if (!check) return;
+    sendCode({
+      phone: getValues('phone'),
+      type: 'wxLogin'
+    });
+  }, [getValues, sendCode]);
+
+  const onclickLoginByCode = useCallback(
+    async ({ phone, code }: LoginFormType) => {
+      setRequesting(true);
+      try {
+        loginSuccess(
+          await postLogin({
+            phone,
+            code,
+            username: '',
+            password: '',
+            type: 0
+          })
+        );
+        toast({
+          title: '登录成功',
+          status: 'success'
+        });
+      } catch (error: any) {
+        toast({
+          title: error.message || '登录异常',
+          status: 'error'
+        });
+      }
+      setRequesting(false);
+    },
+    [loginSuccess, toast]
+  );
+
+  const onclickLoginByPassword = useCallback(
     async ({ username, password }: LoginFormType) => {
       setRequesting(true);
       try {
         loginSuccess(
           await postLogin({
             username,
-            password
+            password,
+            type: 1
           })
         );
         toast({
@@ -66,10 +110,6 @@ const LoginForm = ({ setPageType, loginSuccess }: Props) => {
     feConfigs?.show_emailLogin ? t('support.user.login.Email') : '',
     t('support.user.login.Username')
   ].filter(Boolean);
-
-  const placeholder = isCommunityVersion
-    ? t('support.user.login.Root login')
-    : loginOptions.join('/');
 
   return (
     <FormLayout setPageType={setPageType} pageType={LoginPageTypeEnum.passwordLogin}>
@@ -101,36 +141,52 @@ const LoginForm = ({ setPageType, loginSuccess }: Props) => {
               mt={'42px'}
               onKeyDown={(e) => {
                 if (e.keyCode === 13 && !e.shiftKey && !requesting) {
-                  handleSubmit(onclickLogin)();
+                  handleSubmit(onclickLoginByCode)();
                 }
               }}
             >
-              <FormControl isInvalid={!!errors.username}>
+              <FormControl isInvalid={!!errors.phone}>
                 <Input
                   bg={'myGray.50'}
-                  placeholder={placeholder}
-                  {...register('username', {
-                    required: true
+                  placeholder={'请输入手机号'}
+                  {...register('phone', {
+                    required: tabIndex === 0 ? true : false
                   })}
                 ></Input>
               </FormControl>
-              <FormControl mt={6} isInvalid={!!errors.password}>
+              <FormControl
+                mt={6}
+                isInvalid={!!errors.code}
+                display={'flex'}
+                alignItems={'center'}
+                position={'relative'}
+              >
                 <Input
                   bg={'myGray.50'}
-                  type={'password'}
-                  placeholder={
-                    isCommunityVersion
-                      ? t('support.user.login.Root password placeholder')
-                      : t('support.user.login.Password')
-                  }
-                  {...register('password', {
-                    required: true,
-                    maxLength: {
-                      value: 60,
-                      message: '密码最多 60 位'
-                    }
+                  flex={1}
+                  maxLength={8}
+                  placeholder="请输入验证码"
+                  {...register('code', {
+                    required: tabIndex === 0 ? true : false
                   })}
                 ></Input>
+                <Box
+                  position={'absolute'}
+                  right={3}
+                  zIndex={1}
+                  fontSize={'sm'}
+                  {...(codeCountDown > 0 || errors.phone
+                    ? {
+                        color: 'myGray.500'
+                      }
+                    : {
+                        color: 'primary.700',
+                        cursor: 'pointer',
+                        onClick: onclickSendCode
+                      })}
+                >
+                  {sendCodeText}
+                </Box>
               </FormControl>
               {feConfigs?.docUrl && (
                 <Flex alignItems={'center'} mt={7} fontSize={'sm'}>
@@ -161,7 +217,7 @@ const LoginForm = ({ setPageType, loginSuccess }: Props) => {
                 size={['md', 'md']}
                 colorScheme="blue"
                 isLoading={requesting}
-                onClick={handleSubmit(onclickLogin)}
+                onClick={handleSubmit(onclickLoginByCode)}
               >
                 {t('Login')}
               </Button>
@@ -196,16 +252,16 @@ const LoginForm = ({ setPageType, loginSuccess }: Props) => {
               mt={'42px'}
               onKeyDown={(e) => {
                 if (e.keyCode === 13 && !e.shiftKey && !requesting) {
-                  handleSubmit(onclickLogin)();
+                  handleSubmit(onclickLoginByPassword)();
                 }
               }}
             >
               <FormControl isInvalid={!!errors.username}>
                 <Input
                   bg={'myGray.50'}
-                  placeholder={placeholder}
+                  placeholder={'请输入用户名/手机号'}
                   {...register('username', {
-                    required: true
+                    required: tabIndex === 1 ? true : false
                   })}
                 ></Input>
               </FormControl>
@@ -213,13 +269,9 @@ const LoginForm = ({ setPageType, loginSuccess }: Props) => {
                 <Input
                   bg={'myGray.50'}
                   type={'password'}
-                  placeholder={
-                    isCommunityVersion
-                      ? t('support.user.login.Root password placeholder')
-                      : t('support.user.login.Password')
-                  }
+                  placeholder={'请输入密码'}
                   {...register('password', {
-                    required: true,
+                    required: tabIndex === 1 ? true : false,
                     maxLength: {
                       value: 60,
                       message: '密码最多 60 位'
@@ -256,7 +308,7 @@ const LoginForm = ({ setPageType, loginSuccess }: Props) => {
                 size={['md', 'md']}
                 colorScheme="blue"
                 isLoading={requesting}
-                onClick={handleSubmit(onclickLogin)}
+                onClick={handleSubmit(onclickLoginByPassword)}
               >
                 {t('Login')}
               </Button>

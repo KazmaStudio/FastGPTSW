@@ -1,8 +1,11 @@
 import { OAuthEnum } from './constant';
 
 export type PostLoginProps = {
-  username: string;
+  username?: string;
   password: string;
+  phone?: string;
+  code?: string;
+  type: number;
 };
 
 export type OauthLoginProps = {

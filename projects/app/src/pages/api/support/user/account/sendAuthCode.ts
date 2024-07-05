@@ -2,7 +2,7 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 import { jsonRes } from '@fastgpt/service/common/response';
 import { UserAuthTypeEnum } from '@fastgpt/global/support/user/auth/constants';
 
-export let codeList: { [key: string]: { code: string; type: UserAuthTypeEnum; time: number } };
+export let codeList: { [key: string]: { code: string; type: UserAuthTypeEnum; time: number } } = {};
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<any>) {
   try {
@@ -50,6 +50,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       type: type,
       time: Date.now()
     };
+
+    console.log('codeList', codeList);
 
     jsonRes(res);
   } catch (err) {
