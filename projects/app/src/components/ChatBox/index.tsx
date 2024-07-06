@@ -17,7 +17,7 @@ import type {
 } from '@fastgpt/global/core/chat/type.d';
 import { useToast } from '@fastgpt/web/hooks/useToast';
 import { getErrText } from '@fastgpt/global/common/error/utils';
-import { Box, Flex, Checkbox } from '@chakra-ui/react';
+import { Box, Flex, Checkbox, Button } from '@chakra-ui/react';
 import { EventNameEnum, eventBus } from '@/web/common/utils/eventbus';
 import { chats2GPTMessages } from '@fastgpt/global/core/chat/adapt';
 import { VariableInputEnum } from '@fastgpt/global/core/workflow/constants';
@@ -25,15 +25,15 @@ import { useForm } from 'react-hook-form';
 import { useRouter } from 'next/router';
 import { useSystemStore } from '@/web/common/system/useSystemStore';
 import { useTranslation } from 'next-i18next';
+import MyIcon from '@fastgpt/web/components/common/Icon';
 import {
   closeCustomFeedback,
   updateChatAdminFeedback,
   updateChatUserFeedback
 } from '@/web/core/chat/api';
 import type { AdminMarkType } from './components/SelectMarkCollection';
-
+import { useChatStore } from '@/web/core/chat/storeChat';
 import MyTooltip from '@fastgpt/web/components/common/MyTooltip';
-
 import { postQuestionGuide } from '@/web/core/ai/api';
 import type {
   generatingMessageProps,
@@ -51,9 +51,17 @@ import { formatChatValue2InputType } from './utils';
 import { textareaMinH } from './constants';
 import { SseResponseEventEnum } from '@fastgpt/global/core/workflow/runtime/constants';
 import ChatProvider, { ChatBoxContext } from './Provider';
-
+import {
+  Drawer,
+  DrawerBody,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerOverlay,
+  DrawerContent,
+  DrawerCloseButton
+} from '@chakra-ui/react';
+import { useDisclosure } from '@chakra-ui/react';
 import ChatItem from './components/ChatItem';
-
 import dynamic from 'next/dynamic';
 import { useCreation } from 'ahooks';
 import { AppChatConfigType } from '@fastgpt/global/core/app/type';
@@ -143,8 +151,11 @@ const ChatBox = (
     chatItemId: string;
     content: string;
   }>();
+  const [drawerType, setDrawerType] = useState<number>(0);
   const [adminMarkData, setAdminMarkData] = useState<AdminMarkType & { chatItemId: string }>();
   const [questionGuides, setQuestionGuide] = useState<string[]>([]);
+
+  const { clearHistories, histories } = useChatStore();
 
   const {
     welcomeText,
@@ -567,6 +578,7 @@ const ChatBox = (
       variableList
     ]
   );
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   // retry input
   const retryInput = useCallback(
@@ -997,6 +1009,68 @@ const ChatBox = (
         </Box>
       </Box>
       {/* message input */}
+      <Flex
+        maxW={['auto', 'min(800px, 100%)']}
+        m={['0 auto']}
+        w={'100%'}
+        h={'44px'}
+        px={'20px'}
+        py={'10px'}
+        justifyContent={'space-between'}
+      >
+        <Flex>
+          <Button
+            variant="ghost"
+            leftIcon={<MyIcon name={'core/chat/chatLight'} w={'16px'} />}
+            onClick={(e) => {
+              router.replace({
+                query: {
+                  chatId: '',
+                  appId
+                }
+              });
+            }}
+          >
+            {'新会话'}
+          </Button>
+        </Flex>
+        <Flex>
+          <Button
+            variant="ghost"
+            leftIcon={<MyIcon name={'core/chat/chatLight'} w={'16px'} />}
+            onClick={() => {
+              clearHistories({ appId });
+              router.replace({
+                query: {
+                  appId
+                }
+              });
+            }}
+          >
+            {'清除会话'}
+          </Button>
+          <Button
+            variant="ghost"
+            leftIcon={<MyIcon name={'core/chat/chatLight'} w={'16px'} />}
+            onClick={() => {
+              setDrawerType(0);
+              onOpen();
+            }}
+          >
+            {'推荐问题'}
+          </Button>
+          <Button
+            variant="ghost"
+            leftIcon={<MyIcon name={'core/chat/chatLight'} w={'16px'} />}
+            onClick={() => {
+              setDrawerType(1);
+              onOpen();
+            }}
+          >
+            {'历史会话'}
+          </Button>
+        </Flex>
+      </Flex>
       {onStartChat && (chatStarted || filterVariableNodes.length === 0) && active && (
         <ChatInput
           onSendMessage={sendPrompt}
@@ -1100,6 +1174,57 @@ const ChatBox = (
           }}
         />
       )}
+      <Drawer placement={'bottom'} onClose={onClose} isOpen={isOpen}>
+        <DrawerOverlay />
+        <DrawerContent>
+          <DrawerCloseButton />
+          <DrawerHeader borderBottomWidth="1px">
+            {drawerType === 0 ? '推荐问题' : '会话管理'}
+          </DrawerHeader>
+          <DrawerBody>
+            {drawerType === 0 ? (
+              '推荐问题'
+            ) : (
+              <>
+                {histories.map((item, i) => (
+                  <Flex
+                    position={'relative'}
+                    key={item.chatId || `${i}`}
+                    alignItems={'center'}
+                    py={2.5}
+                    px={4}
+                    cursor={'pointer'}
+                    userSelect={'none'}
+                    borderRadius={'md'}
+                    mb={2}
+                    fontSize={'sm'}
+                    _hover={{
+                      bg: 'myGray.50',
+                      '& .more': {
+                        visibility: 'visible'
+                      }
+                    }}
+                    bg={item.top ? '#E6F6F6 !important' : ''}
+                    onClick={() => {
+                      router.replace({
+                        query: {
+                          chatId: item.chatId,
+                          appId
+                        }
+                      });
+                    }}
+                  >
+                    <MyIcon name={'core/chat/chatLight'} w={'16px'} />
+                    <Box flex={'1 0 0'} ml={3} className="textEllipsis">
+                      {item.customTitle || item.title}
+                    </Box>
+                  </Flex>
+                ))}
+              </>
+            )}
+          </DrawerBody>
+        </DrawerContent>
+      </Drawer>
     </Flex>
   );
 };
