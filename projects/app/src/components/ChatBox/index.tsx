@@ -155,7 +155,7 @@ const ChatBox = (
   const [adminMarkData, setAdminMarkData] = useState<AdminMarkType & { chatItemId: string }>();
   const [questionGuides, setQuestionGuide] = useState<string[]>([]);
 
-  const { clearHistories, histories } = useChatStore();
+  const { clearHistories, histories, delOneHistory } = useChatStore();
 
   const {
     welcomeText,
@@ -169,6 +169,14 @@ const ChatBox = (
     setChatHistories,
     isChatting
   } = useContextSelector(ChatBoxContext, (v) => v);
+
+  const tempWelcome = welcomeText.split(']');
+  let questions: string[] = [];
+  tempWelcome.map((item, index) => {
+    if (item.split('[').length > 1) {
+      questions.push(item.split('[')[1]);
+    }
+  });
 
   // compute variable input is finish.
   const chatForm = useForm<ChatBoxInputFormType>({
@@ -1039,9 +1047,16 @@ const ChatBox = (
             variant="ghost"
             leftIcon={<MyIcon name={'core/chat/chatLight'} w={'16px'} />}
             onClick={() => {
-              clearHistories({ appId });
+              // clearHistories({ appId });
+              if (chatId) {
+                delOneHistory({
+                  appId: appId,
+                  chatId: chatId
+                });
+              }
               router.replace({
                 query: {
+                  chatId: '',
                   appId
                 }
               });
@@ -1176,14 +1191,40 @@ const ChatBox = (
       )}
       <Drawer placement={'bottom'} onClose={onClose} isOpen={isOpen}>
         <DrawerOverlay />
-        <DrawerContent>
+        <DrawerContent borderRadius={'16px 16px 0 0'}>
           <DrawerCloseButton />
           <DrawerHeader borderBottomWidth="1px">
             {drawerType === 0 ? '推荐问题' : '会话管理'}
           </DrawerHeader>
           <DrawerBody>
             {drawerType === 0 ? (
-              '推荐问题'
+              <>
+                {questions.length > 0 ? (
+                  <Flex pt={'24px'} fontWeight={700}>
+                    您可以这样问
+                  </Flex>
+                ) : (
+                  <>未配置问题</>
+                )}
+                {questions.map((item, index) => (
+                  <Flex my={'12px'} borderRadius={'6px'} bg={'#F4F5FA'}>
+                    <Button
+                      h="48px"
+                      justifyContent={'start'}
+                      leftIcon={<MyIcon name={'core/chat/chatLight'} w={'16px'} />}
+                      w={'100%'}
+                      variant={'ghost'}
+                      key={'question_' + index}
+                      onClick={() => {
+                        onClose();
+                        eventBus.emit(EventNameEnum.sendQuestion, { text: item });
+                      }}
+                    >
+                      {item}
+                    </Button>
+                  </Flex>
+                ))}
+              </>
             ) : (
               <>
                 {histories.map((item, i) => (

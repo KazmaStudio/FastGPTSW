@@ -11,7 +11,19 @@ import {
   AccordionPanel,
   AccordionIcon,
   Image,
-  Text
+  Text,
+  Input,
+  Button
+} from '@chakra-ui/react';
+import {
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
+  ModalCloseButton,
+  useDisclosure
 } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
 import { useUserStore } from '@/web/support/user/useUserStore';
@@ -120,6 +132,7 @@ const Navbar = ({ unread }: { unread: number }) => {
       color: 'primary.600'
     }
   };
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   return (
     <Flex
@@ -231,9 +244,14 @@ const Navbar = ({ unread }: { unread: number }) => {
                     bg: '#F0F2F5'
                   }
                 })}
-            {...(item.link !== router.asPath
+            {...(item.link !== router.asPath && item.link !== '/account'
               ? {
                   onClick: () => router.push(item.link)
+                }
+              : {})}
+            {...(item.link === '/account'
+              ? {
+                  onClick: onOpen
                 }
               : {})}
           >
@@ -251,6 +269,43 @@ const Navbar = ({ unread }: { unread: number }) => {
             </Box>
           </Box>
         ))}
+
+        <Modal
+          isCentered
+          onClose={onClose}
+          isOpen={isOpen}
+          size={'2xl'}
+          motionPreset="slideInBottom"
+        >
+          <ModalOverlay />
+          <ModalContent
+            bg={`url('/imgs/modal/accountBG.png') no-repeat`}
+            backgroundSize={'cover'}
+            minH={'426px'}
+          >
+            <ModalCloseButton />
+            <ModalBody>
+              <Flex flexDirection={'column'} alignItems={'center'} mt={'48px'}>
+                <Avatar src={userInfo?.avatar} borderRadius={'44px'} w={'88px'} h={'88px'} />
+                <Input
+                  mt={'16px'}
+                  fontSize={'18px'}
+                  fontWeight={700}
+                  isDisabled={true}
+                  w="auto"
+                  textAlign={'center'}
+                  value={userInfo?.username}
+                ></Input>
+              </Flex>
+            </ModalBody>
+            <ModalFooter>
+              <Button colorScheme="blue" mr={3} onClick={onClose}>
+                Close
+              </Button>
+              <Button variant="ghost">Secondary Action</Button>
+            </ModalFooter>
+          </ModalContent>
+        </Modal>
       </Box>
 
       {unread > 0 && (
