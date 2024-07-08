@@ -45,7 +45,7 @@ const LoginForm = ({ setPageType, loginSuccess }: Props) => {
     if (!check) return;
     sendCode({
       phone: getValues('phone'),
-      type: 'wxLogin'
+      type: 'login'
     });
   }, [getValues, sendCode]);
 
@@ -164,7 +164,7 @@ const LoginForm = ({ setPageType, loginSuccess }: Props) => {
                 <Input
                   bg={'myGray.50'}
                   flex={1}
-                  maxLength={8}
+                  maxLength={6}
                   placeholder="请输入验证码"
                   {...register('code', {
                     required: tabIndex === 0 ? true : false

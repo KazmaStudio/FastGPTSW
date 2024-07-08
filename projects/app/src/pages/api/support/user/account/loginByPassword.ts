@@ -72,7 +72,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         throw new Error('请先获取验证码');
       }
 
-      if (codeList[phone].type !== 'wxLogin') {
+      if (codeList[phone].type !== 'login') {
         throw new Error('请先获取验证码');
       }
 

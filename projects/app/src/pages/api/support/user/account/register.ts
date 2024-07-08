@@ -66,11 +66,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     }
 
     if (Date.now() - codeList[phone].time > 60 * 1000) {
+      delete codeList[phone];
       throw new Error('请先获取验证码');
     }
 
     const userId = await registgerUser(username, password, phone, department);
-
+    delete codeList[phone];
     jsonRes(res, {
       data: {
         userId: userId

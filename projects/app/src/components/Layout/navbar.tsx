@@ -1,6 +1,7 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState, useCallback } from 'react';
 import {
   Box,
+  FormControl,
   BoxProps,
   Flex,
   Link,
@@ -13,8 +14,12 @@ import {
   Image,
   Text,
   Input,
-  Button
+  ButtonGroup,
+  Button,
+  IconButton,
+  Icon
 } from '@chakra-ui/react';
+import { useForm } from 'react-hook-form';
 import {
   Modal,
   ModalOverlay,
@@ -25,6 +30,14 @@ import {
   ModalCloseButton,
   useDisclosure
 } from '@chakra-ui/react';
+import {
+  Editable,
+  EditableInput,
+  EditableTextarea,
+  EditablePreview,
+  useEditableControls
+} from '@chakra-ui/react';
+import { CheckIcon, EditIcon, CloseIcon, ChevronRightIcon } from '@chakra-ui/icons';
 import { useRouter } from 'next/router';
 import { useUserStore } from '@/web/support/user/useUserStore';
 import { useChatStore } from '@/web/core/chat/storeChat';
@@ -38,10 +51,12 @@ import { useSystemStore } from '@/web/common/system/useSystemStore';
 import MyTooltip from '@fastgpt/web/components/common/MyTooltip';
 import { getDocPath } from '@/web/common/system/doc';
 import { AppListContext } from '@/pages/app/list/component/context';
-
+import { useSendCode } from '@/web/support/user/hooks/useSendCode';
 import { getMyApps } from '@/web/core/app/api';
 import { AppDetailType, AppListItemType } from '@fastgpt/global/core/app/type';
 import { AppTypeEnum } from '@fastgpt/global/core/app/constants';
+import { updateUserInfo } from '@/web/support/user/api';
+import { useToast } from '@fastgpt/web/hooks/useToast';
 
 export enum NavbarTypeEnum {
   normal = 'normal',
@@ -53,9 +68,9 @@ const Navbar = ({ unread }: { unread: number }) => {
   const router = useRouter();
   const { parentId = null } = router.query as { parentId?: string | null };
 
-  // const [myApps, setMyApps] = useState<AppListItemType[]>([]);
+  const [accountPage, setAccountPage] = useState<number>(0);
 
-  const { userInfo, appListInfo, setAppListInfo } = useUserStore();
+  const { userInfo, appListInfo, setAppListInfo, setUserInfo } = useUserStore();
   const { gitStar, feConfigs } = useSystemStore();
   const { lastChatAppId, lastChatId } = useChatStore();
   const chatNavItem = {
@@ -132,7 +147,139 @@ const Navbar = ({ unread }: { unread: number }) => {
       color: 'primary.600'
     }
   };
+
   const { isOpen, onOpen, onClose } = useDisclosure();
+
+  interface LoginFormType {
+    username: string;
+    password: string;
+    phone: string;
+    code: string;
+  }
+
+  const {
+    register,
+    handleSubmit,
+    trigger,
+    getValues,
+    formState: { errors }
+  } = useForm<LoginFormType>();
+
+  const { sendCodeText, sendCode, codeCountDown } = useSendCode();
+
+  const phoneFilter = (input: string | undefined) => {
+    if (typeof input !== 'string') return;
+    return input.substring(0, 3) + '****' + input.substring(input.length - 4);
+  };
+
+  const onclickSendCode = useCallback(async () => {
+    const check = await trigger('phone');
+    if (!check) return;
+    sendCode({
+      phone: getValues('phone'),
+      type: 'changePhone'
+    });
+  }, [getValues, sendCode]);
+
+  const [requesting, setRequesting] = useState(false);
+  const { toast } = useToast();
+  const onclickUpdatePhone = useCallback(
+    async ({ phone, code, userId }: any) => {
+      setRequesting(true);
+      try {
+        await updateUserInfo({
+          code,
+          type: 1,
+          password: '',
+          phone,
+          userId: userInfo?._id
+        });
+
+        let newUserInfo = { ...userInfo };
+        newUserInfo.phone = phone;
+
+        // @ts-ignore
+        setUserInfo(newUserInfo);
+
+        setAccountPage(0);
+
+        toast({
+          title: `修改成功`,
+          status: 'success'
+        });
+      } catch (error: any) {
+        toast({
+          title: error.message || '修改异常',
+          status: 'error'
+        });
+      }
+      setRequesting(false);
+    },
+    [toast]
+  );
+
+  const onclickUpdateUsername = useCallback(
+    async ({ username, userId }: any) => {
+      setRequesting(true);
+      try {
+        await updateUserInfo({
+          type: 0,
+          password: '',
+          username,
+          userId: userInfo?._id
+        });
+
+        let newUserInfo = { ...userInfo };
+        newUserInfo.username = username;
+
+        // @ts-ignore
+        setUserInfo(newUserInfo);
+
+        setAccountPage(0);
+
+        toast({
+          title: `修改成功`,
+          status: 'success'
+        });
+      } catch (error: any) {
+        toast({
+          title: error.message || '修改异常',
+          status: 'error'
+        });
+      }
+      setRequesting(false);
+    },
+    [toast]
+  );
+
+  function EditableControls() {
+    const { isEditing, getSubmitButtonProps, getCancelButtonProps, getEditButtonProps } =
+      useEditableControls();
+
+    return isEditing ? (
+      <ButtonGroup p="6px" justifyContent="center" variant={'ghost'} w="88px">
+        <IconButton
+          icon={<CheckIcon />}
+          {...getSubmitButtonProps()}
+          aria-label=""
+          {...(userInfo?.username === getValues('username')
+            ? {}
+            : { onclick: handleSubmit(onclickUpdateUsername) })}
+        />
+        <IconButton icon={<CloseIcon />} {...getCancelButtonProps()} aria-label="" />
+      </ButtonGroup>
+    ) : (
+      <Flex justifyContent="center" w="88px">
+        <IconButton
+          isLoading={requesting}
+          variant={'ghost'}
+          icon={<EditIcon />}
+          {...getEditButtonProps()}
+          aria-label=""
+        />
+      </Flex>
+    );
+  }
 
   return (
     <Flex
@@ -272,7 +419,10 @@ const Navbar = ({ unread }: { unread: number }) => {
 
         <Modal
           isCentered
-          onClose={onClose}
+          onClose={() => {
+            onClose();
+            setAccountPage(0);
+          }}
           isOpen={isOpen}
           size={'2xl'}
           motionPreset="slideInBottom"
@@ -285,25 +435,201 @@ const Navbar = ({ unread }: { unread: number }) => {
           >
             <ModalCloseButton />
             <ModalBody>
-              <Flex flexDirection={'column'} alignItems={'center'} mt={'48px'}>
-                <Avatar src={userInfo?.avatar} borderRadius={'44px'} w={'88px'} h={'88px'} />
-                <Input
-                  mt={'16px'}
-                  fontSize={'18px'}
-                  fontWeight={700}
-                  isDisabled={true}
-                  w="auto"
-                  textAlign={'center'}
-                  value={userInfo?.username}
-                ></Input>
-              </Flex>
+              {accountPage === 0 ? (
+                <Flex flexDirection={'column'} alignItems={'center'} mt={'48px'}>
+                  <Avatar src={userInfo?.avatar} borderRadius={'44px'} w={'88px'} h={'88px'} />
+                  <Editable
+                    textAlign="center"
+                    justifyContent={'center'}
+                    defaultValue={userInfo?.username}
+                    mt={'16px'}
+                    fontSize={'18px'}
+                    fontWeight={700}
+                    display={'flex'}
+                    w="400px"
+                    isPreviewFocusable={false}
+                    onSubmit={async () => {
+                      if (userInfo?.username !== getValues('username')) {
+                        onclickUpdateUsername({
+                          username: getValues('username'),
+                          userId: userInfo?._id
+                        });
+                      }
+                    }}
+                  >
+                    <Box w="86px"></Box>
+                    <EditablePreview />
+                    {/* Here is the custom input */}
+                    <FormControl isInvalid={!!errors.username}>
+                      <Input
+                        fontSize={'18px'}
+                        fontWeight={700}
+                        as={EditableInput}
+                        bg={'white'}
+                        placeholder={'请输入新用户名'}
+                        {...register('username', {
+                          required: true
+                        })}
+                      ></Input>
+                    </FormControl>
+                    <EditableControls />
+                  </Editable>
+                  <Flex
+                    w="100%"
+                    h="64px"
+                    p="24px"
+                    border={'1px solid #DDE3E8'}
+                    borderRadius={'8px'}
+                    mb="24px"
+                    mt="36px"
+                    bg="white"
+                    justifyContent={'space-between'}
+                    cursor={'pointer'}
+                    onClick={() => {
+                      setAccountPage(1);
+                    }}
+                  >
+                    <Box fontSize="14px" h="16px" lineHeight={'16px'} color="rgba(0,0,0,0.4)">
+                      绑定手机号
+                    </Box>
+                    <Flex>
+                      <Box fontSize="14px" h="16px" lineHeight={'16px'} color="rgba(0,0,0,0.8)">
+                        {phoneFilter(userInfo?.phone)}
+                      </Box>
+                      <ChevronRightIcon />
+                    </Flex>
+                  </Flex>
+                  <Flex
+                    w="100%"
+                    h="64px"
+                    p="24px"
+                    border={'1px solid #DDE3E8'}
+                    borderRadius={'8px'}
+                    bg="white"
+                    justifyContent={'space-between'}
+                  >
+                    <Box fontSize="14px" h="16px" lineHeight={'16px'} color="rgba(0,0,0,0.4)">
+                      所属部门
+                    </Box>
+                    <Flex>
+                      <Box fontSize="14px" h="16px" lineHeight={'16px'} color="rgba(0,0,0,0.8)">
+                        {userInfo?.department}
+                      </Box>
+                    </Flex>
+                  </Flex>
+                </Flex>
+              ) : accountPage === 1 ? (
+                <Flex flexDirection={'column'} p="8px">
+                  <Box fontSize={'20px'} color={'black'} mb="32px">
+                    变更手机号
+                  </Box>
+                  <Box
+                    w="100%"
+                    h="64px"
+                    p="24px"
+                    fontSize="14px"
+                    border={'1px solid #DDE3E8'}
+                    borderRadius={'8px'}
+                    bg="#F0F2F5"
+                    mb="24px"
+                    lineHeight={'16px'}
+                  >
+                    {userInfo?.phone}
+                  </Box>
+                  <FormControl isInvalid={!!errors.phone}>
+                    <Input
+                      w="100%"
+                      h="64px"
+                      p="24px"
+                      fontSize="14px"
+                      border={'1px solid #DDE3E8'}
+                      borderRadius={'8px'}
+                      mb="24px"
+                      bg={'white'}
+                      placeholder={'请输入新手机号'}
+                      {...register('phone', {
+                        required: true
+                      })}
+                    ></Input>
+                  </FormControl>
+                  <FormControl
+                    isInvalid={!!errors.code}
+                    display={'flex'}
+                    alignItems={'center'}
+                    position={'relative'}
+                  >
+                    <Input
+                      w="100%"
+                      h="64px"
+                      p="24px"
+                      fontSize="14px"
+                      border={'1px solid #DDE3E8'}
+                      borderRadius={'8px'}
+                      bg="white"
+                      mb="24px"
+                      flex={1}
+                      maxLength={6}
+                      placeholder="请输入验证码"
+                      {...register('code', {
+                        required: true
+                      })}
+                    ></Input>
+                    <Box
+                      position={'absolute'}
+                      right={3}
+                      zIndex={1}
+                      top={0}
+                      lineHeight={'64px'}
+                      fontSize={'sm'}
+                      {...(codeCountDown > 0 || errors.phone
+                        ? {
+                            color: 'myGray.500'
+                          }
+                        : {
+                            color: 'primary.700',
+                            cursor: 'pointer',
+                            onClick: onclickSendCode
+                          })}
+                    >
+                      {sendCodeText}
+                    </Box>
+                  </FormControl>
+                  <Button
+                    type="submit"
+                    h="48px"
+                    w={'100%'}
+                    colorScheme="blue"
+                    isLoading={requesting}
+                    onClick={handleSubmit(onclickUpdatePhone)}
+                  >
+                    确定
+                  </Button>
+                </Flex>
+              ) : (
+                <Flex></Flex>
+              )}
             </ModalBody>
-            <ModalFooter>
-              <Button colorScheme="blue" mr={3} onClick={onClose}>
-                Close
-              </Button>
-              <Button variant="ghost">Secondary Action</Button>
-            </ModalFooter>
+            {accountPage === 0 ? (
+              <ModalFooter mb="36px">
+                <Button
+                  variant="outline"
+                  colorScheme="gray"
+                  bg="white"
+                  fontSize={'16px'}
+                  px={'22px'}
+                  py="14px"
+                  h="48px"
+                  mr={3}
+                >
+                  重制密码
+                </Button>
+                <Button fontSize={'16px'} px={'22px'} py="14px" h="44px" colorScheme="blue">
+                  更新
+                </Button>
+              </ModalFooter>
+            ) : (
+              <></>
+            )}
           </ModalContent>
         </Modal>
       </Box>
