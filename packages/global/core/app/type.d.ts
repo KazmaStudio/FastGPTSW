@@ -69,10 +69,11 @@ export type AppSimpleEditFormType = {
     similarity?: number;
     limit?: number;
     usingReRank?: boolean;
-    quotePrompt?: string | undefined;
+    quotePrompt?: string;
     datasetSearchUsingExtensionQuery?: boolean;
     datasetSearchExtensionModel?: string;
     datasetSearchExtensionBg?: string;
+    quoteTemplate?: string;
   };
   selectedTools: FlowNodeTemplateType[];
   chatConfig: AppChatConfigType;

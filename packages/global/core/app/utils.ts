@@ -51,6 +51,14 @@ export const appWorkflow2Form = ({
         node.inputs,
         NodeInputKeyEnum.aiSystemPrompt
       );
+      defaultAppForm.dataset.quotePrompt = findInputValueByKey(
+        node.inputs,
+        NodeInputKeyEnum.aiChatQuotePrompt
+      );
+      defaultAppForm.dataset.quoteTemplate = findInputValueByKey(
+        node.inputs,
+        NodeInputKeyEnum.aiChatQuoteTemplate
+      );
       defaultAppForm.aiSettings.temperature = findInputValueByKey(
         node.inputs,
         NodeInputKeyEnum.aiChatTemperature

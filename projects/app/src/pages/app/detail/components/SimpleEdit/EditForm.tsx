@@ -131,6 +131,7 @@ const EditForm = ({
   const aiSystemPrompt = watch('aiSettings.systemPrompt');
   const selectLLMModel = watch('aiSettings.model');
   const quotePrompt = watch('dataset.quotePrompt');
+
   const datasetSearchSetting = watch('dataset');
   const variables = watch('chatConfig.variables');
 
@@ -154,6 +155,7 @@ const EditForm = ({
   const { mutate: onSubmitPublish, isLoading: isSaving } = useRequest({
     mutationFn: async (data: AppSimpleEditFormType) => {
       const { nodes, edges } = form2AppWorkflow(data);
+
       await publishApp({
         nodes,
         edges,
@@ -206,7 +208,7 @@ const EditForm = ({
             ) : undefined
           }
           variant={appDetail.type === AppTypeEnum.simple ? 'primary' : 'whitePrimary'}
-          onClick={() => {
+          onClick={(e) => {
             if (appDetail.type !== AppTypeEnum.simple) {
               openConfirmSave(handleSubmit((data) => onSubmitPublish(data)))();
             } else {
@@ -294,6 +296,10 @@ const EditForm = ({
                     //   //: '使用 <QA></QA> 标记中的问答对进行回答。\n{{ quote }}\n回答要求：\n-选择其中一个或多个问答对进行回答。\n-回答的内容应尽可能与 <答案></答案> 中的内容一致。\n-如果没有相关的问答对，你需要澄清。\n-避免提及你是从 QA 获取的知识，只需要回复答案。\n问题:"{{ question }}"'
                     // } //
                     onChange={(text) => {
+                      setValue(
+                        'dataset.quoteTemplate',
+                        '{index:"{{index}}",instruction:"{{q}}",output:"{{a}}",source:"{{source}}",score:"{{score}}"}'
+                      );
                       setValue('dataset.quotePrompt', text);
 
                       // startTst(() => {

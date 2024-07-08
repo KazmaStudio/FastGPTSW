@@ -18,6 +18,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse<any>): Promise<
   await authApp({ appId, req, per: WritePermissionVal, authToken: true });
 
   const { nodes: formatNodes } = beforeUpdateAppFormat({ nodes });
+  // console.log(formatNodes[2].inputs);
 
   await mongoSessionRun(async (session) => {
     // create version histories

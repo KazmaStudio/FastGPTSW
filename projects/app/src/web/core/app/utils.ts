@@ -127,13 +127,15 @@ export function form2AppWorkflow(data: AppSimpleEditFormType): WorkflowType {
             },
             {
               key: 'quoteTemplate',
-              renderTypeList: [FlowNodeInputTypeEnum.hidden],
+              value: formData.dataset.quoteTemplate,
+              renderTypeList: [FlowNodeInputTypeEnum.textarea, FlowNodeInputTypeEnum.reference],
               label: '',
               valueType: WorkflowIOValueTypeEnum.string
             },
             {
               key: 'quotePrompt',
-              renderTypeList: [FlowNodeInputTypeEnum.hidden],
+              value: formData.dataset.quotePrompt,
+              renderTypeList: [FlowNodeInputTypeEnum.textarea, FlowNodeInputTypeEnum.reference],
               label: '',
               valueType: WorkflowIOValueTypeEnum.string
             },
@@ -260,13 +262,15 @@ export function form2AppWorkflow(data: AppSimpleEditFormType): WorkflowType {
             },
             {
               key: 'quoteTemplate',
-              renderTypeList: [FlowNodeInputTypeEnum.hidden],
+              value: formData.dataset.quoteTemplate,
+              renderTypeList: [FlowNodeInputTypeEnum.textarea, FlowNodeInputTypeEnum.reference],
               label: '',
               valueType: WorkflowIOValueTypeEnum.string
             },
             {
               key: 'quotePrompt',
-              renderTypeList: [FlowNodeInputTypeEnum.hidden],
+              value: formData.dataset.quotePrompt,
+              renderTypeList: [FlowNodeInputTypeEnum.textarea, FlowNodeInputTypeEnum.reference],
               label: '',
               valueType: WorkflowIOValueTypeEnum.string
             },
