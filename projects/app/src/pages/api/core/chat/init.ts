@@ -46,7 +46,7 @@ async function handler(
     getChatItems({
       appId,
       chatId,
-      limit: 30,
+      limit: 999,
       field: `dataId obj value adminFeedback userBadFeedback userGoodFeedback ${
         DispatchNodeResponseKeyEnum.nodeResponse
       } ${loadCustomFeedbacks ? 'customFeedbacks' : ''}`
@@ -81,6 +81,6 @@ export default NextAPI(handler);
 
 export const config = {
   api: {
-    responseLimit: '10mb'
+    responseLimit: '100mb'
   }
 };

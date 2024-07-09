@@ -4,4 +4,7 @@ export type GetAppChatLogsParams = RequestPaging & {
   appId: string;
   dateStart: Date;
   dateEnd: Date;
+  username: string;
+  chatId: string;
+  appName: string;
 };

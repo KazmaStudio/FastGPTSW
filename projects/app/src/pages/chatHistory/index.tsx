@@ -4,6 +4,7 @@ import {
   Box,
   TableContainer,
   Table,
+  Button,
   Thead,
   Tr,
   Th,
@@ -11,9 +12,12 @@ import {
   Tbody,
   useTheme,
   useDisclosure,
-  ModalBody
+  ModalBody,
+  Input,
+  FormControl
 } from '@chakra-ui/react';
 import MyIcon from '@fastgpt/web/components/common/Icon';
+import { useChatBox } from '@/components/ChatBox/hooks/useChatBox';
 import { useTranslation } from 'next-i18next';
 import { getAppChatLogs } from '@/web/core/app/api';
 import dayjs from 'dayjs';
@@ -35,14 +39,19 @@ import { formatChatValue2InputType } from '@/components/ChatBox/utils';
 import { getNanoid } from '@fastgpt/global/common/string/tools';
 import { useI18n } from '@/web/context/I18n';
 import EmptyTip from '@fastgpt/web/components/common/EmptyTip';
+import { useForm } from 'react-hook-form';
+import { useUserStore } from '@/web/support/user/useUserStore';
 
 const Logs = () => {
   const { isPc } = useSystemStore();
+  const { userInfo } = useUserStore();
 
   const [dateRange, setDateRange] = useState<DateRangeType>({
-    from: addDays(new Date(), -27),
+    from: addDays(new Date(), -30),
     to: new Date()
   });
+  const [requesting, setRequesting] = useState(false);
+  const [showLogs, setShowLogs] = useState(false);
 
   const {
     isOpen: isOpenMarkDesc,
@@ -50,6 +59,10 @@ const Logs = () => {
     onClose: onCloseMarkDesc
   } = useDisclosure();
 
+  const [searchUsername, setSearchUsername] = useState<string | undefined>();
+  const [searchAppName, setSearchAppName] = useState<string | undefined>();
+  const [searchChatId, setSearchChatId] = useState<string | undefined>();
+  // const { register, handleSubmit, getValues } = useForm();
   const {
     data: logs,
     isLoading,
@@ -60,6 +73,9 @@ const Logs = () => {
     api: getAppChatLogs,
     pageSize: 50,
     params: {
+      username: searchUsername || undefined,
+      appName: searchAppName || undefined,
+      chatId: searchChatId || undefined,
       dateStart: dateRange.from || new Date(),
       dateEnd: addDays(dateRange.to || new Date(), 1)
     }
@@ -67,41 +83,90 @@ const Logs = () => {
 
   const [detailLogsId, setDetailLogsId] = useState<string>();
   const [appId, setAppId] = useState<string>('');
+  const { onExportChat } = useChatBox();
 
   return (
-    <Flex flexDirection={'column'} h={'100%'} pt={[1, 5]} position={'relative'}>
-      <Box px={[4, 8]}>
-        {isPc && (
-          <>
-            <Box fontWeight={'bold'} fontSize={['md', 'lg']} mb={2}>
-              {'对话日志'}
-            </Box>
-            <Box color={'myGray.500'} fontSize={'sm'}>
-              {'日志会记录该应用的在线、分享和 API(需填写 chatId) 对话记录'},{' '}
-              <Box
-                as={'span'}
-                mr={2}
-                textDecoration={'underline'}
-                cursor={'pointer'}
-                onClick={onOpenMarkDesc}
-              >
-                {'查看标注功能介绍'}
-              </Box>
-            </Box>
-          </>
-        )}
-      </Box>
-
+    <Flex flexDirection={'column'} h={'100%'} position={'relative'} bg={'#F0F2F5'} p="24px" pb="0">
       {/* table */}
-      <TableContainer mt={[0, 3]} flex={'1 0 0'} h={0} overflowY={'auto'} px={[4, 8]}>
+
+      <Flex
+        borderRadius={'8px'}
+        pl="24px"
+        pr="14px"
+        bg={'white'}
+        flexWrap={userInfo?.team.permission.isOwner ? 'wrap' : 'nowrap'}
+      >
+        <Flex pt="14px" pr="14px" w="100%">
+          <Input
+            placeholder="应用名称"
+            flex={1}
+            mr={'16px'}
+            onChange={(e) => {
+              setSearchUsername(e.target.value);
+            }}
+          ></Input>
+          {userInfo?.team.permission.isOwner && (
+            <Input
+              placeholder="用户名"
+              flex={1}
+              mr={'16px'}
+              onChange={(e) => {
+                setSearchAppName(e.target.value);
+              }}
+            ></Input>
+          )}
+          <Input
+            placeholder="会话ID"
+            flex={1}
+            onChange={(e) => {
+              setSearchChatId(e.target.value);
+            }}
+          ></Input>
+        </Flex>
+
+        <Flex my="14px" pr="14px">
+          <Flex w="300px" mr="14px">
+            <DateRangePicker
+              h="40px"
+              lh="28px"
+              defaultDate={dateRange}
+              onChange={setDateRange}
+              // onSuccess={() => getData(1)}
+            />
+          </Flex>
+
+          <Button
+            type="submit"
+            h={'40px'}
+            w={'68px'}
+            colorScheme="blue"
+            isLoading={isLoading}
+            onClick={() => {
+              getData(1);
+            }}
+          >
+            查询
+          </Button>
+        </Flex>
+      </Flex>
+
+      <TableContainer
+        mt={[0, 3]}
+        overflowY={'auto'}
+        p={'24px'}
+        bg={'white'}
+        borderRadius={'8px'}
+        flex={1}
+      >
         <Table variant={'simple'} fontSize={'sm'}>
           <Thead>
             <Tr>
               <Th>{'应用名称'}</Th>
-              <Th>{'用户名'}</Th>
+              {userInfo?.team.permission.isOwner ? <Th>{'用户名'}</Th> : <></>}
               <Th>{'会话ID'}</Th>
               <Th>{'会话时间'}</Th>
               <Th>{'对话次数'}</Th>
+              <Th>{'操作'}</Th>
             </Tr>
           </Thead>
           <Tbody fontSize={'xs'}>
@@ -111,70 +176,56 @@ const Logs = () => {
                 _hover={{ bg: 'myWhite.600' }}
                 cursor={'pointer'}
                 title={'点击查看对话详情'}
-                onClick={() => {
-                  setDetailLogsId(item.id);
-                  setAppId(item.appId);
-                }}
               >
                 <Td className="textEllipsis" maxW={'250px'}>
                   {item.appName}
                 </Td>
+                {userInfo?.team.permission.isOwner ? (
+                  <Td className="textEllipsis" maxW={'250px'}>
+                    {item.username}
+                  </Td>
+                ) : (
+                  <></>
+                )}
+
                 <Td className="textEllipsis" maxW={'250px'}>
-                  {item.username}
-                </Td>
-                <Td className="textEllipsis" maxW={'250px'}>
-                  {item._id}
+                  {item.id}
                 </Td>
                 <Td>
                   <Box color={'myGray.500'}>{dayjs(item.time).format('YYYY/MM/DD HH:mm')}</Box>
                 </Td>
                 <Td>{item.messageCount}</Td>
-                {/* <Td w={'100px'}>
-                  {!!item?.userGoodFeedbackCount && (
-                    <Flex
-                      mb={item?.userGoodFeedbackCount ? 1 : 0}
-                      bg={'green.100'}
-                      color={'green.600'}
-                      px={3}
-                      py={1}
-                      alignItems={'center'}
-                      justifyContent={'center'}
-                      borderRadius={'md'}
-                      fontWeight={'bold'}
-                    >
-                      <MyIcon
-                        mr={1}
-                        name={'core/chat/feedback/goodLight'}
-                        color={'green.600'}
-                        w={'14px'}
-                      />
-                      {item.userGoodFeedbackCount}
-                    </Flex>
-                  )}
-                  {!!item?.userBadFeedbackCount && (
-                    <Flex
-                      bg={'#FFF2EC'}
-                      color={'#C96330'}
-                      px={3}
-                      py={1}
-                      alignItems={'center'}
-                      justifyContent={'center'}
-                      borderRadius={'md'}
-                      fontWeight={'bold'}
-                    >
-                      <MyIcon
-                        mr={1}
-                        name={'core/chat/feedback/badLight'}
-                        color={'#C96330'}
-                        w={'14px'}
-                      />
-                      {item.userBadFeedbackCount}
-                    </Flex>
-                  )}
-                  {!item?.userGoodFeedbackCount && !item?.userBadFeedbackCount && <>-</>}
+                <Td>
+                  <Button
+                    variant={'ghost'}
+                    onClick={() => {
+                      setShowLogs(true);
+                      setDetailLogsId(item.id);
+                      setAppId(item.appId);
+                    }}
+                  >
+                    详情
+                  </Button>
+                  <Button
+                    isLoading={requesting}
+                    variant={'ghost'}
+                    onClick={async () => {
+                      setShowLogs(false);
+                      setDetailLogsId(item.id);
+                      setAppId(item.appId);
+                      setRequesting(true);
+                      const chat = await getInitChatInfo({
+                        appId: item.appId,
+                        chatId: item.id,
+                        loadCustomFeedbacks: false
+                      });
+                      setRequesting(false);
+                      onExportChat({ type: 'pdf', history: chat.history });
+                    }}
+                  >
+                    导出
+                  </Button>
                 </Td>
-                <Td>{item.customFeedbacksCount || '-'}</Td>
-                <Td>{item.markCount}</Td> */}
               </Tr>
             ))}
           </Tbody>
@@ -186,7 +237,7 @@ const Logs = () => {
           defaultDate={dateRange}
           position="top"
           onChange={setDateRange}
-          onSuccess={() => getData(1)}
+          // onSuccess={() => getData(1)}
         />
         <Box ml={3}>
           <Pagination />
@@ -196,6 +247,7 @@ const Logs = () => {
       {!!detailLogsId && (
         <DetailLogsModal
           appId={appId}
+          showLogs={showLogs}
           chatId={detailLogsId}
           onClose={() => {
             setDetailLogsId(undefined);
@@ -203,13 +255,6 @@ const Logs = () => {
           }}
         />
       )}
-      <MyModal isOpen={isOpenMarkDesc} onClose={onCloseMarkDesc} title={'标注功能介绍'}>
-        <ModalBody whiteSpace={'pre-wrap'}>
-          {
-            '当前标注功能为测试版。\n\n点击添加标注后，需要选择一个知识库，以便存储标注数据。你可以通过该功能快速的标注问题和预期回答，以便引导模型下次的回答。\n\n目前，标注功能同知识库其他数据一样，受模型的影响，不代表标注后 100% 符合预期。\n\n标注数据仅单向与知识库同步，如果知识库修改了该标注数据，日志展示的标注数据无法同步'
-          }
-        </ModalBody>
-      </MyModal>
     </Flex>
   );
 };
@@ -219,10 +264,12 @@ export default React.memo(Logs);
 const DetailLogsModal = ({
   appId,
   chatId,
-  onClose
+  onClose,
+  showLogs
 }: {
   appId: string;
   chatId: string;
+  showLogs: boolean;
   onClose: () => void;
 }) => {
   const ChatBoxRef = useRef<ComponentRef>(null);
@@ -263,6 +310,7 @@ const DetailLogsModal = ({
       <MyBox
         isLoading={isFetching}
         display={'flex'}
+        hidden={!showLogs}
         flexDirection={'column'}
         zIndex={3}
         position={['fixed', 'absolute']}

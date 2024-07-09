@@ -1,5 +1,8 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { MongoChat } from '@fastgpt/service/core/chat/chatSchema';
+import { MongoUser } from '@fastgpt/service/support/user/schema';
+import { MongoTeamMember } from '@fastgpt/service/support/user/team/teamMemberSchema';
+import { MongoApp } from '@fastgpt/service/core/app/schema';
 import type { PagingData } from '@/types';
 import { AppLogsListItemType } from '@/types/app';
 import { Types } from '@fastgpt/service/common/mongo';
@@ -23,7 +26,10 @@ async function handler(
     pageSize = 5,
     appId,
     dateStart = addDays(new Date(), -7),
-    dateEnd = new Date()
+    dateEnd = new Date(),
+    username,
+    chatId,
+    appName
   } = req.body as GetAppChatLogsParams;
 
   // 凭证校验
@@ -51,6 +57,29 @@ async function handler(
 
   if (!permission.isOwner) {
     where.tmbId = new Types.ObjectId(tmbId);
+  }
+
+  console.log(username, appName, chatId);
+
+  if (username) {
+    const userSearch = await MongoUser.findOne({
+      username: username
+    });
+    const tmbSearch = await MongoTeamMember.findOne({
+      userId: userSearch?._id
+    });
+    where.tmbId = new Types.ObjectId(tmbSearch?._id);
+  }
+
+  if (appName) {
+    const appSearch = await MongoApp.findOne({
+      name: appName
+    });
+    where.appId = new Types.ObjectId(appSearch?._id);
+  }
+
+  if (chatId) {
+    where._id = new Types.ObjectId(chatId);
   }
 
   const [data, total] = await Promise.all([

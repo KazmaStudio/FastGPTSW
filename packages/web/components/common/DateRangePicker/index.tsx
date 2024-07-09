@@ -14,12 +14,16 @@ const DateRangePicker = ({
   defaultDate = {
     from: addDays(new Date(), -30),
     to: new Date()
-  }
+  },
+  h,
+  lh
 }: {
   onChange?: (date: DateRange) => void;
   onSuccess?: (date: DateRange) => void;
   position?: 'bottom' | 'top';
   defaultDate?: DateRange;
+  h?: string;
+  lh?: string;
 }) => {
   const { t } = useTranslation();
   const theme = useTheme();
@@ -29,9 +33,9 @@ const DateRangePicker = ({
 
   const formatSelected = useMemo(() => {
     if (range?.from && range.to) {
-      return `${format(range.from, 'y-MM-dd')} ~ ${format(range.to, 'y-MM-dd')}`;
+      return `${format(range.from, 'y-MM-dd')} - ${format(range.to, 'y-MM-dd')}`;
     }
-    return `${format(new Date(), 'y-MM-dd')} ~ ${format(new Date(), 'y-MM-dd')}`;
+    return `${format(new Date(), 'y-MM-dd')} - ${format(new Date(), 'y-MM-dd')}`;
   }, [range]);
 
   useOutsideClick({
@@ -45,15 +49,18 @@ const DateRangePicker = ({
     <Box position={'relative'} ref={OutRangeRef}>
       <Flex
         border={theme.borders.base}
+        w={'300px'}
+        justifyContent={'center'}
         px={3}
         py={1}
+        {...(h ? { h: h } : {})}
         borderRadius={'sm'}
         cursor={'pointer'}
-        bg={'myGray.100'}
+        bg={'white'}
         fontSize={'sm'}
         onClick={() => setShowSelected(true)}
       >
-        <Box color={'myGray.600'} fontWeight={'400'}>
+        <Box color={'myGray.600'} fontWeight={'400'} {...(lh ? { lineHeight: lh } : {})}>
           {formatSelected}
         </Box>
         <MyIcon ml={2} name={'date'} w={'16px'} color={'myGray.600'} />
@@ -103,7 +110,7 @@ const DateRangePicker = ({
                   mr={2}
                   onClick={() => setShowSelected(false)}
                 >
-                  {t('common.Close')}
+                  取消
                 </Button>
                 <Button
                   size={'sm'}
@@ -112,7 +119,7 @@ const DateRangePicker = ({
                     setShowSelected(false);
                   }}
                 >
-                  {t('common.Confirm')}
+                  确定
                 </Button>
               </Flex>
             }
