@@ -57,7 +57,6 @@ export const useChatBox = () => {
         },
         pdf: () => {
           const html = getHistoryHtml();
-          console.log(html);
 
           html &&
             // @ts-ignore
