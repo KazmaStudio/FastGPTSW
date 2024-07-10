@@ -101,7 +101,7 @@ const MyApps = () => {
               }}
             />
 
-            {userInfo?.team.permission.hasWritePer && (
+            {/* {userInfo?.team.permission.hasWritePer && (
               <MyMenu
                 width={150}
                 iconSize="1.5rem"
@@ -132,7 +132,7 @@ const MyApps = () => {
                   // }
                 ]}
               />
-            )}
+            )} */}
           </Flex>
 
           <List />

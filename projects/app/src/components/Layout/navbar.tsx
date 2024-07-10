@@ -50,13 +50,14 @@ import { useTranslation } from 'next-i18next';
 import { useSystemStore } from '@/web/common/system/useSystemStore';
 import MyTooltip from '@fastgpt/web/components/common/MyTooltip';
 import { getDocPath } from '@/web/common/system/doc';
-import { AppListContext } from '@/pages/app/list/component/context';
+import AppListContextProvider, { AppListContext } from '@/pages/app/list/component/context';
 import { useSendCode } from '@/web/support/user/hooks/useSendCode';
 import { getMyApps } from '@/web/core/app/api';
 import { AppDetailType, AppListItemType } from '@fastgpt/global/core/app/type';
 import { AppTypeEnum } from '@fastgpt/global/core/app/constants';
 import { updateUserInfo } from '@/web/support/user/api';
 import { useToast } from '@fastgpt/web/hooks/useToast';
+import CreateModal from '@/pages/app/list/component/CreateModal';
 
 export enum NavbarTypeEnum {
   normal = 'normal',
@@ -108,6 +109,12 @@ const Navbar = ({ unread }: { unread: number }) => {
     link: '/account',
     activeLink: ['/account']
   };
+
+  const {
+    isOpen: isOpenCreateModal,
+    onOpen: onOpenCreateModal,
+    onClose: onCloseCreateModal
+  } = useDisclosure();
 
   const chatHistoriesNavItem = {
     label: '会话记录',
@@ -309,6 +316,11 @@ const Navbar = ({ unread }: { unread: number }) => {
           borderRadius={'50%'}
         />
       </Box> */}
+      {userInfo?.team.permission.isOwner && (
+        <Button w="184px" h="40px" mb="12px" onClick={onOpenCreateModal}>
+          + 新建应用
+        </Button>
+      )}
       <Accordion defaultIndex={[0]} allowMultiple border="none" w={'100%'} overflow="hidden">
         <AccordionItem border="none" mx="8px" px="0px" bg="#F0F2F5" borderRadius="8px">
           <AccordionButton>
@@ -320,7 +332,7 @@ const Navbar = ({ unread }: { unread: number }) => {
             </Box>
             <AccordionIcon />
           </AccordionButton>
-          <AccordionPanel pb={4} marginInline="none" mx="-16px">
+          <AccordionPanel pb={4} marginInline="none" mx="-16px" maxH={'456px'} overflow={'auto'}>
             {appListInfo.map((app) => (
               <Box
                 _hover={{ bg: 'rgba(12,83,238,0.1)' }}
@@ -416,6 +428,12 @@ const Navbar = ({ unread }: { unread: number }) => {
             </Box>
           </Box>
         ))}
+
+        {isOpenCreateModal && (
+          <AppListContextProvider>
+            <CreateModal onClose={onCloseCreateModal} />
+          </AppListContextProvider>
+        )}
 
         <Modal
           isCentered

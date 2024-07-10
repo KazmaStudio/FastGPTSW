@@ -32,16 +32,16 @@ export const AppListContext = createContext<AppListContextType>({
   parentId: undefined,
   myApps: [],
   loadMyApps: function (): void {
-    throw new Error('Function not implemented.');
+    throw new Error('Function loadMyApps not implemented.');
   },
   isFetchingApps: false,
   folderDetail: undefined,
   paths: [],
   onUpdateApp: function (id: string, data: AppUpdateParams): Promise<any> {
-    throw new Error('Function not implemented.');
+    throw new Error('Function onUpdateApp not implemented.');
   },
   setMoveAppId: function (value: React.SetStateAction<string | undefined>): void {
-    throw new Error('Function not implemented.');
+    throw new Error('Function setMoveAppId not implemented.');
   }
 });
 

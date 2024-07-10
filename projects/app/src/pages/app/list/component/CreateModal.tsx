@@ -10,6 +10,7 @@ import {
   useTheme,
   Card
 } from '@chakra-ui/react';
+import { ArrowForwardIcon } from '@chakra-ui/icons';
 import { useSelectFile } from '@/web/common/file/hooks/useSelectFile';
 import { useForm } from 'react-hook-form';
 import { compressImgFileAndUpload } from '@/web/common/file/controller';
@@ -94,7 +95,7 @@ const CreateModal = ({ onClose }: { onClose: () => void }) => {
         parentId,
         templeteType: template.id,
         avatar: data.avatar || template.avatar,
-        name: data.name,
+        name: data.templateId === 'simpleChat' ? '知识管家' : '问答机器人',
         type: template.type,
         modules: template.modules || [],
         edges: template.edges || []
@@ -115,14 +116,17 @@ const CreateModal = ({ onClose }: { onClose: () => void }) => {
 
   return (
     <MyModal
-      iconSrc="/imgs/workflow/ai.svg"
-      title={t('core.app.create app')}
+      // iconSrc="/imgs/workflow/ai.svg"
+      bg={'#F0F2F5'}
+      title={'请选择应用类型'}
       isOpen
+      maxW={'759px'}
+      width={'759px'}
       onClose={onClose}
       isCentered={!isPc}
     >
       <ModalBody>
-        <Box color={'myGray.800'} fontWeight={'bold'}>
+        {/* <Box color={'myGray.800'} fontWeight={'bold'}>
           {t('common.Set Name')}
         </Box>
         <Flex mt={2} alignItems={'center'}>
@@ -141,17 +145,22 @@ const CreateModal = ({ onClose }: { onClose: () => void }) => {
             flex={1}
             ml={4}
             autoFocus
+            value={watch('templateId') === 'simpleChat' ? '知识管家' : '问答机器人'}
             bg={'myWhite.600'}
             {...register('name', {
               required: t('core.app.error.App name can not be empty')
             })}
           />
-        </Flex>
-        <Box mt={[4, 7]} mb={[0, 3]} color={'myGray.800'} fontWeight={'bold'}>
+        </Flex> */}
+        {/* <Box mt={[4, 7]} mb={[0, 3]} color={'myGray.800'} fontWeight={'bold'}>
           {t('core.app.Select app from template')}
-        </Box>
+        </Box> */}
         <Grid
           userSelect={'none'}
+          mt="30px"
+          mb="72px"
+          display={'flex'}
+          justifyContent={'space-evenly'}
           gridTemplateColumns={['repeat(1,1fr)', 'repeat(2,1fr)']}
           gridGap={[2, 4]}
         >
@@ -161,44 +170,74 @@ const CreateModal = ({ onClose }: { onClose: () => void }) => {
               border={theme.borders.base}
               p={3}
               borderRadius={'md'}
-              cursor={'pointer'}
+              w="244px"
+              h="214px"
               boxShadow={'sm'}
-              {...(templateId === item.id
-                ? {
-                    bg: 'primary.50',
-                    borderColor: 'primary.500'
-                  }
-                : {
-                    _hover: {
-                      boxShadow: 'md'
-                    }
-                  })}
+              onMouseEnter={() => {
+                setValue('templateId', item.id);
+              }}
+              // {...(templateId === item.id
+              //   ? {
+              //     bg: 'primary.50',
+              //     borderColor: 'primary.500'
+              //   }
+              //   : {
+              //     _hover: {
+              //       boxShadow: 'md'
+              //     }
+              //   })}
               onClick={() => {
+                console.log(item.id);
                 setValue('templateId', item.id);
               }}
             >
+              <Avatar
+                src={item.avatar}
+                borderRadius={'md'}
+                w={'52px'}
+                m="0 auto"
+                position={'relative'}
+                top="-36px"
+              />
               <Flex alignItems={'center'}>
-                <Avatar src={item.avatar} borderRadius={'md'} w={'20px'} />
-                <Box ml={3} color={'myGray.900'}>
+                <Box
+                  color={'myGray.900'}
+                  fontWeight={'700'}
+                  textAlign={'center'}
+                  w={'100%'}
+                  mt="-24px"
+                >
                   {t(item.name)}
                 </Box>
               </Flex>
-              <Box fontSize={'xs'} mt={2} color={'myGray.600'}>
+              <Box fontSize={'xs'} mt={2} color={'myGray.600'} px="22px">
                 {t(item.intro)}
               </Box>
+              <Button
+                w="128px"
+                h="32px"
+                m="0 auto"
+                mt="24px"
+                bg={'#0C53EE'}
+                isLoading={creating}
+                onClick={handleSubmit((data) => onclickCreate(data))}
+              >
+                开始创建
+                <ArrowForwardIcon h="18px" ml="12px" mt="-2px" />
+              </Button>
             </Card>
           ))}
         </Grid>
       </ModalBody>
 
-      <ModalFooter>
+      {/* <ModalFooter>
         <Button variant={'whiteBase'} mr={3} onClick={onClose}>
           {t('common.Close')}
         </Button>
         <Button px={6} isLoading={creating} onClick={handleSubmit((data) => onclickCreate(data))}>
           {t('common.Confirm Create')}
         </Button>
-      </ModalFooter>
+      </ModalFooter> */}
 
       <File onSelect={onSelectFile} />
     </MyModal>
