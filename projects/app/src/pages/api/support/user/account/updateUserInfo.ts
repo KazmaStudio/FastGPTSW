@@ -24,15 +24,18 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     console.log(codeList);
 
     if (type === 0 && (!username || !userId)) {
-      throw new Error('缺少参数');
+      console.log(username, userId);
+      throw new Error('缺少参数0');
     }
 
     if (type === 1 && (!phone || !userId || !code)) {
-      throw new Error('缺少参数');
+      console.log(phone, userId, code);
+      throw new Error('缺少参数1');
     }
 
     if (type === 2 && (!password || !userId || !code || !phone)) {
-      throw new Error('缺少参数');
+      console.log(password, userId, code, phone);
+      throw new Error('缺少参数2');
     }
 
     if ((type === 1 || type === 2) && phone) {

@@ -42,9 +42,12 @@ const AIChatSettingsModal = ({
 
   useEffect(() => {
     setValue('maxHistories', 100);
+    setValue('model', defaultData.model);
+    setValue('temperature', defaultData.temperature);
   }, []);
 
   const model = watch('model');
+  const temperature = watch('temperature');
   const showResponseAnswerText = watch(NodeInputKeyEnum.aiChatIsResponseText) !== undefined;
   const showMaxHistoriesSlider = watch('maxHistories') !== undefined;
   const selectedModel = llmModelList.find((item) => item.model === model) || llmModelList[0];
@@ -63,6 +66,12 @@ const AIChatSettingsModal = ({
     }
 
     setRefresh(!refresh);
+
+    onSuccess({
+      temperature: defaultData.temperature,
+      maxToken: getValues('maxHistories') ?? 100,
+      model: getValues('model')
+    });
   };
 
   const LabelStyles: BoxProps = {
@@ -74,47 +83,48 @@ const AIChatSettingsModal = ({
   };
 
   return (
-    <MyModal
-      isOpen
-      iconSrc="/imgs/workflow/AI.png"
-      onClose={onClose}
-      title={
-        <>
-          {t('core.ai.AI settings')}
-          {feConfigs?.docUrl && (
-            <Link
-              href={getDocPath('/docs/course/ai_settings/')}
-              target={'_blank'}
-              ml={1}
-              textDecoration={'underline'}
-              fontWeight={'normal'}
-              fontSize={'md'}
-            >
-              {t('common.Read intro')}
-            </Link>
-          )}
-        </>
-      }
-      w={'500px'}
-    >
-      <ModalBody overflowY={'auto'}>
-        <Flex alignItems={'center'}>
-          <Box {...LabelStyles} mr={2}>
-            {t('core.ai.Model')}
-          </Box>
-          <Box flex={'1 0 0'}>
-            <AIModelSelector
-              width={'100%'}
-              value={model}
-              list={llmModels.map((item) => ({
-                value: item.model,
-                label: item.name
-              }))}
-              onchange={onChangeModel}
-            />
-          </Box>
-        </Flex>
-        {/* {feConfigs && (
+    // <MyModal
+    //   isOpen
+    //   iconSrc="/imgs/workflow/AI.png"
+    //   onClose={onClose}
+    //   title={
+    //     <>
+    //       {t('core.ai.AI settings')}
+    //       {feConfigs?.docUrl && (
+    //         <Link
+    //           href={getDocPath('/docs/course/ai_settings/')}
+    //           target={'_blank'}
+    //           ml={1}
+    //           textDecoration={'underline'}
+    //           fontWeight={'normal'}
+    //           fontSize={'md'}
+    //         >
+    //           {t('common.Read intro')}
+    //         </Link>
+    //       )}
+    //     </>
+    //   }
+    //   w={'500px'}
+    // >
+    //   <ModalBody overflowY={'auto'}>
+    <Flex flexDirection={'column'}>
+      <Flex alignItems={'center'} w={'100%'}>
+        {/* <Box {...LabelStyles} mr={2}>
+          {t('core.ai.Model')}
+        </Box> */}
+        <Box flex={'1 0 0'} w="100%">
+          <AIModelSelector
+            width={'100%'}
+            value={defaultData.model}
+            list={llmModels.map((item) => ({
+              value: item.model,
+              label: item.name
+            }))}
+            onchange={onChangeModel}
+          />
+        </Box>
+      </Flex>
+      {/* {feConfigs && (
           <Flex mt={8}>
             <Box {...LabelStyles} mr={2}>
               {t('core.ai.Ai point price')}
@@ -126,7 +136,7 @@ const AIChatSettingsModal = ({
             </Box>
           </Flex>
         )} */}
-        {/* <Flex mt={8}>
+      {/* <Flex mt={8}>
           <Box {...LabelStyles} mr={2}>
             {t('core.ai.Max context')}
           </Box>
@@ -134,7 +144,7 @@ const AIChatSettingsModal = ({
             {selectedModel?.maxContext || 4096}Tokens
           </Box>
         </Flex> */}
-        {/* <Flex mt={8}>
+      {/* <Flex mt={8}>
           <Box {...LabelStyles} mr={2}>
             {t('core.ai.Support tool')}
             <QuestionTip ml={1} label={t('core.module.template.AI support tool tip')} />
@@ -143,28 +153,34 @@ const AIChatSettingsModal = ({
             {selectedModel?.toolChoice || selectedModel?.functionCall ? '支持' : '不支持'}
           </Box>
         </Flex> */}
-        <Flex mt={8}>
-          <Box {...LabelStyles} mr={2}>
-            {t('core.app.Temperature')}
-          </Box>
-          <Box flex={1} ml={'10px'}>
-            <MySlider
-              markList={[
-                { label: t('core.app.deterministic'), value: 0 },
-                { label: t('core.app.Random'), value: 10 }
-              ]}
-              width={'95%'}
-              min={0}
-              max={10}
-              value={getValues(NodeInputKeyEnum.aiChatTemperature)}
-              onChange={(e) => {
-                setValue(NodeInputKeyEnum.aiChatTemperature, e);
-                setRefresh(!refresh);
-              }}
-            />
-          </Box>
-        </Flex>
-        {/* <Flex mt={8}>
+      <Flex mt={0} w="100%" flexDirection={'column'}>
+        <Box p={0} pt={'24px'} pb={'12px'} fontSize={'14px'} fontWeight={'700'}>
+          {t('core.app.Temperature')}
+        </Box>
+        <Box flex={1} px="4px">
+          <MySlider
+            markList={[
+              { label: 0, value: 0 },
+              { label: 5, value: 5 },
+              { label: 10, value: 10 }
+            ]}
+            width={'100%'}
+            min={0}
+            max={10}
+            value={defaultData.temperature}
+            onChange={(e) => {
+              setValue(NodeInputKeyEnum.aiChatTemperature, e);
+              setRefresh(!refresh);
+              onSuccess({
+                temperature: getValues('temperature'),
+                maxToken: getValues('maxHistories') ?? 100,
+                model: defaultData.model
+              });
+            }}
+          />
+        </Box>
+      </Flex>
+      {/* <Flex mt={8}>
           <Box {...LabelStyles} mr={2}>
             {t('core.app.Max tokens')}
           </Box>
@@ -186,7 +202,7 @@ const AIChatSettingsModal = ({
             />
           </Box>
         </Flex> */}
-        {/* {showMaxHistoriesSlider && (
+      {/* {showMaxHistoriesSlider && (
           <Flex mt={8}>
             <Box {...LabelStyles} mr={2}>
               {t('core.app.Max histories')}
@@ -209,37 +225,38 @@ const AIChatSettingsModal = ({
             </Box>
           </Flex>
         )} */}
-        {showResponseAnswerText && (
-          <Flex mt={8} alignItems={'center'}>
-            <Box {...LabelStyles}>
-              {t('core.app.Ai response')}
-              <QuestionTip
-                ml={1}
-                label={t('core.module.template.AI response switch tip')}
-              ></QuestionTip>
-            </Box>
-            <Box flex={1} ml={'10px'}>
-              <Switch
-                isChecked={getValues(NodeInputKeyEnum.aiChatIsResponseText)}
-                onChange={(e) => {
-                  const value = e.target.checked;
-                  setValue(NodeInputKeyEnum.aiChatIsResponseText, value);
-                  setRefresh((state) => !state);
-                }}
-              />
-            </Box>
-          </Flex>
-        )}
-      </ModalBody>
-      <ModalFooter>
-        <Button variant={'whiteBase'} onClick={onClose}>
-          {t('common.Close')}
-        </Button>
-        <Button ml={4} onClick={handleSubmit(onSuccess)}>
-          {t('common.Confirm')}
-        </Button>
-      </ModalFooter>
-    </MyModal>
+      {/* {showResponseAnswerText && (
+        <Flex mt={8} alignItems={'center'}>
+          <Box {...LabelStyles}>
+            {t('core.app.Ai response')}
+            <QuestionTip
+              ml={1}
+              label={t('core.module.template.AI response switch tip')}
+            ></QuestionTip>
+          </Box>
+          <Box flex={1} ml={'10px'}>
+            <Switch
+              isChecked={getValues(NodeInputKeyEnum.aiChatIsResponseText)}
+              onChange={(e) => {
+                const value = e.target.checked;
+                setValue(NodeInputKeyEnum.aiChatIsResponseText, value);
+                setRefresh((state) => !state);
+              }}
+            />
+          </Box>
+        </Flex>
+      )} */}
+    </Flex>
+    //   </ModalBody>
+    //   <ModalFooter>
+    //     <Button variant={'whiteBase'} onClick={onClose}>
+    //       {t('common.Close')}
+    //     </Button>
+    //     <Button ml={4} onClick={handleSubmit(onSuccess)}>
+    //       {t('common.Confirm')}
+    //     </Button>
+    //   </ModalFooter>
+    // </MyModal>
   );
 };
 

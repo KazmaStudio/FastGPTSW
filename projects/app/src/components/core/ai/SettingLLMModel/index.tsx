@@ -55,7 +55,7 @@ const SettingLLMModel = ({ llmModelType = LLMModelTypeEnum.all, defaultData, onC
       })}
       position={'relative'}
     >
-      <MyTooltip label={t('core.app.Setting ai property')}>
+      {/* <MyTooltip label={t('core.app.Setting ai property')}>
         <Button
           w={'100%'}
           justifyContent={'flex-start'}
@@ -76,18 +76,18 @@ const SettingLLMModel = ({ llmModelType = LLMModelTypeEnum.all, defaultData, onC
         >
           {selectedModel?.name}
         </Button>
-      </MyTooltip>
-      {isOpenAIChatSetting && (
-        <AISettingModal
-          onClose={onCloseAIChatSetting}
-          onSuccess={(e) => {
-            onChange(e);
-            onCloseAIChatSetting();
-          }}
-          defaultData={defaultData}
-          llmModels={modelList}
-        />
-      )}
+      </MyTooltip> */}
+      {/* {isOpenAIChatSetting && ( */}
+      <AISettingModal
+        onClose={onCloseAIChatSetting}
+        onSuccess={(e) => {
+          onChange(e);
+          onCloseAIChatSetting();
+        }}
+        defaultData={defaultData}
+        llmModels={modelList}
+      />
+      {/* )} */}
     </Box>
   );
 };

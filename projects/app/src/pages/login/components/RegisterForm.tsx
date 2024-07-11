@@ -1,5 +1,5 @@
 import React, { useState, Dispatch, useCallback } from 'react';
-import { FormControl, Box, Input, Button } from '@chakra-ui/react';
+import { FormControl, Box, Input, Button, FormErrorMessage } from '@chakra-ui/react';
 import { useForm } from 'react-hook-form';
 import { LoginPageTypeEnum } from '@/web/support/user/login/constants';
 import { postRegister } from '@/web/support/user/api';
@@ -180,16 +180,16 @@ const RegisterForm = ({ setPageType }: Props) => {
           <Input
             bg={'myGray.50'}
             type={'password'}
-            placeholder="密码(4~20位)"
+            placeholder="密码必须是8-16个字符，可由字母、数字、字符组成"
             {...register('password', {
               required: '密码不能为空',
               minLength: {
-                value: 4,
-                message: '密码最少 4 位最多 20 位'
+                value: 8,
+                message: '密码最少 8 位最多 16 位'
               },
               maxLength: {
-                value: 20,
-                message: '密码最少 4 位最多 20 位'
+                value: 16,
+                message: '密码最少 8 位最多 16 位'
               }
             })}
           ></Input>
@@ -198,7 +198,7 @@ const RegisterForm = ({ setPageType }: Props) => {
           <Input
             bg={'myGray.50'}
             type={'password'}
-            placeholder="确认密码"
+            placeholder="确认密码必须是8-16个字符，可由字母、数字、字符组成"
             {...register('password2', {
               validate: (val) => (getValues('password') === val ? true : '两次密码不一致')
             })}

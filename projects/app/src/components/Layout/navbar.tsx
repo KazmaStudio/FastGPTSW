@@ -17,6 +17,7 @@ import {
   ButtonGroup,
   Button,
   IconButton,
+  FormErrorMessage,
   Icon
 } from '@chakra-ui/react';
 import { useForm } from 'react-hook-form';
@@ -160,6 +161,7 @@ const Navbar = ({ unread }: { unread: number }) => {
   interface LoginFormType {
     username: string;
     password: string;
+    checkPassword: string;
     phone: string;
     code: string;
   }
@@ -186,6 +188,15 @@ const Navbar = ({ unread }: { unread: number }) => {
       phone: getValues('phone'),
       type: 'changePhone'
     });
+  }, [getValues, sendCode]);
+
+  const onclickSendCode4ResetPassword = useCallback(async () => {
+    if (userInfo?.phone) {
+      sendCode({
+        phone: userInfo?.phone,
+        type: 'findPassword'
+      });
+    }
   }, [getValues, sendCode]);
 
   const [requesting, setRequesting] = useState(false);
@@ -259,32 +270,60 @@ const Navbar = ({ unread }: { unread: number }) => {
     [toast]
   );
 
+  const onclickUpdatePassword = useCallback(
+    async ({ phone, code, userId, password }: any) => {
+      setRequesting(true);
+      try {
+        await updateUserInfo({
+          code,
+          type: 2,
+          password: password,
+          phone: userInfo?.phone,
+          userId: userInfo?._id
+        });
+
+        setAccountPage(0);
+
+        toast({
+          title: `修改成功`,
+          status: 'success'
+        });
+      } catch (error: any) {
+        toast({
+          title: error.message || '修改异常',
+          status: 'error'
+        });
+      }
+      setRequesting(false);
+    },
+    [toast]
+  );
+
   function EditableControls() {
     const { isEditing, getSubmitButtonProps, getCancelButtonProps, getEditButtonProps } =
       useEditableControls();
 
     return isEditing ? (
-      <ButtonGroup p="6px" justifyContent="center" variant={'ghost'} w="88px">
-        <IconButton
-          icon={<CheckIcon />}
-          {...getSubmitButtonProps()}
-          aria-label=""
-          {...(userInfo?.username === getValues('username')
-            ? {}
-            : { onclick: handleSubmit(onclickUpdateUsername) })}
-        />
-        <IconButton icon={<CloseIcon />} {...getCancelButtonProps()} aria-label="" />
-      </ButtonGroup>
+      // <ButtonGroup p="6px" justifyContent="center" variant={'ghost'} ml='300px'>
+      //   <IconButton
+      //     icon={<CheckIcon />}
+      //     {...getSubmitButtonProps()}
+      //     aria-label=""
+      //     {...((userInfo?.username === getValues('username') || (getValues('username') === ''))
+      //       ? {}
+      //       : { onclick: handleSubmit(onclickUpdateUsername) })}
+      //   />
+      //   <IconButton icon={<CloseIcon />} {...getCancelButtonProps()} aria-label="" />
+      // </ButtonGroup>
+      <Box h="35px"></Box>
     ) : (
-      <Flex justifyContent="center" w="88px">
-        <IconButton
-          isLoading={requesting}
-          variant={'ghost'}
-          icon={<EditIcon />}
-          {...getEditButtonProps()}
-          aria-label=""
-        />
-      </Flex>
+      <IconButton
+        isLoading={requesting}
+        variant={'ghost'}
+        icon={<EditIcon />}
+        {...getEditButtonProps()}
+        aria-label=""
+      />
     );
   }
 
@@ -457,28 +496,27 @@ const Navbar = ({ unread }: { unread: number }) => {
                 <Flex flexDirection={'column'} alignItems={'center'} mt={'48px'}>
                   <Avatar src={userInfo?.avatar} borderRadius={'44px'} w={'88px'} h={'88px'} />
                   <Editable
+                    display={'flex'}
                     textAlign="center"
                     justifyContent={'center'}
                     defaultValue={userInfo?.username}
                     mt={'16px'}
                     fontSize={'18px'}
                     fontWeight={700}
-                    display={'flex'}
                     w="400px"
                     isPreviewFocusable={false}
-                    onSubmit={async () => {
-                      if (userInfo?.username !== getValues('username')) {
-                        onclickUpdateUsername({
-                          username: getValues('username'),
-                          userId: userInfo?._id
-                        });
-                      }
-                    }}
+                    // onSubmit={async () => {
+                    //   if (userInfo?.username !== getValues('username')) {
+                    //     onclickUpdateUsername({
+                    //       username: getValues('username'),
+                    //       userId: userInfo?._id
+                    //     });
+                    //   }
+                    // }}
                   >
-                    <Box w="86px"></Box>
-                    <EditablePreview />
+                    <EditablePreview mr="20px" ml="60px" />
                     {/* Here is the custom input */}
-                    <FormControl isInvalid={!!errors.username}>
+                    <FormControl isInvalid={!!errors.username} position={'absolute'} w={'200px'}>
                       <Input
                         fontSize={'18px'}
                         fontWeight={700}
@@ -566,10 +604,88 @@ const Navbar = ({ unread }: { unread: number }) => {
                       bg={'white'}
                       placeholder={'请输入新手机号'}
                       {...register('phone', {
+                        required: '手机号不能为空',
+                        pattern: {
+                          value: /(^1[3456789]\d{9}$)/,
+                          message: '手机号格式错误'
+                        }
+                      })}
+                    ></Input>
+                    <FormErrorMessage mt="-24px" position={'absolute'}>
+                      {errors.phone?.message}
+                    </FormErrorMessage>
+                  </FormControl>
+                  <FormControl
+                    isInvalid={!!errors.code}
+                    display={'flex'}
+                    alignItems={'center'}
+                    position={'relative'}
+                  >
+                    <Input
+                      w="100%"
+                      h="64px"
+                      p="24px"
+                      fontSize="14px"
+                      border={'1px solid #DDE3E8'}
+                      borderRadius={'8px'}
+                      bg="white"
+                      mb="24px"
+                      flex={1}
+                      maxLength={6}
+                      placeholder="请输入验证码"
+                      {...register('code', {
                         required: true
                       })}
                     ></Input>
+                    <Box
+                      position={'absolute'}
+                      right={3}
+                      zIndex={1}
+                      top={0}
+                      lineHeight={'64px'}
+                      fontSize={'sm'}
+                      {...(codeCountDown > 0 // || errors.phone
+                        ? {
+                            color: 'myGray.500'
+                          }
+                        : {
+                            color: 'primary.700',
+                            cursor: 'pointer',
+                            onClick: onclickSendCode
+                          })}
+                    >
+                      {sendCodeText}
+                    </Box>
                   </FormControl>
+                  <Button
+                    type="submit"
+                    h="48px"
+                    w={'100%'}
+                    colorScheme="blue"
+                    isLoading={requesting}
+                    onClick={handleSubmit(onclickUpdatePhone)}
+                  >
+                    确定
+                  </Button>
+                </Flex>
+              ) : (
+                <Flex flexDirection={'column'} p="8px">
+                  <Box fontSize={'20px'} color={'black'} mb="32px">
+                    重制密码
+                  </Box>
+                  <Box
+                    w="100%"
+                    h="64px"
+                    p="24px"
+                    fontSize="14px"
+                    border={'1px solid #DDE3E8'}
+                    borderRadius={'8px'}
+                    bg="#F0F2F5"
+                    mb="24px"
+                    lineHeight={'16px'}
+                  >
+                    {userInfo?.phone}
+                  </Box>
                   <FormControl
                     isInvalid={!!errors.code}
                     display={'flex'}
@@ -606,11 +722,53 @@ const Navbar = ({ unread }: { unread: number }) => {
                         : {
                             color: 'primary.700',
                             cursor: 'pointer',
-                            onClick: onclickSendCode
+                            onClick: onclickSendCode4ResetPassword
                           })}
                     >
                       {sendCodeText}
                     </Box>
+                  </FormControl>
+                  <FormControl isInvalid={!!errors.password}>
+                    <Input
+                      w="100%"
+                      h="64px"
+                      p="24px"
+                      type="password"
+                      fontSize="14px"
+                      border={'1px solid #DDE3E8'}
+                      borderRadius={'8px'}
+                      mb="24px"
+                      bg={'white'}
+                      placeholder={'请输入新密码'}
+                      {...register('password', {
+                        required: '密码不能为空',
+                        minLength: {
+                          value: 8,
+                          message: '密码最少 8 位最多 16 位'
+                        },
+                        maxLength: {
+                          value: 16,
+                          message: '密码最少 8 位最多 16 位'
+                        }
+                      })}
+                    ></Input>
+                  </FormControl>
+                  <FormControl isInvalid={!!errors.checkPassword}>
+                    <Input
+                      w="100%"
+                      h="64px"
+                      type="password"
+                      p="24px"
+                      fontSize="14px"
+                      border={'1px solid #DDE3E8'}
+                      borderRadius={'8px'}
+                      mb="24px"
+                      bg={'white'}
+                      placeholder={'确认密码'}
+                      {...register('checkPassword', {
+                        validate: (val) => (getValues('password') === val ? true : '两次密码不一致')
+                      })}
+                    ></Input>
                   </FormControl>
                   <Button
                     type="submit"
@@ -618,13 +776,11 @@ const Navbar = ({ unread }: { unread: number }) => {
                     w={'100%'}
                     colorScheme="blue"
                     isLoading={requesting}
-                    onClick={handleSubmit(onclickUpdatePhone)}
+                    onClick={handleSubmit(onclickUpdatePassword)}
                   >
                     确定
                   </Button>
                 </Flex>
-              ) : (
-                <Flex></Flex>
               )}
             </ModalBody>
             {accountPage === 0 ? (
@@ -638,10 +794,20 @@ const Navbar = ({ unread }: { unread: number }) => {
                   py="14px"
                   h="48px"
                   mr={3}
+                  onClick={() => {
+                    setAccountPage(2);
+                  }}
                 >
                   重制密码
                 </Button>
-                <Button fontSize={'16px'} px={'22px'} py="14px" h="44px" colorScheme="blue">
+                <Button
+                  fontSize={'16px'}
+                  px={'22px'}
+                  py="14px"
+                  h="44px"
+                  colorScheme="blue"
+                  onClick={handleSubmit(onclickUpdateUsername)}
+                >
                   更新
                 </Button>
               </ModalFooter>

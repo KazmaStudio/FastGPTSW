@@ -69,9 +69,9 @@ const WelcomeTextConfig = dynamic(() => import('@/components/core/app/WelcomeTex
 
 const BoxStyles: BoxProps = {
   px: 5,
-  py: '16px',
-  borderBottomWidth: '1px',
-  borderBottomColor: 'borderColor.low'
+  py: '16px'
+  // borderBottomWidth: '1px',
+  // borderBottomColor: 'borderColor.low'
 };
 const LabelStyles: BoxProps = {
   w: ['60px', '100px'],
@@ -214,7 +214,7 @@ const EditForm = ({
             </Box>
             <Input
               defaultValue={appDetail.name}
-              bg={'myWhite.600'}
+              // bg={'myWhite.600'}
               placeholder={'命名你的应用'}
               {...register('name')}
             ></Input>
@@ -224,15 +224,14 @@ const EditForm = ({
             <Input
               defaultValue={appDetail.intro}
               placeholder={'描述你的应用'}
-              bg={'myWhite.600'}
+              // bg={'myWhite.600'}
               {...register('intro')}
             />
-            <Box p={0} pt={'24px'} fontSize={'18px'} fontWeight={'700'}>
-              知识库配置信息
-            </Box>
-            {/* dataset */}
             {appDetail.templeteType === 'simpleChat' && (
               <Box p={'0px'}>
+                <Box p={0} pt={'24px'} fontSize={'18px'} fontWeight={'700'}>
+                  知识库配置信息
+                </Box>
                 <Flex justifyContent={'space-between'}>
                   <Box p={0} pt={'24px'} pb={'12px'} fontSize={'14px'} fontWeight={'700'}>
                     知识库选择
@@ -250,6 +249,7 @@ const EditForm = ({
                     // iconSpacing={1}
                     // size={'sm'}
                     // fontSize={'sm'}
+
                     onClick={onOpenDatasetParams}
                   >
                     {'知识库设置'}
@@ -262,6 +262,7 @@ const EditForm = ({
                   w="100%"
                   justifyContent={'left'}
                   textAlign={'left'}
+                  border={theme.borders.base}
                 >
                   {selectDatasets.length > 0 ? selectDatasets[0].name : '知识库选择'}
                 </Button>
@@ -505,7 +506,7 @@ const EditForm = ({
           </Box> */}
 
           {/* welcome */}
-          <Box p={0} pt={'24px'} pb={'12px'} fontSize={'14px'} fontWeight={'700'}>
+          <Box p={0} pt={'24px'} pb={'6px'} fontSize={'14px'} fontWeight={'700'}>
             对话开场白
           </Box>
           <Box p={0}>
@@ -574,16 +575,15 @@ const EditForm = ({
         ref={divRef}
         position={'sticky'}
         top={-4}
-        bg={'myGray.25'}
-        py={4}
-        justifyContent={'space-between'}
+        pt="24px"
+        // bg={'myGray.25'}
+        justifyContent={'right'}
         alignItems={'center'}
         zIndex={100}
-        px={4}
-        {...(isSticky && {
-          borderBottom: theme.borders.base,
-          boxShadow: '0 2px 10px rgba(0,0,0,0.12)'
-        })}
+        // {...(isSticky && {
+        //   // borderBottom: theme.borders.base,
+        //   boxShadow: '0 2px 10px rgba(0,0,0,0.12)'
+        // })}
       >
         {/* <HStack>
           <Box color={'myGray.900'}>{t('core.app.App params config')}</Box>
@@ -593,11 +593,11 @@ const EditForm = ({
           isLoading={isSaving}
           w="88px"
           h="36px"
-          leftIcon={
-            appDetail.type === AppTypeEnum.simple ? (
-              <MyIcon name={'common/publishFill'} w={['14px', '16px']} />
-            ) : undefined
-          }
+          // leftIcon={
+          //   appDetail.type === AppTypeEnum.simple ? (
+          //     <MyIcon name={'common/publishFill'} w={['14px', '16px']} />
+          //   ) : undefined
+          // }
           variant={appDetail.type === AppTypeEnum.simple ? 'primary' : 'whitePrimary'}
           onClick={(e) => {
             if (appDetail.type !== AppTypeEnum.simple) {
