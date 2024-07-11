@@ -141,6 +141,9 @@ export const DatasetSelectModal = ({
                         if (item.type === DatasetTypeEnum.folder) {
                           setParentId(item._id);
                         } else {
+                          if (selectedDatasets.length > 0) {
+                            setSelectedDatasets([]);
+                          }
                           const vectorModel = datasets.find(
                             (dataset) => dataset._id === selectedDatasets[0]?.datasetId
                           )?.vectorModel?.model;
@@ -151,6 +154,7 @@ export const DatasetSelectModal = ({
                               title: t('dataset.Select Dataset Tips')
                             });
                           }
+                          // ts-ignore
                           setSelectedDatasets((state) => [...state, { datasetId: item._id }]);
                         }
                       }}

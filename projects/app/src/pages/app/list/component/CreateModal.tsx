@@ -167,12 +167,11 @@ const CreateModal = ({ onClose }: { onClose: () => void }) => {
           {appTemplates.map((item) => (
             <Card
               key={item.id}
-              border={theme.borders.base}
+              boxShadow={'0px 4px 40px 0px rgba(0,0,0,0.05)'}
               p={3}
               borderRadius={'md'}
               w="244px"
               h="214px"
-              boxShadow={'sm'}
               onMouseEnter={() => {
                 setValue('templateId', item.id);
               }}

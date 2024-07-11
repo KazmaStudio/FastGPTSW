@@ -54,6 +54,8 @@ export type AppDetailType = AppSchema & {
 };
 
 export type AppSimpleEditFormType = {
+  name?: string;
+  intro?: string;
   // templateId: string;
   aiSettings: {
     model: string;

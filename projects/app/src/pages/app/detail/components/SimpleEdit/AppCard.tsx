@@ -62,7 +62,7 @@ const AppCard = () => {
   return (
     <>
       <Box px={4}>
-        <Flex alignItems={'center'} justifyContent={'space-between'}>
+        {/* <Flex alignItems={'center'} justifyContent={'space-between'}>
           <Box fontWeight={'bold'}>
             <PermissionIconText defaultPermission={appDetail.defaultPermission} fontSize={'md'} />
           </Box>
@@ -72,7 +72,7 @@ const AppCard = () => {
               {appId}
             </Box>
           </Box>
-        </Flex>
+        </Flex> */}
         {/* basic info */}
         <Box
           borderWidth={'1px'}
@@ -89,7 +89,7 @@ const AppCard = () => {
             <Box ml={3} fontWeight={'bold'} fontSize={'md'}>
               {appDetail.name}
             </Box>
-            {appDetail.permission.isOwner && (
+            {/* {appDetail.permission.isOwner && (
               <IconButton
                 className="delete"
                 position={'absolute'}
@@ -103,7 +103,7 @@ const AppCard = () => {
                 isLoading={isLoading}
                 onClick={openConfirmDel(handleDelModel)}
               />
-            )}
+            )} */}
           </Flex>
           <Box
             flex={1}

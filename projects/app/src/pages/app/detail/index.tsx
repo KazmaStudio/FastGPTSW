@@ -92,7 +92,7 @@ const AppDetail = ({ appId, currentTab }: { appId: string; currentTab: TabEnum }
         {!loadingApp && (
           <Flex flexDirection={['column', 'row']} h={'100%'}>
             {/* pc tab */}
-            <Box
+            {/* <Box
               display={['none', 'flex']}
               flexDirection={'column'}
               p={4}
@@ -140,7 +140,7 @@ const AppDetail = ({ appId, currentTab }: { appId: string; currentTab: TabEnum }
                 />
                 {appT('My Apps')}
               </Flex>
-            </Box>
+            </Box> */}
             {/* phone tab */}
             {/* <Box display={['block', 'none']} textAlign={'center'} py={3}>
               <Box className="textlg" fontSize={'lg'} fontWeight={'bold'}>

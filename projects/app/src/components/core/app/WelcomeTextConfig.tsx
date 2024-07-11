@@ -10,11 +10,11 @@ const WelcomeTextConfig = (props: TextareaProps) => {
   const { t } = useTranslation();
   return (
     <>
-      <Flex alignItems={'center'}>
+      {/* <Flex alignItems={'center'}>
         <MyIcon name={'core/app/simpleMode/chat'} w={'20px'} />
         <FormLabel ml={2}>{t('core.app.Welcome Text')}</FormLabel>
         <ChatFunctionTip type={'welcome'} />
-      </Flex>
+      </Flex> */}
       <MyTextarea
         mt={2}
         bg={'myWhite.400'}
