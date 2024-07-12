@@ -69,7 +69,7 @@ const AIChatSettingsModal = ({
 
     onSuccess({
       temperature: defaultData.temperature,
-      maxToken: getValues('maxHistories') ?? 100,
+      maxToken: getValues('maxHistories') ?? 3000,
       model: getValues('model')
     });
   };
@@ -173,7 +173,7 @@ const AIChatSettingsModal = ({
               setRefresh(!refresh);
               onSuccess({
                 temperature: getValues('temperature'),
-                maxToken: getValues('maxHistories') ?? 100,
+                maxToken: getValues('maxToken') ?? 3000,
                 model: defaultData.model
               });
             }}
