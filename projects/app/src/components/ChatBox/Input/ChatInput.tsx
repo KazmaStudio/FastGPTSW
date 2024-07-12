@@ -206,7 +206,7 @@ const ChatInput = ({
   }, [finishWhisperTranscription, isSpeaking, startSpeak, stopSpeak]);
 
   return (
-    <Box m={['0 auto', '10px auto']} w={'100%'} maxW={['auto', 'min(800px, 100%)']} px={[0, 5]}>
+    <Box m={['0 auto', '10px auto']} w={'100%'} maxW={['auto', 'min(1200px, 100%)']} px={[0, 5]}>
       <Box
         pt={fileList.length > 0 ? '10px' : ['14px', '18px']}
         pb={['14px', '18px']}

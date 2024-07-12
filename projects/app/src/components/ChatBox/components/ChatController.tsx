@@ -180,7 +180,7 @@ const ChatController = ({
           />
         </MyTooltip>
       )}
-      {chat.obj === ChatRoleEnum.AI && (
+      {/* {false && chat.obj === ChatRoleEnum.AI && (
         <>
           {!!onCloseUserLike && chat.userGoodFeedback && (
             <MyTooltip label={t('core.chat.feedback.Close User Like')}>
@@ -211,13 +211,13 @@ const ChatController = ({
               {...controlIconStyle}
               {...(!!chat.userGoodFeedback
                 ? {
-                    color: 'white',
-                    bg: 'green.500',
-                    fontWeight: 'bold'
-                  }
+                  color: 'white',
+                  bg: 'green.500',
+                  fontWeight: 'bold'
+                }
                 : {
-                    _hover: { color: 'green.600' }
-                  })}
+                  _hover: { color: 'green.600' }
+                })}
               name={'core/chat/feedback/goodLight'}
               onClick={onAddUserLike}
             />
@@ -227,20 +227,20 @@ const ChatController = ({
               {...controlIconStyle}
               {...(!!chat.userBadFeedback
                 ? {
-                    color: 'white',
-                    bg: '#FC9663',
-                    fontWeight: 'bold',
-                    onClick: onAddUserDislike
-                  }
+                  color: 'white',
+                  bg: '#FC9663',
+                  fontWeight: 'bold',
+                  onClick: onAddUserDislike
+                }
                 : {
-                    _hover: { color: '#FB7C3C' },
-                    onClick: onAddUserDislike
-                  })}
+                  _hover: { color: '#FB7C3C' },
+                  onClick: onAddUserDislike
+                })}
               name={'core/chat/feedback/badLight'}
             />
           )}
         </>
-      )}
+      )} */}
     </Flex>
   );
 };

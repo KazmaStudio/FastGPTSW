@@ -9,6 +9,7 @@ import { StoreEdgeItemType } from '../workflow/type/edge';
 import { PermissionValueType } from '../../support/permission/type';
 import { AppPermission } from '../../support/permission/app/controller';
 import { ParentIdType } from '../../common/parentFolder/type';
+import { UserType } from 'support/user/type';
 
 export type AppSchema = {
   _id: string;
@@ -44,7 +45,10 @@ export type AppListItemType = {
   name: string;
   avatar: string;
   intro: string;
+  creator: UserType;
+  createTime: number;
   type: AppTypeEnum;
+  templeteType: String;
   defaultPermission: PermissionValueType;
   permission: AppPermission;
 };

@@ -18,7 +18,8 @@ import {
   Button,
   IconButton,
   FormErrorMessage,
-  Icon
+  Icon,
+  Img
 } from '@chakra-ui/react';
 import { useForm } from 'react-hook-form';
 import {
@@ -103,8 +104,8 @@ const Navbar = ({ unread, userInfoLocal }: { unread: number; userInfoLocal: User
     icon: 'core/dataset/datasetLight',
     activeIcon: 'core/dataset/datasetFill',
     link: `/dataset/list`,
-    logo: '/imgs/home/book.png',
-    activeLink: ['/dataset/list', '/dataset/detail']
+    activeLink: ['/dataset/list', '/dataset/detail'],
+    logo: '/imgs/home/book.png'
   };
   const accountNavItem = {
     label: '我的账号',
@@ -342,6 +343,7 @@ const Navbar = ({ unread, userInfoLocal }: { unread: number; userInfoLocal: User
       alignItems={'center'}
       bg={'white'}
       pt={6}
+      pl={'8px'}
       h={'100%'}
       w={'100%'}
       userSelect={'none'}
@@ -365,19 +367,14 @@ const Navbar = ({ unread, userInfoLocal }: { unread: number; userInfoLocal: User
         />
       </Box> */}
       {userInfo?.team.permission.isOwner && (
-        <Button leftIcon={<AddIcon />} w="184px" h="40px" mb="12px" onClick={onOpenCreateModal}>
-          新建应用
+        <Button h="40px" mb="12px" w={'56px'} onClick={onOpenCreateModal}>
+          <AddIcon />
         </Button>
       )}
       <Accordion defaultIndex={[0]} allowMultiple border="none" w={'100%'} overflow="hidden">
-        <AccordionItem border="none" mx="8px" px="0px" bg="#F0F2F5" borderRadius="8px">
-          <AccordionButton>
-            <Box as="span" flex="1" textAlign="left" display="flex" borderRadius="8px">
-              <Image src="/imgs/app/grid.png" w={'18px'} h={'18px'} />
-              <Text ml="12px" lineHeight="18px">
-                我的应用
-              </Text>
-            </Box>
+        <AccordionItem border="none" px="0px" bg="#F0F2F5" borderRadius="8px">
+          <AccordionButton p={'4px'}>
+            <Image src="/imgs/app/grid.png" w={'18px'} h={'18px'} ml="14px" mt="4px" />
             <AccordionIcon />
           </AccordionButton>
           <AccordionPanel pb={4} marginInline="none" mx="-16px" maxH={'456px'} overflow={'auto'}>
@@ -395,7 +392,6 @@ const Navbar = ({ unread, userInfoLocal }: { unread: number; userInfoLocal: User
                 textAlign="left"
                 cursor="pointer"
                 p="8px"
-                px="16px"
                 _notLast={{ mb: '14px' }}
                 key={app._id}
                 onClick={() => {
@@ -412,29 +408,24 @@ const Navbar = ({ unread, userInfoLocal }: { unread: number; userInfoLocal: User
                   }
                 }}
               >
-                <Image src={app.avatar} w="18px" h="18px" />
-                <Text
-                  ml="12px"
-                  lineHeight="18px"
-                  color={
-                    app._id === lastChatAppId && ['/chat', '/app/detail'].includes(router.pathname)
-                      ? '#0C53EE'
-                      : '#6E6E80'
-                  }
-                >
-                  {app.name}
-                </Text>
+                <Image src={app.avatar} w="32px" h="32px" ml="4px" />
               </Box>
             ))}
           </AccordionPanel>
         </AccordionItem>
       </Accordion>
       {/* 导航列表 */}
-      <Box w="100%">
+      <Box w="100%" mt={'12px'}>
         {navbarList.map((item) => (
           <Box
+            w="56px"
+            h="56px"
+            p="18px"
+            m="0px"
+            mb="12px"
+            cursor={'pointer'}
+            borderRadius={'8px'}
             key={item.link}
-            {...itemStyles}
             {...(item.activeLink.includes(router.pathname)
               ? {
                   color: '#0C53EE',
@@ -462,8 +453,7 @@ const Navbar = ({ unread, userInfoLocal }: { unread: number; userInfoLocal: User
                 }
               : {})}
           >
-            <Image src={item.logo} w="18px" h="18px"></Image>
-
+            <Image src={item.logo}></Image>
             {/* <MyIcon
               name={
                 item.activeLink.includes(router.pathname)
@@ -472,10 +462,9 @@ const Navbar = ({ unread, userInfoLocal }: { unread: number; userInfoLocal: User
               }
               width={'20px'}
               height={'20px'}
+              p='0px'
+              m='0px'
             /> */}
-            <Box ml="12px" flex="1" lineHeight="18px">
-              {item.label}
-            </Box>
           </Box>
         ))}
 

@@ -136,6 +136,7 @@ export const iconPaths = {
   'core/workflow/grout': () => import('./icons/core/workflow/grout.svg'),
   'core/workflow/inputType/dynamic': () => import('./icons/core/workflow/inputType/dynamic.svg'),
   'core/workflow/inputType/input': () => import('./icons/core/workflow/inputType/input.svg'),
+  dataset: () => import('./icons/common/book.png'),
   'core/workflow/inputType/jsonEditor': () =>
     import('./icons/core/workflow/inputType/jsonEditor.svg'),
   'core/workflow/inputType/numberInput': () =>

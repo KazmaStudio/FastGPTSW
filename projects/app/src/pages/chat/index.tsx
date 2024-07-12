@@ -284,7 +284,7 @@ const Chat = ({ appId, chatId }: { appId: string; chatId: string }) => {
       <PageContainer flex={'1 0 0'} w={0} p={[0, '16px']} position={'relative'}>
         <Flex h={'100%'} flexDirection={['column', 'row']} bg={'white'}>
           {/* pc always show history. */}
-          {((children: React.ReactNode) => {
+          {/* {((children: React.ReactNode) => {
             return isPc || !appId ? (
               <SideBar>{children}</SideBar>
             ) : (
@@ -346,7 +346,7 @@ const Chat = ({ appId, chatId }: { appId: string; chatId: string }) => {
                 });
               }}
             />
-          )}
+          )} */}
           {/* chat container */}
           <Flex
             position={'relative'}
@@ -356,7 +356,7 @@ const Chat = ({ appId, chatId }: { appId: string; chatId: string }) => {
             flexDirection={'column'}
           >
             {/* header */}
-            <ChatHeader
+            {/* <ChatHeader
               appAvatar={chatData.app.avatar}
               appName={chatData.app.name}
               history={chatData.history}
@@ -364,12 +364,13 @@ const Chat = ({ appId, chatId }: { appId: string; chatId: string }) => {
               onOpenSlider={onOpenSlider}
               onRoute2AppDetail={() => router.push(`/app/detail?appId=${appId}`)}
               showHistory
-            />
+            /> */}
 
             {/* chat box */}
             <Box flex={1}>
               <ChatBox
                 ref={ChatBoxRef}
+                toolbar={true}
                 showEmptyIntro
                 appAvatar={chatData.app.avatar}
                 userAvatar={userInfo?.avatar}

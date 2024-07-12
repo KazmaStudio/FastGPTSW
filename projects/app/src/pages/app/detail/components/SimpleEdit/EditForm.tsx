@@ -329,7 +329,7 @@ const EditForm = ({
               </FormLabel>
             </Flex> */}
             <Flex justifyContent={'space-between'}>
-              <Box p={0} pt={'24px'} pb={'12px'} fontSize={'14px'} fontWeight={'700'}>
+              <Box p={0} pt={'12px'} pb={'12px'} fontSize={'14px'} fontWeight={'700'}>
                 模型选择
               </Box>
               {appDetail.templeteType === 'simpleChat' && (
@@ -409,12 +409,15 @@ const EditForm = ({
             {appDetail.templeteType === 'chatGuide' ? (
               <Box mt={3}>
                 <HStack {...LabelStyles}>
-                  <Box>{'模型设定'}</Box>
+                  <Box fontSize={'14px'} fontWeight={'700'} pb="12px">
+                    {'模型设定'}
+                  </Box>
                   {/* <Box>{t('core.ai.Prompt')}</Box> */}
                   {/* <QuestionTip label={t('core.app.tip.chatNodeSystemPromptTip')} /> */}
                 </HStack>
                 <Box mt={1}>
                   <PromptEditor
+                    h={100}
                     // value={quotePrompt}
                     value={aiSystemPrompt}
                     // {

@@ -15,7 +15,7 @@ export const appTemplates: (AppItemType & {
 })[] = [
   {
     id: 'simpleChat',
-    avatar: '/imgs/workflow/AI.png',
+    avatar: '/imgs/app/type1.png',
     name: '知识管家', //'简易模板',
     intro: '深入整合文档和问答对知识库，为用户提供准确、快速的知识检索总结服务', //'一个极其简单的 AI 应用，你可以绑定知识库或工具。',
     type: AppTypeEnum.simple,
@@ -245,7 +245,7 @@ export const appTemplates: (AppItemType & {
   },
   {
     id: 'chatGuide',
-    avatar: '/imgs/workflow/userGuide.png',
+    avatar: '/imgs/app/type2.png',
     name: '问答机器人', //'对话引导 + 变量',
     intro: '给机器人设定角色和任务，结合大模型能力回复问题，获得个性化智能对话体验', //'可以在对话开始发送一段提示，或者让用户填写一些内容，作为本次对话的变量',
     type: AppTypeEnum.simple,

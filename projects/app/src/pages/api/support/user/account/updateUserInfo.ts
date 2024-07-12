@@ -33,8 +33,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       throw new Error('缺少参数1');
     }
 
-    if (type === 2 && (!password || !userId || !code || !phone)) {
-      console.log(password, userId, code, phone);
+    if (type === 2 && (!password || !code || !phone)) {
+      console.log(password, code, phone);
       throw new Error('缺少参数2');
     }
 
@@ -61,12 +61,21 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       }
     }
 
-    const authCert = await MongoUser.findOne(
+    let authCert = await MongoUser.findOne(
       {
         _id: userId
       },
       'status'
     );
+
+    if (!authCert) {
+      authCert = await MongoUser.findOne(
+        {
+          phone: phone
+        },
+        'status'
+      );
+    }
 
     if (!authCert) {
       throw new Error('用户未注册');
@@ -116,7 +125,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         }
       });
     } else if (type === 2) {
-      await MongoUser.findByIdAndUpdate(userId, {
+      await MongoUser.findByIdAndUpdate(phone, {
         password
       });
       delete codeList[phone];

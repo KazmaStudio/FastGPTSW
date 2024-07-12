@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import { Box, Grid, Flex, IconButton } from '@chakra-ui/react';
+import { Box, Grid, Flex, IconButton, Divider } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
 import { delAppById, putAppById } from '@/web/core/app/api';
 import { useConfirm } from '@fastgpt/web/hooks/useConfirm';
@@ -99,9 +99,12 @@ const ListItem = () => {
   return (
     <>
       <Box as="div">
-        <>共享应用</>
+        <Box fontSize={'16px'} fontWeight={'700'}>
+          共享应用
+        </Box>
         <Grid
-          py={[4, 6]}
+          mt="16px"
+          pb={'32px'}
           gridTemplateColumns={['1fr', 'repeat(2,1fr)', 'repeat(3,1fr)', 'repeat(4,1fr)']}
           gridGap={5}
           alignItems={'stretch'}
@@ -164,9 +167,11 @@ const ListItem = () => {
                       isFolder: app.type === AppTypeEnum.folder
                     })}
                   >
-                    <Flex alignItems={'center'} h={'38px'}>
-                      <Avatar src={app.avatar} borderRadius={'md'} w={'28px'} />
-                      <Box ml={3}>{app.name}</Box>
+                    <Flex flexDirection={'column'}>
+                      <Avatar src={app.avatar} borderRadius={'md'} w={'48px'} />
+                      <Box fontSize={'18px'} color="black">
+                        {app.name}
+                      </Box>
                       {app.permission.hasManagePer && ( //userInfo?.team.permission.hasManagePer && (
                         <Box
                           className="more"
@@ -245,19 +250,51 @@ const ListItem = () => {
                       className={'textEllipsis3'}
                       py={2}
                       wordBreak={'break-all'}
-                      fontSize={'mini'}
-                      color={'myGray.600'}
+                      fontSize={'13px'}
+                      color={'rgba(0,0,0,0.6)'}
                     >
-                      {app.intro || '还没写介绍~'}
+                      {app.intro || '还没写介绍'}
                     </Box>
-                    <Flex h={'34px'} alignItems={'flex-end'}>
+                    <Box
+                      fontSize={'12px'}
+                      color={'rgba(0,0,0,0.6)'}
+                      w="60px"
+                      h={'22px'}
+                      lineHeight={'22px'}
+                      bg={'#F6F5F8'}
+                      borderRadius={'2px'}
+                      textAlign={'center'}
+                      mb={'8px'}
+                    >
+                      {app.templeteType === 'chatsimpleChat' ? '智能BI' : '智能问答'}
+                    </Box>
+                    {/* <Flex h={'34px'} alignItems={'flex-end'}>
                       <Box flex={1}>
-                        {/* <PermissionIconText
+                        <PermissionIconText
                           defaultPermission={app.defaultPermission}
                           color={'myGray.600'}
-                        /> */}
+                        />
                       </Box>
-                      {/* <AppTypeTag type={app.type} /> */}
+                      <AppTypeTag type={app.type} />
+                    </Flex> */}
+                    <Divider></Divider>
+                    <Flex justifyContent={'space-between'}>
+                      <Flex mt="8px">
+                        <Flex bg={'#EEE'} borderRadius={'12px'} h={'24px'} pr="8px">
+                          <Avatar
+                            borderRadius={'12px'}
+                            h={'24px'}
+                            w={'24px'}
+                            src={app.creator.avatar}
+                          ></Avatar>
+                          <Box px="8px" lineHeight={'24px'}>
+                            {app.creator.username}
+                          </Box>
+                        </Flex>
+                      </Flex>
+                      <Box fontSize={'12px'} pt="12px" color={'rgba(0,0,0,0.4)'}>
+                        {'创建于 ' + app.createTime.toString().split('T')[0]}
+                      </Box>
                     </Flex>
                   </MyBox>
                 </MyTooltip>
@@ -268,9 +305,11 @@ const ListItem = () => {
 
       {userInfo?.team.permission.isOwner && (
         <Box as="div">
-          <>我的创建</>
+          <Box fontSize={'16px'} fontWeight={'700'}>
+            我的创建
+          </Box>
           <Grid
-            py={[4, 6]}
+            pt="16px"
             gridTemplateColumns={['1fr', 'repeat(2,1fr)', 'repeat(3,1fr)', 'repeat(4,1fr)']}
             gridGap={5}
             alignItems={'stretch'}
@@ -331,9 +370,11 @@ const ListItem = () => {
                     isFolder: app.type === AppTypeEnum.folder
                   })}
                 >
-                  <Flex alignItems={'center'} h={'38px'}>
-                    <Avatar src={app.avatar} borderRadius={'md'} w={'28px'} />
-                    <Box ml={3}>{app.name}</Box>
+                  <Flex flexDirection={'column'}>
+                    <Avatar src={app.avatar} borderRadius={'md'} w={'48px'} />
+                    <Box fontSize={'18px'} color="black">
+                      {app.name}
+                    </Box>
                     {app.permission.hasManagePer && ( //userInfo?.team.permission.hasManagePer && (
                       <Box
                         className="more"
@@ -412,19 +453,51 @@ const ListItem = () => {
                     className={'textEllipsis3'}
                     py={2}
                     wordBreak={'break-all'}
-                    fontSize={'mini'}
-                    color={'myGray.600'}
+                    fontSize={'13px'}
+                    color={'rgba(0,0,0,0.6)'}
                   >
-                    {app.intro || '还没写介绍~'}
+                    {app.intro || '还没写介绍'}
                   </Box>
-                  <Flex h={'34px'} alignItems={'flex-end'}>
-                    <Box flex={1}>
-                      {/* <PermissionIconText
-                        defaultPermission={app.defaultPermission}
-                        color={'myGray.600'}
-                      /> */}
+                  <Box
+                    fontSize={'12px'}
+                    color={'rgba(0,0,0,0.6)'}
+                    w="60px"
+                    h={'22px'}
+                    lineHeight={'22px'}
+                    bg={'#F6F5F8'}
+                    borderRadius={'2px'}
+                    textAlign={'center'}
+                    mb={'8px'}
+                  >
+                    {app.templeteType === 'chatsimpleChat' ? '智能BI' : '智能问答'}
+                  </Box>
+                  {/* <Flex h={'34px'} alignItems={'flex-end'}>
+                      <Box flex={1}>
+                        <PermissionIconText
+                          defaultPermission={app.defaultPermission}
+                          color={'myGray.600'}
+                        />
+                      </Box>
+                      <AppTypeTag type={app.type} />
+                    </Flex> */}
+                  <Divider></Divider>
+                  <Flex justifyContent={'space-between'}>
+                    <Flex mt="8px">
+                      <Flex bg={'#EEE'} borderRadius={'12px'} h={'24px'} pr="8px">
+                        <Avatar
+                          borderRadius={'12px'}
+                          h={'24px'}
+                          w={'24px'}
+                          src={app.creator.avatar}
+                        ></Avatar>
+                        <Box px="8px" lineHeight={'24px'}>
+                          {app.creator.username}
+                        </Box>
+                      </Flex>
+                    </Flex>
+                    <Box fontSize={'12px'} pt="12px" color={'rgba(0,0,0,0.4)'}>
+                      {'创建于 ' + app.createTime.toString().split('T')[0]}
                     </Box>
-                    {/* <AppTypeTag type={app.type} /> */}
                   </Flex>
                 </MyBox>
               </MyTooltip>

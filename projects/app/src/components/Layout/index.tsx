@@ -1,5 +1,5 @@
-import React, { useEffect, useMemo } from 'react';
-import { Box, Flex, Text, Image } from '@chakra-ui/react';
+import React, { useEffect, useMemo, useState } from 'react';
+import { Box, Flex, Text, Image, Button, Icon } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
 import { useLoading } from '@fastgpt/web/hooks/useLoading';
 import { useSystemStore } from '@/web/common/system/useSystemStore';
@@ -13,6 +13,8 @@ import dynamic from 'next/dynamic';
 import Auth from './auth';
 
 const Navbar = dynamic(() => import('./navbar'));
+const NavbarThin = dynamic(() => import('./navbarThin'));
+
 const NavbarPhone = dynamic(() => import('./navbarPhone'));
 const UpdateInviteModal = dynamic(() => import('@/components/support/user/team/UpdateInviteModal'));
 const NotSufficientModal = dynamic(() => import('@/components/support/wallet/NotSufficientModal'));
@@ -47,6 +49,7 @@ const Layout = ({ children }: { children: JSX.Element }) => {
   const { Loading } = useLoading();
   const { loading, setScreenWidth, isPc, feConfigs, isNotSufficientModal } = useSystemStore();
   const { userInfo } = useUserStore();
+  const [closeNav, setCloseNav] = useState<boolean>(false);
 
   const isChatPage = useMemo(
     () => router.pathname === '/chat' && Object.values(router.query).join('').length !== 0,
@@ -123,9 +126,34 @@ const Layout = ({ children }: { children: JSX.Element }) => {
                   </Box>
                 </Box>
                 <Box flex={1} display="flex" overflow={'overlay'}>
-                  <Box h={'100%'} left={0} top={0} w={'200px'}>
-                    <Navbar unread={unread} />
-                  </Box>
+                  {closeNav && (
+                    <Box h={'100%'} left={0} top={0} w={'64px'}>
+                      {userInfo && <NavbarThin unread={unread} userInfoLocal={userInfo} />}
+                    </Box>
+                  )}
+                  {!closeNav && (
+                    <Box h={'100%'} left={0} top={0} w={'200px'}>
+                      {userInfo && <Navbar unread={unread} userInfoLocal={userInfo} />}
+                    </Box>
+                  )}
+                  <Flex position={'absolute'} bottom={'0px'} w="64px" h="64px">
+                    <Button
+                      variant={'ghost'}
+                      ml={'8px'}
+                      leftIcon={
+                        <Image
+                          src="/imgs/home/thin.png"
+                          width={'12px'}
+                          transform={closeNav ? 'rotate(180deg)' : ''}
+                        ></Image>
+                      }
+                      onClick={() => {
+                        setCloseNav(!closeNav);
+                      }}
+                    >
+                      {closeNav ? '展开' : '收起'}
+                    </Button>
+                  </Flex>
                   <Box h={'100%'} ml={'8px'} flex={1} overflow={'overlay'}>
                     <Auth>{children}</Auth>
                   </Box>
@@ -134,7 +162,7 @@ const Layout = ({ children }: { children: JSX.Element }) => {
             )}
           </>
         )}
-        {isPc === false && (
+        {/* {isPc === false && (
           <>
             <Box h={'100%'} display={['block', 'none']}>
               {phoneUnShowLayoutRoute[router.pathname] || isChatPage ? (
@@ -151,7 +179,7 @@ const Layout = ({ children }: { children: JSX.Element }) => {
               )}
             </Box>
           </>
-        )}
+        )} */}
       </Box>
       {feConfigs?.isPlus && (
         <>

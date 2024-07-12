@@ -93,7 +93,7 @@ type Props = OutLinkChatAuthProps & {
   showFileSelector?: boolean;
   active?: boolean; // can use
   appId: string;
-
+  toolbar?: boolean;
   // not chat test params
   chatId?: string;
 
@@ -130,6 +130,7 @@ const ChatBox = (
     outLinkUid,
     teamId,
     teamToken,
+    toolbar,
     onUpdateVariable,
     onStartChat,
     onDelMessage
@@ -914,7 +915,13 @@ const ChatBox = (
   }));
 
   return (
-    <Flex flexDirection={'column'} h={'100%'} position={'relative'}>
+    <Flex
+      flexDirection={'column'}
+      h={'100%'}
+      position={'relative'}
+      maxW={['auto', 'min(1200px, 100%)']}
+      m="0 auto"
+    >
       <Script src="/js/html2pdf.bundle.min.js" strategy="lazyOnload"></Script>
       {/* chat box container */}
       <Box ref={ChatBoxRef} flex={'1 0 0'} h={0} w={'100%'} overflow={'overlay'} px={[4, 0]} pb={3}>
@@ -1017,75 +1024,78 @@ const ChatBox = (
         </Box>
       </Box>
       {/* message input */}
-      <Flex
-        maxW={['auto', 'min(800px, 100%)']}
-        m={['0 auto']}
-        w={'100%'}
-        h={'44px'}
-        px={'20px'}
-        py={'10px'}
-        justifyContent={'space-between'}
-      >
-        <Flex>
-          <Button
-            variant="ghost"
-            leftIcon={<MyIcon name={'core/chat/chatLight'} w={'16px'} />}
-            onClick={(e) => {
-              router.replace({
-                query: {
-                  chatId: '',
-                  appId
-                }
-              });
-            }}
-          >
-            {'新会话'}
-          </Button>
-        </Flex>
-        <Flex>
-          <Button
-            variant="ghost"
-            leftIcon={<MyIcon name={'core/chat/chatLight'} w={'16px'} />}
-            onClick={() => {
-              // clearHistories({ appId });
-              if (chatId) {
-                delOneHistory({
-                  appId: appId,
-                  chatId: chatId
+      {toolbar && (
+        <Flex
+          maxW={['auto', 'min(1200px, 100%)']}
+          m={['0 auto']}
+          w={'100%'}
+          h={'44px'}
+          px={'20px'}
+          py={'10px'}
+          justifyContent={'space-between'}
+        >
+          <Flex>
+            <Button
+              variant="ghost"
+              leftIcon={<MyIcon name={'core/chat/chatLight'} w={'16px'} />}
+              onClick={(e) => {
+                router.replace({
+                  query: {
+                    chatId: '',
+                    appId
+                  }
                 });
-              }
-              router.replace({
-                query: {
-                  chatId: '',
-                  appId
+              }}
+            >
+              {'新会话'}
+            </Button>
+          </Flex>
+          <Flex>
+            <Button
+              variant="ghost"
+              leftIcon={<MyIcon name={'core/chat/chatLight'} w={'16px'} />}
+              onClick={() => {
+                // clearHistories({ appId });
+                if (chatId) {
+                  delOneHistory({
+                    appId: appId,
+                    chatId: chatId
+                  });
                 }
-              });
-            }}
-          >
-            {'清除会话'}
-          </Button>
-          <Button
-            variant="ghost"
-            leftIcon={<MyIcon name={'core/chat/chatLight'} w={'16px'} />}
-            onClick={() => {
-              setDrawerType(0);
-              onOpen();
-            }}
-          >
-            {'推荐问题'}
-          </Button>
-          <Button
-            variant="ghost"
-            leftIcon={<MyIcon name={'core/chat/chatLight'} w={'16px'} />}
-            onClick={() => {
-              setDrawerType(1);
-              onOpen();
-            }}
-          >
-            {'历史会话'}
-          </Button>
+                router.replace({
+                  query: {
+                    chatId: '',
+                    appId
+                  }
+                });
+              }}
+            >
+              {'清除会话'}
+            </Button>
+            <Button
+              variant="ghost"
+              leftIcon={<MyIcon name={'core/chat/chatLight'} w={'16px'} />}
+              onClick={() => {
+                setDrawerType(0);
+                onOpen();
+              }}
+            >
+              {'推荐问题'}
+            </Button>
+            <Button
+              variant="ghost"
+              leftIcon={<MyIcon name={'core/chat/chatLight'} w={'16px'} />}
+              onClick={() => {
+                setDrawerType(1);
+                onOpen();
+              }}
+            >
+              {'历史会话'}
+            </Button>
+          </Flex>
         </Flex>
-      </Flex>
+      )}
+
       {onStartChat && (chatStarted || filterVariableNodes.length === 0) && active && (
         <ChatInput
           onSendMessage={sendPrompt}
@@ -1207,7 +1217,7 @@ const ChatBox = (
                   <>未配置问题</>
                 )}
                 {questions.map((item, index) => (
-                  <Flex my={'12px'} borderRadius={'6px'} bg={'#F4F5FA'}>
+                  <Flex my={'12px'} borderRadius={'6px'} bg={'#F4F5FA'} key={'questions_' + index}>
                     <Button
                       h="48px"
                       justifyContent={'start'}
@@ -1253,6 +1263,7 @@ const ChatBox = (
                           appId
                         }
                       });
+                      onClose();
                     }}
                   >
                     <MyIcon name={'core/chat/chatLight'} w={'16px'} />

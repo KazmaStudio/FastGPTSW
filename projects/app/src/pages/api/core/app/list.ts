@@ -1,5 +1,6 @@
 import type { NextApiResponse } from 'next';
 import { MongoApp } from '@fastgpt/service/core/app/schema';
+import { MongoUser } from '@fastgpt/service/support/user/schema';
 import { AppListItemType } from '@fastgpt/global/core/app/type';
 import { authUserPer } from '@fastgpt/service/support/permission/user/auth';
 import { NextAPI } from '@/service/middleware/entry';
@@ -52,7 +53,10 @@ async function handler(
 
   /* temp: get all apps and per */
   const [myApps, rpList] = await Promise.all([
-    MongoApp.find(findAppsQuery, '_id avatar type name intro tmbId defaultPermission')
+    MongoApp.find(
+      findAppsQuery,
+      '_id avatar type name intro tmbId defaultPermission creator createTime templeteType'
+    )
       .sort({
         updateTime: -1
       })
@@ -81,15 +85,27 @@ async function handler(
 
   const sliceApps = getRecentlyChat ? filterApps.slice(0, 15) : filterApps;
 
-  return sliceApps.map((app) => ({
-    _id: app._id,
-    avatar: app.avatar,
-    type: app.type,
-    name: app.name,
-    intro: app.intro,
-    permission: app.permission,
-    defaultPermission: app.defaultPermission || AppDefaultPermissionVal
-  }));
+  const result = Promise.all(
+    sliceApps.map(async (app) => {
+      const creator = await MongoUser.findOne({
+        _id: app.creator
+      });
+      return {
+        _id: app._id,
+        avatar: app.avatar,
+        type: app.type,
+        name: app.name,
+        intro: app.intro,
+        permission: app.permission,
+        createTime: app.createTime,
+        templeteType: app.templeteType,
+        defaultPermission: app.defaultPermission || AppDefaultPermissionVal,
+        creator
+      };
+    })
+  );
+
+  return result;
 }
 
 export default NextAPI(handler);
