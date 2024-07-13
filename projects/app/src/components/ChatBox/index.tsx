@@ -1206,7 +1206,7 @@ const ChatBox = (
           <DrawerHeader borderBottomWidth="1px">
             {drawerType === 0 ? '推荐问题' : '会话管理'}
           </DrawerHeader>
-          <DrawerBody>
+          <DrawerBody minH={'200px'}>
             {drawerType === 0 ? (
               <>
                 {questions.length > 0 ? (
@@ -1214,7 +1214,9 @@ const ChatBox = (
                     您可以这样问
                   </Flex>
                 ) : (
-                  <>未配置问题</>
+                  <Box color={'gray'} w="100%" textAlign={'center'}>
+                    未配置问题
+                  </Box>
                 )}
                 {questions.map((item, index) => (
                   <Flex my={'12px'} borderRadius={'6px'} bg={'#F4F5FA'} key={'questions_' + index}>
@@ -1237,6 +1239,11 @@ const ChatBox = (
               </>
             ) : (
               <>
+                {histories.length === 0 && (
+                  <Box color={'gray'} w="100%" textAlign={'center'}>
+                    暂无会话
+                  </Box>
+                )}
                 {histories.map((item, i) => (
                   <Flex
                     position={'relative'}

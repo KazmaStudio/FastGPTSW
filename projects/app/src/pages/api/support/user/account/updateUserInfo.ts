@@ -55,7 +55,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         throw new Error('验证码错误');
       }
 
-      if (Date.now() - codeList[phone].time > 15 * 60 * 1000) {
+      if (Date.now() - codeList[phone].time > 5 * 60 * 1000) {
         delete codeList[phone];
         throw new Error('请先获取验证码');
       }

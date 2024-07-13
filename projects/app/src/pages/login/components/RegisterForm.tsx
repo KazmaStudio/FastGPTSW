@@ -65,7 +65,7 @@ const RegisterForm = ({ setPageType }: Props) => {
         });
 
         toast({
-          title: `注册成功`,
+          title: `注册成功，请前往登录`,
           status: 'success'
         });
         setPageType(LoginPageTypeEnum.passwordLogin);
@@ -93,8 +93,8 @@ const RegisterForm = ({ setPageType }: Props) => {
 
   return (
     <>
-      <Box fontWeight={'bold'} fontSize={'l'} textAlign={'center'}>
-        注册 {feConfigs?.systemTitle} 账号
+      <Box fontWeight={'bold'} fontSize={'l'} textAlign={'center'} mt="-48px">
+        注册
       </Box>
       <Box
         mt={'12px'}
@@ -112,10 +112,13 @@ const RegisterForm = ({ setPageType }: Props) => {
               required: '用户名不能为空',
               pattern: {
                 value: /(^[A-Za-z0-9])/,
-                message: '用户名格式错误'
+                message: '用户名格式错误，请输入字母或数字'
               }
             })}
           ></Input>
+          <FormErrorMessage mt="0px" position={'absolute'}>
+            {errors.username?.message}
+          </FormErrorMessage>
         </FormControl>
         <FormControl mt={6} isInvalid={!!errors.department}>
           <Input
@@ -141,6 +144,9 @@ const RegisterForm = ({ setPageType }: Props) => {
               }
             })}
           ></Input>
+          <FormErrorMessage mt="0px" position={'absolute'}>
+            {errors.phone?.message}
+          </FormErrorMessage>
         </FormControl>
         <FormControl
           mt={6}
@@ -175,6 +181,9 @@ const RegisterForm = ({ setPageType }: Props) => {
           >
             {sendCodeText}
           </Box>
+          {/* <FormErrorMessage mt="60px" position={'absolute'}>
+            {errors.code?.message}
+          </FormErrorMessage> */}
         </FormControl>
         <FormControl mt={6} isInvalid={!!errors.password}>
           <Input
@@ -193,6 +202,9 @@ const RegisterForm = ({ setPageType }: Props) => {
               }
             })}
           ></Input>
+          <FormErrorMessage mt="0px" position={'absolute'}>
+            {errors.password?.message}
+          </FormErrorMessage>
         </FormControl>
         <FormControl mt={6} isInvalid={!!errors.password2}>
           <Input
@@ -203,6 +215,9 @@ const RegisterForm = ({ setPageType }: Props) => {
               validate: (val) => (getValues('password') === val ? true : '两次密码不一致')
             })}
           ></Input>
+          <FormErrorMessage mt="0px" position={'absolute'}>
+            {errors.password2?.message}
+          </FormErrorMessage>
         </FormControl>
         <Button
           type="submit"

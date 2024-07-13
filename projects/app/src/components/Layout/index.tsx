@@ -1,5 +1,15 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Box, Flex, Text, Image, Button, Icon } from '@chakra-ui/react';
+import {
+  Menu,
+  MenuButton,
+  MenuList,
+  MenuItem,
+  MenuItemOption,
+  MenuGroup,
+  MenuOptionGroup,
+  MenuDivider
+} from '@chakra-ui/react';
 import { useRouter } from 'next/router';
 import { useLoading } from '@fastgpt/web/hooks/useLoading';
 import { useSystemStore } from '@/web/common/system/useSystemStore';
@@ -9,7 +19,7 @@ import { useUserStore } from '@/web/support/user/useUserStore';
 import { getUnreadCount } from '@/web/support/user/inform/api';
 import Avatar from '@/components/Avatar';
 import dynamic from 'next/dynamic';
-
+import { useConfirm } from '@fastgpt/web/hooks/useConfirm';
 import Auth from './auth';
 
 const Navbar = dynamic(() => import('./navbar'));
@@ -48,7 +58,7 @@ const Layout = ({ children }: { children: JSX.Element }) => {
   const router = useRouter();
   const { Loading } = useLoading();
   const { loading, setScreenWidth, isPc, feConfigs, isNotSufficientModal } = useSystemStore();
-  const { userInfo } = useUserStore();
+  const { userInfo, setUserInfo } = useUserStore();
   const [closeNav, setCloseNav] = useState<boolean>(false);
 
   const isChatPage = useMemo(
@@ -79,7 +89,9 @@ const Layout = ({ children }: { children: JSX.Element }) => {
   const importantInforms = data?.importantInforms || [];
 
   const isHideNavbar = !!pcUnShowLayoutRoute[router.pathname];
-
+  const { openConfirm, ConfirmModal } = useConfirm({
+    content: '确认退出登录？'
+  });
   return (
     <>
       <Box h={'100%'} bg={'white'}>
@@ -116,14 +128,31 @@ const Layout = ({ children }: { children: JSX.Element }) => {
                       {feConfigs?.systemTitle}
                     </Text> */}
                   </Box>
-                  <Box
+                  {/* <Box
                     cursor="pointer"
                     onClick={() => {
                       router.push('/account');
                     }}
                   >
                     <Avatar src={userInfo?.avatar} w={'33px'} />
-                  </Box>
+                  </Box> */}
+                  <Menu>
+                    <MenuButton as={Button} variant={'ghost'}>
+                      <Avatar src={userInfo?.avatar} w={'33px'} />
+                    </MenuButton>
+                    <MenuList>
+                      <MenuItem
+                        onClick={() => {
+                          openConfirm(() => {
+                            setUserInfo(null);
+                            router.replace('/login');
+                          })();
+                        }}
+                      >
+                        登出
+                      </MenuItem>
+                    </MenuList>
+                  </Menu>
                 </Box>
                 <Box flex={1} display="flex" overflow={'overlay'}>
                   {closeNav && (
@@ -191,7 +220,7 @@ const Layout = ({ children }: { children: JSX.Element }) => {
           )}
         </>
       )}
-
+      <ConfirmModal />
       <Loading loading={loading} zIndex={999999} />
     </>
   );

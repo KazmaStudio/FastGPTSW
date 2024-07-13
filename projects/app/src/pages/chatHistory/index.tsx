@@ -166,7 +166,7 @@ const Logs = () => {
               <Th>{'会话ID'}</Th>
               <Th>{'会话时间'}</Th>
               <Th>{'对话次数'}</Th>
-              <Th>{'操作'}</Th>
+              <Th pl="42px">{'操作'}</Th>
             </Tr>
           </Thead>
           <Tbody fontSize={'xs'}>
@@ -198,6 +198,7 @@ const Logs = () => {
                 <Td>
                   <Button
                     variant={'ghost'}
+                    color="#0C53EE"
                     onClick={() => {
                       setShowLogs(true);
                       setDetailLogsId(item.id);
@@ -209,6 +210,7 @@ const Logs = () => {
                   <Button
                     isLoading={requesting}
                     variant={'ghost'}
+                    color="#0C53EE"
                     onClick={async () => {
                       setShowLogs(false);
                       setDetailLogsId(item.id);

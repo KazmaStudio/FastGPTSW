@@ -9,7 +9,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     const code = Math.random().toFixed(6).slice(-6).toString();
     const { phone, type }: { phone: string; type: UserAuthTypeEnum } = req.body;
 
-    if (phone.indexOf('138000000') > -1) {
+    if (phone.indexOf('138000000') === -1) {
       const sendCodeResult = await fetch('https://api-v4.mysubmail.com/sms/send', {
         method: 'POST',
         headers: {
@@ -24,6 +24,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       });
 
       const sendCodeResultJson = await sendCodeResult.json();
+
+      console.log('SMS: ', sendCodeResultJson);
+
       if (sendCodeResult.status === 200) {
         if (sendCodeResultJson.status === 'success') {
           codeList[req.body.phone] = {

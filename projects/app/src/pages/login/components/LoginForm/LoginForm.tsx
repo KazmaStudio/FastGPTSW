@@ -1,5 +1,5 @@
 import React, { useState, Dispatch, useCallback } from 'react';
-import { FormControl, Flex, Input, Button, Box, Link } from '@chakra-ui/react';
+import { FormControl, Flex, Input, Button, Box, Link, FormErrorMessage } from '@chakra-ui/react';
 import { useForm } from 'react-hook-form';
 import { LoginPageTypeEnum } from '@/web/support/user/login/constants';
 import { postLogin } from '@/web/support/user/api';
@@ -150,9 +150,16 @@ const LoginForm = ({ setPageType, loginSuccess }: Props) => {
                   bg={'myGray.50'}
                   placeholder={'请输入手机号'}
                   {...register('phone', {
-                    required: tabIndex === 0 ? true : false
+                    required: tabIndex === 0 ? '手机号不能为空' : false,
+                    pattern: {
+                      value: /(^1[3456789]\d{9}$)/,
+                      message: '手机号格式错误'
+                    }
                   })}
                 ></Input>
+                <FormErrorMessage mt="0px" position={'absolute'}>
+                  {errors.phone?.message}
+                </FormErrorMessage>
               </FormControl>
               <FormControl
                 mt={6}
@@ -167,7 +174,7 @@ const LoginForm = ({ setPageType, loginSuccess }: Props) => {
                   maxLength={6}
                   placeholder="请输入验证码"
                   {...register('code', {
-                    required: tabIndex === 0 ? true : false
+                    required: tabIndex === 0 ? '验证码不能为空' : false
                   })}
                 ></Input>
                 <Box
@@ -187,6 +194,9 @@ const LoginForm = ({ setPageType, loginSuccess }: Props) => {
                 >
                   {sendCodeText}
                 </Box>
+                <FormErrorMessage mt="60px" position={'absolute'}>
+                  {errors.code?.message}
+                </FormErrorMessage>
               </FormControl>
               {feConfigs?.docUrl && (
                 <Flex alignItems={'center'} mt={7} fontSize={'sm'}>
@@ -261,9 +271,12 @@ const LoginForm = ({ setPageType, loginSuccess }: Props) => {
                   bg={'myGray.50'}
                   placeholder={'请输入用户名/手机号'}
                   {...register('username', {
-                    required: tabIndex === 1 ? true : false
+                    required: tabIndex === 1 ? '请输入用户名/手机号不能为空' : false
                   })}
                 ></Input>
+                <FormErrorMessage mt="0px" position={'absolute'}>
+                  {errors.username?.message}
+                </FormErrorMessage>
               </FormControl>
               <FormControl mt={6} isInvalid={!!errors.password}>
                 <Input
@@ -271,13 +284,16 @@ const LoginForm = ({ setPageType, loginSuccess }: Props) => {
                   type={'password'}
                   placeholder={'请输入密码'}
                   {...register('password', {
-                    required: tabIndex === 1 ? true : false,
+                    required: tabIndex === 1 ? '密码不能为空' : false,
                     maxLength: {
-                      value: 60,
-                      message: '密码最多 60 位'
+                      value: 16,
+                      message: '密码最多 16 位'
                     }
                   })}
                 ></Input>
+                <FormErrorMessage mt="0px" position={'absolute'}>
+                  {errors.password?.message}
+                </FormErrorMessage>
               </FormControl>
               {feConfigs?.docUrl && (
                 <Flex alignItems={'center'} mt={7} fontSize={'sm'}>
