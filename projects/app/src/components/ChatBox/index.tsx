@@ -17,7 +17,16 @@ import type {
 } from '@fastgpt/global/core/chat/type.d';
 import { useToast } from '@fastgpt/web/hooks/useToast';
 import { getErrText } from '@fastgpt/global/common/error/utils';
-import { Box, Flex, Checkbox, Button } from '@chakra-ui/react';
+import {
+  Box,
+  Flex,
+  Checkbox,
+  Button,
+  Input,
+  InputGroup,
+  InputRightElement,
+  Icon
+} from '@chakra-ui/react';
 import { EventNameEnum, eventBus } from '@/web/common/utils/eventbus';
 import { chats2GPTMessages } from '@fastgpt/global/core/chat/adapt';
 import { VariableInputEnum } from '@fastgpt/global/core/workflow/constants';
@@ -25,6 +34,7 @@ import { useForm } from 'react-hook-form';
 import { useRouter } from 'next/router';
 import { useSystemStore } from '@/web/common/system/useSystemStore';
 import { useTranslation } from 'next-i18next';
+import { SearchIcon, DeleteIcon } from '@chakra-ui/icons';
 import MyIcon from '@fastgpt/web/components/common/Icon';
 import {
   closeCustomFeedback,
@@ -155,6 +165,7 @@ const ChatBox = (
   const [drawerType, setDrawerType] = useState<number>(0);
   const [adminMarkData, setAdminMarkData] = useState<AdminMarkType & { chatItemId: string }>();
   const [questionGuides, setQuestionGuide] = useState<string[]>([]);
+  const [chatSearch, setChatSearch] = useState<string>('');
 
   const { clearHistories, histories, delOneHistory } = useChatStore();
 
@@ -1206,7 +1217,7 @@ const ChatBox = (
           <DrawerHeader borderBottomWidth="1px">
             {drawerType === 0 ? '推荐问题' : '会话管理'}
           </DrawerHeader>
-          <DrawerBody minH={'200px'}>
+          <DrawerBody minH={'200px'} maxH={'400px'}>
             {drawerType === 0 ? (
               <>
                 {questions.length > 0 ? (
@@ -1244,41 +1255,82 @@ const ChatBox = (
                     暂无会话
                   </Box>
                 )}
-                {histories.map((item, i) => (
-                  <Flex
-                    position={'relative'}
-                    key={item.chatId || `${i}`}
-                    alignItems={'center'}
-                    py={2.5}
-                    px={4}
-                    cursor={'pointer'}
-                    userSelect={'none'}
-                    borderRadius={'md'}
-                    mb={2}
-                    fontSize={'sm'}
-                    _hover={{
-                      bg: 'myGray.50',
-                      '& .more': {
-                        visibility: 'visible'
-                      }
-                    }}
-                    bg={item.top ? '#E6F6F6 !important' : ''}
-                    onClick={() => {
-                      router.replace({
-                        query: {
-                          chatId: item.chatId,
-                          appId
-                        }
-                      });
-                      onClose();
-                    }}
-                  >
-                    <MyIcon name={'core/chat/chatLight'} w={'16px'} />
-                    <Box flex={'1 0 0'} ml={3} className="textEllipsis">
-                      {item.customTitle || item.title}
-                    </Box>
+                <Flex flexDir={'column'}>
+                  <Flex justifyContent={'space-between'}>
+                    <Flex w="100%">
+                      <InputGroup size="sm" w="50%">
+                        <Input
+                          placeholder="搜索会话"
+                          value={chatSearch}
+                          onChange={(e) => {
+                            setChatSearch(e.target.value);
+                          }}
+                        />
+                        <InputRightElement width="4.5rem">
+                          <SearchIcon />
+                        </InputRightElement>
+                      </InputGroup>
+                    </Flex>
+                    <Flex>
+                      <Button
+                        variant={'ghost'}
+                        color={'#0C53EE'}
+                        leftIcon={<DeleteIcon />}
+                        onClick={() => {
+                          clearHistories({ appId });
+                        }}
+                      >
+                        全部清空
+                      </Button>
+                    </Flex>
                   </Flex>
-                ))}
+
+                  <Flex flexDir={'column'} mt="12px">
+                    {histories.map((item, i) => (
+                      <>
+                        {item.title.indexOf(chatSearch) > -1 && (
+                          <Flex
+                            justifyContent={'space-between'}
+                            position={'relative'}
+                            key={item.chatId || `${i}`}
+                            alignItems={'center'}
+                            py={1}
+                            px={4}
+                            cursor={'pointer'}
+                            userSelect={'none'}
+                            borderRadius={'md'}
+                            mb={2}
+                            fontSize={'sm'}
+                            _hover={{
+                              bg: 'myGray.50',
+                              '& .more': {
+                                visibility: 'visible'
+                              }
+                            }}
+                            bg={item.top ? '#E6F6F6 !important' : ''}
+                            onClick={() => {
+                              router.replace({
+                                query: {
+                                  chatId: item.chatId,
+                                  appId
+                                }
+                              });
+                              onClose();
+                            }}
+                          >
+                            <Flex>
+                              <MyIcon name={'core/chat/chatLight'} w={'16px'} />
+                              <Box flex={'1 0 0'} ml={3} className="textEllipsis">
+                                {item.customTitle || item.title}
+                              </Box>
+                            </Flex>
+                            <Flex>{item.updateTime.toString().split('T')[0]}</Flex>
+                          </Flex>
+                        )}
+                      </>
+                    ))}
+                  </Flex>
+                </Flex>
               </>
             )}
           </DrawerBody>

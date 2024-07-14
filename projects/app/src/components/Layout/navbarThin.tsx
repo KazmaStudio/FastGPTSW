@@ -180,7 +180,9 @@ const Navbar = ({ unread, userInfoLocal }: { unread: number; userInfoLocal: User
     getValues,
     setValue,
     formState: { errors }
-  } = useForm<LoginFormType>();
+  } = useForm<LoginFormType>({
+    mode: 'onBlur'
+  });
 
   const { sendCodeText, sendCode, codeCountDown } = useSendCode();
 
@@ -671,7 +673,7 @@ const Navbar = ({ unread, userInfoLocal }: { unread: number; userInfoLocal: User
               ) : (
                 <Flex flexDirection={'column'} p="8px">
                   <Box fontSize={'20px'} color={'black'} mb="32px">
-                    重制密码
+                    重置密码
                   </Box>
                   <Box
                     w="100%"
@@ -752,6 +754,9 @@ const Navbar = ({ unread, userInfoLocal }: { unread: number; userInfoLocal: User
                         }
                       })}
                     ></Input>
+                    <FormErrorMessage mt="-24px" position={'absolute'}>
+                      {errors.password?.message}
+                    </FormErrorMessage>
                   </FormControl>
                   <FormControl isInvalid={!!errors.checkPassword}>
                     <Input
@@ -769,6 +774,9 @@ const Navbar = ({ unread, userInfoLocal }: { unread: number; userInfoLocal: User
                         validate: (val) => (getValues('password') === val ? true : '两次密码不一致')
                       })}
                     ></Input>
+                    <FormErrorMessage mt="-24px" position={'absolute'}>
+                      {errors.checkPassword?.message}
+                    </FormErrorMessage>
                   </FormControl>
                   <Button
                     type="submit"
@@ -798,7 +806,7 @@ const Navbar = ({ unread, userInfoLocal }: { unread: number; userInfoLocal: User
                     setAccountPage(2);
                   }}
                 >
-                  重制密码
+                  重置密码
                 </Button>
                 <Button
                   fontSize={'16px'}

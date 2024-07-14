@@ -14,6 +14,8 @@ import {
   Image,
   Text,
   Input,
+  InputGroup,
+  InputRightElement,
   ButtonGroup,
   Button,
   IconButton,
@@ -38,7 +40,14 @@ import {
   EditablePreview,
   useEditableControls
 } from '@chakra-ui/react';
-import { CheckIcon, EditIcon, CloseIcon, ChevronRightIcon } from '@chakra-ui/icons';
+import {
+  CheckIcon,
+  EditIcon,
+  CloseIcon,
+  ChevronRightIcon,
+  ViewIcon,
+  ViewOffIcon
+} from '@chakra-ui/icons';
 import { useRouter } from 'next/router';
 import { useUserStore } from '@/web/support/user/useUserStore';
 import { useChatStore } from '@/web/core/chat/storeChat';
@@ -71,7 +80,10 @@ const Navbar = ({ unread, userInfoLocal }: { unread: number; userInfoLocal: User
   const { t } = useTranslation();
   const router = useRouter();
   const { parentId = null } = router.query as { parentId?: string | null };
-
+  const [showP, setShowP] = useState<boolean>(false);
+  const handleShowPClick = () => setShowP(!showP);
+  const [showP2, setShowP2] = useState<boolean>(false);
+  const handleShowP2Click = () => setShowP2(!showP2);
   const [accountPage, setAccountPage] = useState<number>(0);
 
   const { userInfo, appListInfo, setAppListInfo, setUserInfo } = useUserStore();
@@ -179,7 +191,9 @@ const Navbar = ({ unread, userInfoLocal }: { unread: number; userInfoLocal: User
     getValues,
     setValue,
     formState: { errors }
-  } = useForm<LoginFormType>();
+  } = useForm<LoginFormType>({
+    mode: 'onBlur'
+  });
 
   const { sendCodeText, sendCode, codeCountDown } = useSendCode();
 
@@ -667,6 +681,9 @@ const Navbar = ({ unread, userInfoLocal }: { unread: number; userInfoLocal: User
                     >
                       {sendCodeText}
                     </Box>
+                    <FormErrorMessage mt="-24px" position={'absolute'}>
+                      {errors.code?.message}
+                    </FormErrorMessage>
                   </FormControl>
                   <Button
                     type="submit"
@@ -682,7 +699,7 @@ const Navbar = ({ unread, userInfoLocal }: { unread: number; userInfoLocal: User
               ) : (
                 <Flex flexDirection={'column'} p="8px">
                   <Box fontSize={'20px'} color={'black'} mb="32px">
-                    重制密码
+                    重置密码
                   </Box>
                   <Box
                     w="100%"
@@ -740,46 +757,79 @@ const Navbar = ({ unread, userInfoLocal }: { unread: number; userInfoLocal: User
                     </Box>
                   </FormControl>
                   <FormControl isInvalid={!!errors.password}>
-                    <Input
-                      w="100%"
-                      h="64px"
-                      p="24px"
-                      type="password"
-                      fontSize="14px"
-                      border={'1px solid #DDE3E8'}
-                      borderRadius={'8px'}
-                      mb="24px"
-                      bg={'white'}
-                      placeholder={'请输入新密码'}
-                      {...register('password', {
-                        required: '密码不能为空',
-                        minLength: {
-                          value: 8,
-                          message: '密码最少 8 位最多 16 位'
-                        },
-                        maxLength: {
-                          value: 16,
-                          message: '密码最少 8 位最多 16 位'
-                        }
-                      })}
-                    ></Input>
+                    <InputGroup size="md">
+                      <Input
+                        w="100%"
+                        h="64px"
+                        p="24px"
+                        fontSize="14px"
+                        border={'1px solid #DDE3E8'}
+                        borderRadius={'8px'}
+                        mb="24px"
+                        bg={'white'}
+                        type={showP ? 'text' : 'password'}
+                        placeholder={'请输入新密码'}
+                        {...register('password', {
+                          required: '密码不能为空',
+                          minLength: {
+                            value: 8,
+                            message: '密码最少 8 位最多 16 位'
+                          },
+                          maxLength: {
+                            value: 16,
+                            message: '密码最少 8 位最多 16 位'
+                          }
+                        })}
+                      ></Input>
+                      <InputRightElement width="4.5rem">
+                        <Button
+                          onClick={handleShowPClick}
+                          variant={'ghost'}
+                          h={'48px'}
+                          mt="24px"
+                          color={'gray'}
+                        >
+                          {showP ? <ViewIcon></ViewIcon> : <ViewOffIcon></ViewOffIcon>}
+                        </Button>
+                      </InputRightElement>
+                    </InputGroup>
+                    <FormErrorMessage mt="-24px" position={'absolute'}>
+                      {errors.checkPassword?.message}
+                    </FormErrorMessage>
                   </FormControl>
                   <FormControl isInvalid={!!errors.checkPassword}>
-                    <Input
-                      w="100%"
-                      h="64px"
-                      type="password"
-                      p="24px"
-                      fontSize="14px"
-                      border={'1px solid #DDE3E8'}
-                      borderRadius={'8px'}
-                      mb="24px"
-                      bg={'white'}
-                      placeholder={'确认密码'}
-                      {...register('checkPassword', {
-                        validate: (val) => (getValues('password') === val ? true : '两次密码不一致')
-                      })}
-                    ></Input>
+                    <InputGroup size="md">
+                      <Input
+                        w="100%"
+                        h="64px"
+                        type={showP2 ? 'text' : 'password'}
+                        p="24px"
+                        fontSize="14px"
+                        border={'1px solid #DDE3E8'}
+                        borderRadius={'8px'}
+                        mb="24px"
+                        bg={'white'}
+                        placeholder={'确认密码'}
+                        {...register('checkPassword', {
+                          validate: (val) =>
+                            getValues('password') === val ? true : '两次密码不一致'
+                        })}
+                      ></Input>
+                      <InputRightElement width="4.5rem">
+                        <Button
+                          onClick={handleShowP2Click}
+                          variant={'ghost'}
+                          h={'48px'}
+                          mt="24px"
+                          color={'gray'}
+                        >
+                          {showP2 ? <ViewIcon></ViewIcon> : <ViewOffIcon></ViewOffIcon>}
+                        </Button>
+                      </InputRightElement>
+                    </InputGroup>
+                    <FormErrorMessage mt="-24px" position={'absolute'}>
+                      {errors.password?.message}
+                    </FormErrorMessage>
                   </FormControl>
                   <Button
                     type="submit"
@@ -809,7 +859,7 @@ const Navbar = ({ unread, userInfoLocal }: { unread: number; userInfoLocal: User
                     setAccountPage(2);
                   }}
                 >
-                  重制密码
+                  重置密码
                 </Button>
                 <Button
                   fontSize={'16px'}

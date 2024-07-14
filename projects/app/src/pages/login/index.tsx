@@ -14,7 +14,8 @@ import Script from 'next/script';
 import Loading from '@fastgpt/web/components/common/MyLoading';
 
 const RegisterForm = dynamic(() => import('./components/RegisterForm'));
-const ForgetPasswordForm = dynamic(() => import('./components/ForgetPasswordForm'));
+// const ForgetPasswordForm = dynamic(() => import('./components/ForgetPasswordForm'));
+const ForgetPasswordForm = dynamic(() => import('./components/ResetPasswordForm'));
 const WechatForm = dynamic(() => import('./components/LoginForm/WechatForm'));
 const CommunityModal = dynamic(() => import('@/components/CommunityModal'));
 

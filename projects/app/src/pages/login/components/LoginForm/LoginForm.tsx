@@ -1,5 +1,16 @@
 import React, { useState, Dispatch, useCallback } from 'react';
-import { FormControl, Flex, Input, Button, Box, Link, FormErrorMessage } from '@chakra-ui/react';
+import {
+  FormControl,
+  Flex,
+  Input,
+  InputGroup,
+  InputRightElement,
+  Button,
+  Box,
+  Link,
+  FormErrorMessage
+} from '@chakra-ui/react';
+import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
 import { useForm } from 'react-hook-form';
 import { LoginPageTypeEnum } from '@/web/support/user/login/constants';
 import { postLogin } from '@/web/support/user/api';
@@ -34,8 +45,11 @@ const LoginForm = ({ setPageType, loginSuccess }: Props) => {
     trigger,
     getValues,
     formState: { errors }
-  } = useForm<LoginFormType>();
-
+  } = useForm<LoginFormType>({
+    mode: 'onBlur'
+  });
+  const [showP, setShowP] = useState<boolean>(false);
+  const handleShowPClick = () => setShowP(!showP);
   const [requesting, setRequesting] = useState(false);
   const [tabIndex, setTabIndex] = useState(0);
   const { sendCodeText, sendCode, codeCountDown } = useSendCode();
@@ -222,7 +236,7 @@ const LoginForm = ({ setPageType, loginSuccess }: Props) => {
 
               <Button
                 type="submit"
-                my={6}
+                mt={'84px'}
                 w={'100%'}
                 size={['md', 'md']}
                 colorScheme="blue"
@@ -232,10 +246,23 @@ const LoginForm = ({ setPageType, loginSuccess }: Props) => {
                 {t('Login')}
               </Button>
 
-              {feConfigs?.show_register && (
+              <Box
+                textAlign={'center'}
+                color={'#0C53EE'}
+                cursor={'pointer'}
+                _hover={{ textDecoration: 'underline' }}
+                onClick={() => setPageType('register')}
+                fontSize="sm"
+                m="0 auto"
+                mt="44px"
+              >
+                {'立即注册'}
+              </Box>
+
+              {/* {feConfigs?.show_register && (
                 <>
                   <Flex align={'center'} justifyContent={'flex-end'} color={'primary.700'}>
-                    {/* <Box
+                    <Box
                 cursor={'pointer'}
                 _hover={{ textDecoration: 'underline' }}
                 onClick={() => setPageType('forgetPassword')}
@@ -243,7 +270,7 @@ const LoginForm = ({ setPageType, loginSuccess }: Props) => {
               >
                 {t('support.user.login.Forget Password')}
               </Box>
-              <Box mx={3} h={'16px'} w={'1.5px'} bg={'myGray.250'}></Box> */}
+              <Box mx={3} h={'16px'} w={'1.5px'} bg={'myGray.250'}></Box>
                     <Box
                       cursor={'pointer'}
                       _hover={{ textDecoration: 'underline' }}
@@ -254,7 +281,7 @@ const LoginForm = ({ setPageType, loginSuccess }: Props) => {
                     </Box>
                   </Flex>
                 </>
-              )}
+              )} */}
             </Box>
           </TabPanel>
           <TabPanel p="0px">
@@ -279,18 +306,31 @@ const LoginForm = ({ setPageType, loginSuccess }: Props) => {
                 </FormErrorMessage>
               </FormControl>
               <FormControl mt={6} isInvalid={!!errors.password}>
-                <Input
-                  bg={'myGray.50'}
-                  type={'password'}
-                  placeholder={'请输入密码'}
-                  {...register('password', {
-                    required: tabIndex === 1 ? '密码不能为空' : false,
-                    maxLength: {
-                      value: 16,
-                      message: '密码最多 16 位'
-                    }
-                  })}
-                ></Input>
+                <InputGroup size="md">
+                  <Input
+                    bg={'myGray.50'}
+                    type={showP ? 'text' : 'password'}
+                    placeholder={'请输入密码'}
+                    {...register('password', {
+                      required: tabIndex === 1 ? '密码不能为空' : false,
+                      maxLength: {
+                        value: 16,
+                        message: '密码最多 16 位'
+                      }
+                    })}
+                  ></Input>
+                  <InputRightElement width="2.5rem">
+                    <Button
+                      onClick={handleShowPClick}
+                      variant={'ghost'}
+                      h={'36px'}
+                      mt="0px"
+                      color={'gray'}
+                    >
+                      {showP ? <ViewIcon></ViewIcon> : <ViewOffIcon></ViewOffIcon>}
+                    </Button>
+                  </InputRightElement>
+                </InputGroup>
                 <FormErrorMessage mt="0px" position={'absolute'}>
                   {errors.password?.message}
                 </FormErrorMessage>
@@ -316,11 +356,22 @@ const LoginForm = ({ setPageType, loginSuccess }: Props) => {
                   </Link>
                 </Flex>
               )}
-
+              <Box
+                float={'left'}
+                fontSize="sm"
+                color={'primary.700'}
+                cursor={'pointer'}
+                mb="48px"
+                mt="12px"
+                _hover={{ textDecoration: 'underline' }}
+                onClick={() => setPageType(LoginPageTypeEnum.forgetPassword)}
+              >
+                忘记密码
+              </Box>
               <Button
                 type="submit"
-                my={6}
                 w={'100%'}
+                mt="3px"
                 size={['md', 'md']}
                 colorScheme="blue"
                 isLoading={requesting}
@@ -331,7 +382,7 @@ const LoginForm = ({ setPageType, loginSuccess }: Props) => {
 
               {feConfigs?.show_register && (
                 <>
-                  <Flex align={'center'} justifyContent={'flex-end'} color={'primary.700'}>
+                  <Flex align={'center'} justifyContent={'center'} color={'primary.700'}>
                     {/* <Box
                 cursor={'pointer'}
                 _hover={{ textDecoration: 'underline' }}
@@ -341,13 +392,15 @@ const LoginForm = ({ setPageType, loginSuccess }: Props) => {
                 {t('support.user.login.Forget Password')}
               </Box>
               <Box mx={3} h={'16px'} w={'1.5px'} bg={'myGray.250'}></Box> */}
+
                     <Box
                       cursor={'pointer'}
                       _hover={{ textDecoration: 'underline' }}
                       onClick={() => setPageType('register')}
                       fontSize="sm"
+                      mt="44px"
                     >
-                      {t('support.user.login.Register')}
+                      {'立即注册'}
                     </Box>
                   </Flex>
                 </>

@@ -125,9 +125,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         }
       });
     } else if (type === 2) {
-      await MongoUser.findByIdAndUpdate(phone, {
-        password
-      });
+      await MongoUser.findOneAndUpdate(
+        { phone },
+        {
+          password
+        }
+      );
       delete codeList[phone];
       jsonRes(res, {
         data: {}

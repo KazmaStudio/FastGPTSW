@@ -1,5 +1,15 @@
 import React, { useState, Dispatch, useCallback } from 'react';
-import { FormControl, Box, Input, Button, FormErrorMessage } from '@chakra-ui/react';
+import {
+  FormControl,
+  Box,
+  Input,
+  InputGroup,
+  InputRightElement,
+  Button,
+  FormErrorMessage,
+  Flex
+} from '@chakra-ui/react';
+import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
 import { useForm } from 'react-hook-form';
 import { LoginPageTypeEnum } from '@/web/support/user/login/constants';
 import { postRegister } from '@/web/support/user/api';
@@ -37,6 +47,10 @@ const RegisterForm = ({ setPageType }: Props) => {
   } = useForm<RegisterType>({
     mode: 'onBlur'
   });
+  const [showP, setShowP] = useState<boolean>(false);
+  const handleShowPClick = () => setShowP(!showP);
+  const [showP2, setShowP2] = useState<boolean>(false);
+  const handleShowP2Click = () => setShowP2(!showP2);
 
   const { sendCodeText, sendCode, codeCountDown } = useSendCode();
 
@@ -93,9 +107,16 @@ const RegisterForm = ({ setPageType }: Props) => {
 
   return (
     <>
-      <Box fontWeight={'bold'} fontSize={'l'} textAlign={'center'} mt="-48px">
+      <Box fontWeight={'bold'} fontSize={'20px'} textAlign={'center'} mt="-48px">
         注册
       </Box>
+      <Box
+        h={'8px'}
+        w="48px"
+        m="0 auto"
+        mt="-12px"
+        bg={'linear-gradient( 90deg, rgba(12,83,238,0.5) 0%, rgba(12,83,238,0) 100%)'}
+      ></Box>
       <Box
         mt={'12px'}
         onKeyDown={(e) => {
@@ -186,35 +207,61 @@ const RegisterForm = ({ setPageType }: Props) => {
           </FormErrorMessage> */}
         </FormControl>
         <FormControl mt={6} isInvalid={!!errors.password}>
-          <Input
-            bg={'myGray.50'}
-            type={'password'}
-            placeholder="密码必须是8-16个字符，可由字母、数字、字符组成"
-            {...register('password', {
-              required: '密码不能为空',
-              minLength: {
-                value: 8,
-                message: '密码最少 8 位最多 16 位'
-              },
-              maxLength: {
-                value: 16,
-                message: '密码最少 8 位最多 16 位'
-              }
-            })}
-          ></Input>
+          <InputGroup size="md">
+            <Input
+              bg={'myGray.50'}
+              type={showP ? 'text' : 'password'}
+              placeholder="密码为8-16个字符，可由字母、数字、字符组成"
+              {...register('password', {
+                required: '密码不能为空',
+                minLength: {
+                  value: 8,
+                  message: '密码最少 8 位最多 16 位'
+                },
+                maxLength: {
+                  value: 16,
+                  message: '密码最少 8 位最多 16 位'
+                }
+              })}
+            ></Input>
+            <InputRightElement width="2.5rem">
+              <Button
+                onClick={handleShowPClick}
+                variant={'ghost'}
+                h={'36px'}
+                mt="0px"
+                color={'gray'}
+              >
+                {showP ? <ViewIcon></ViewIcon> : <ViewOffIcon></ViewOffIcon>}
+              </Button>
+            </InputRightElement>
+          </InputGroup>
           <FormErrorMessage mt="0px" position={'absolute'}>
             {errors.password?.message}
           </FormErrorMessage>
         </FormControl>
         <FormControl mt={6} isInvalid={!!errors.password2}>
-          <Input
-            bg={'myGray.50'}
-            type={'password'}
-            placeholder="确认密码必须是8-16个字符，可由字母、数字、字符组成"
-            {...register('password2', {
-              validate: (val) => (getValues('password') === val ? true : '两次密码不一致')
-            })}
-          ></Input>
+          <InputGroup size="md">
+            <Input
+              bg={'myGray.50'}
+              type={showP2 ? 'text' : 'password'}
+              placeholder="密码为8-16个字符，可由字母、数字、字符组成"
+              {...register('password2', {
+                validate: (val) => (getValues('password') === val ? true : '两次密码不一致')
+              })}
+            ></Input>
+            <InputRightElement width="2.5rem">
+              <Button
+                onClick={handleShowP2Click}
+                variant={'ghost'}
+                h={'36px'}
+                mt="0px"
+                color={'gray'}
+              >
+                {showP2 ? <ViewIcon></ViewIcon> : <ViewOffIcon></ViewOffIcon>}
+              </Button>
+            </InputRightElement>
+          </InputGroup>
           <FormErrorMessage mt="0px" position={'absolute'}>
             {errors.password2?.message}
           </FormErrorMessage>
@@ -230,18 +277,36 @@ const RegisterForm = ({ setPageType }: Props) => {
         >
           确认注册
         </Button>
-        <Box
-          float={'right'}
-          fontSize="sm"
+        <Flex
+          float={'left'}
+          fontSize="12px"
           mt={2}
           mb={'50px'}
-          color={'primary.700'}
-          cursor={'pointer'}
-          _hover={{ textDecoration: 'underline' }}
-          onClick={() => setPageType(LoginPageTypeEnum.passwordLogin)}
+          w={'100%'}
+          justifyContent={'space-between'}
         >
-          已有账号，去登录
-        </Box>
+          <Flex>
+            <Box>已有账号？</Box>
+            <Box
+              color={'primary.700'}
+              cursor={'pointer'}
+              _hover={{ textDecoration: 'underline' }}
+              onClick={() => setPageType(LoginPageTypeEnum.passwordLogin)}
+            >
+              去登录
+            </Box>
+          </Flex>
+          <Flex
+            fontSize="12px"
+            color={'primary.700'}
+            cursor={'pointer'}
+            mb="48px"
+            _hover={{ textDecoration: 'underline' }}
+            onClick={() => setPageType(LoginPageTypeEnum.forgetPassword)}
+          >
+            忘记密码
+          </Flex>
+        </Flex>
       </Box>
     </>
   );
