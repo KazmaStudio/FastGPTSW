@@ -1,5 +1,5 @@
 import React, { useMemo, useRef, useState } from 'react';
-import { Box, Flex, Grid, useDisclosure, Image, Button } from '@chakra-ui/react';
+import { Box, Flex, Grid, useDisclosure, Image, Button, Divider } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
 import PageContainer from '@/components/PageContainer';
 import { useConfirm } from '@fastgpt/web/hooks/useConfirm';
@@ -154,8 +154,7 @@ const Dataset = () => {
           }))}
           FirstPathDom={
             <Flex flex={1} alignItems={'center'}>
-              <Image src={'/imgs/workflow/db.png'} alt={''} mr={2} h={'24px'} />
-              <Box className="textlg" letterSpacing={1} fontSize={'24px'} fontWeight={'bold'}>
+              <Box letterSpacing={1} fontSize={'16px'} fontWeight={'bold'} color="black">
                 {t('core.dataset.My Dataset')}
               </Box>
             </Flex>
@@ -353,48 +352,48 @@ const Dataset = () => {
                           onClick: () => {
                             exportDataset(dataset);
                           }
-                        },
-                        ...(dataset.permission === PermissionTypeEnum.private
-                          ? [
-                              {
-                                label: (
-                                  <Flex alignItems={'center'}>
-                                    <MyIcon
-                                      name={'support/permission/publicLight'}
-                                      w={'14px'}
-                                      mr={2}
-                                    />
-                                    {t('permission.Set Public')}
-                                  </Flex>
-                                ),
-                                onClick: () => {
-                                  putDatasetById({
-                                    id: dataset._id,
-                                    permission: PermissionTypeEnum.public
-                                  });
-                                }
-                              }
-                            ]
-                          : [
-                              {
-                                label: (
-                                  <Flex alignItems={'center'}>
-                                    <MyIcon
-                                      name={'support/permission/privateLight'}
-                                      w={'14px'}
-                                      mr={2}
-                                    />
-                                    {t('permission.Set Private')}
-                                  </Flex>
-                                ),
-                                onClick: () => {
-                                  putDatasetById({
-                                    id: dataset._id,
-                                    permission: PermissionTypeEnum.private
-                                  });
-                                }
-                              }
-                            ])
+                        }
+                        // ...(dataset.permission === PermissionTypeEnum.private
+                        //   ? [
+                        //       {
+                        //         label: (
+                        //           <Flex alignItems={'center'}>
+                        //             <MyIcon
+                        //               name={'support/permission/publicLight'}
+                        //               w={'14px'}
+                        //               mr={2}
+                        //             />
+                        //             {t('permission.Set Public')}
+                        //           </Flex>
+                        //         ),
+                        //         onClick: () => {
+                        //           putDatasetById({
+                        //             id: dataset._id,
+                        //             permission: PermissionTypeEnum.public
+                        //           });
+                        //         }
+                        //       }
+                        //     ]
+                        //   : [
+                        //       {
+                        //         label: (
+                        //           <Flex alignItems={'center'}>
+                        //             <MyIcon
+                        //               name={'support/permission/privateLight'}
+                        //               w={'14px'}
+                        //               mr={2}
+                        //             />
+                        //             {t('permission.Set Private')}
+                        //           </Flex>
+                        //         ),
+                        //         onClick: () => {
+                        //           putDatasetById({
+                        //             id: dataset._id,
+                        //             permission: PermissionTypeEnum.private
+                        //           });
+                        //         }
+                        //       }
+                        //     ])
                       ]
                     },
                     {
@@ -422,7 +421,11 @@ const Dataset = () => {
               </Box>
             )}
             <Flex alignItems={'center'} h={'38px'}>
-              <Avatar src={dataset.avatar} borderRadius={'md'} w={'28px'} />
+              <Avatar
+                src={dataset.type === DatasetTypeEnum.folder ? dataset.avatar : 'images/logo.png'}
+                borderRadius={'md'}
+                w={'28px'}
+              />
               <Box mx={3} className="textEllipsis3">
                 {dataset.name}
               </Box>
@@ -440,7 +443,8 @@ const Dataset = () => {
                   ? t('core.dataset.Folder placeholder')
                   : t('core.dataset.Intro Placeholder'))}
             </Box>
-            <Flex alignItems={'center'} fontSize={'sm'}>
+            <Divider />
+            <Flex alignItems={'center'} fontSize={'sm'} mt="12px" h="24px">
               <Box flex={1}>
                 <PermissionIconText permission={dataset.permission} color={'myGray.600'} />
               </Box>
